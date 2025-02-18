@@ -14,11 +14,12 @@
             <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" style="color: red;">
               Password is required and must be at least 6 characters.
             </div>
-            <button class="opacity" style="color: #023535;" (click)="loginn()">LOGIN</button>
-            
+            <button class="opacity" style="color: #023535;">LOGIN</button>
           </form>
+          <div *ngIf="messageError" style="color: red;">
+            {{ messageError }}
+          </div>
           <div class="register-forget opacity">
-            <a routerLink="/adduser" style="color: #023535;">REGISTER</a>
             <a href="">FORGOT PASSWORD</a>
           </div>
         </div>

@@ -2,22 +2,29 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SharedService } from '../shared.service';
 import { Router } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule
+  ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
   loginForm: FormGroup;
-  messageErro = '';
-  message = 'password or login incorrect';
+  messageError = '';
+  errorMessage = 'Password or login incorrect';
+  token: any;
 
   constructor(
     private fb: FormBuilder,
-    private _SharedService: SharedService,
+    private sharedService: SharedService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
@@ -28,32 +35,39 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  token: any;
-  loginn() {
+  loginn(): void {
     if (this.loginForm.invalid) {
-      this.messageErro = 'Please fill in all fields correctly.';
+      this.messageError = 'Please fill in all fields correctly.';
       return;
     }
 
-    this._SharedService.login(this.loginForm.value)
+    this.sharedService.login(this.loginForm.value)
       .subscribe(
         res => {
-          console.log(res);
           this.token = res;
-          console.log(this.token.payload._id);
-          localStorage.setItem('id', this.token.payload._id);
+          const userId = this.token?.payload?._id;
+          const userRole = this.token?.payload?.role;
+          const userToken = this.token?.mytoken;
 
-          if (this.token.payload.role == 'admin') {
+          if (userId) {
+            localStorage.setItem('id', userId);
+          }
+
+          if (userRole === 'admin') {
             this.router.navigate(['/admin']);
           } else {
             this.router.navigate(['/accueil']);
           }
-          localStorage.setItem('token', this.token.mytoken);
+
+          if (userToken) {
+            localStorage.setItem('token', userToken);
+          }
+
           this.loginForm.reset();
         },
         err => {
-          console.log(err);
-          this.messageErro = this.message;
+          console.error(err);
+          this.messageError = this.errorMessage;
         }
       );
   }
