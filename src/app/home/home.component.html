@@ -1,30 +1,146 @@
-<body>
-    <section class="container">
-      <div class="login-container">
-        <div class="circle circle-one"></div>
-        <div class="form-container">
-          <img src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png" alt="illustration" class="illustration" />
-          <h1 class="opacity">LOGIN</h1>
-          <form [formGroup]="loginForm" (ngSubmit)="loginn()">
-            <input type="text" placeholder="USERNAME" formControlName="login" name="login"/>
-            <div *ngIf="loginForm.get('login')?.invalid && loginForm.get('login')?.touched" style="color: red;">
-              Username is required.
-            </div>
-            <input type="password" placeholder="PASSWORD" style="color: #023535;" formControlName="password" name="password"/>
-            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" style="color: red;">
-              Password is required and must be at least 6 characters.
-            </div>
-            <button class="opacity" style="color: #023535;">LOGIN</button>
+<div class="flex flex-col flex-auto items-center sm:justify-center min-w-0">
+  <div class="w-full sm:w-auto py-8 px-4 sm:p-12 sm:rounded-2xl sm:shadow sm:bg-card">
+      <div class="w-full max-w-80 sm:w-80 mx-auto sm:mx-0">
+          <!-- Logo -->
+          <div class="logo-talys">
+              <img src="assets/images/logo/logo-talys.png">
+          </div>
+
+          <!-- Title -->
+          <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Sign in</div>
+          <div class="flex items-baseline mt-0.5 font-medium">
+              <div>Don't have an account?</div>
+              <a
+                  class="ml-1 text-primary-500 hover:underline"
+                  [routerLink]="['/sign-up']">Sign up
+              </a>
+          </div>
+
+          <!-- Alert -->
+          <fuse-alert
+              class="mt-8"
+              *ngIf="showAlert"
+              [appearance]="'outline'"
+              [showIcon]="false"
+              [type]="alert.type"
+              [@shake]="alert.type === 'error'">
+              {{alert.message}}
+          </fuse-alert>
+
+          <!-- Sign in form -->
+          <form
+              class="mt-8"
+              [formGroup]="signInForm"
+              #signInNgForm="ngForm">
+
+              <!-- Email field -->
+              <mat-form-field class="w-full">
+                  <mat-label>Email address</mat-label>
+                  <input
+                      id="email"
+                      matInput
+                      [formControlName]="'email'">
+                  <mat-error *ngIf="signInForm.get('email').hasError('required')">
+                      Email address is required
+                  </mat-error>
+                  <mat-error *ngIf="signInForm.get('email').hasError('email')">
+                      Please enter a valid email address
+                  </mat-error>
+              </mat-form-field>
+
+              <!-- Password field -->
+              <mat-form-field class="w-full">
+                  <mat-label>Password</mat-label>
+                  <input
+                      id="password"
+                      matInput
+                      type="password"
+                      [formControlName]="'password'"
+                      #passwordField>
+                  <button
+                      mat-icon-button
+                      type="button"
+                      (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'"
+                      matSuffix>
+                      <mat-icon
+                          class="icon-size-5"
+                          *ngIf="passwordField.type === 'password'"
+                          [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                      <mat-icon
+                          class="icon-size-5"
+                          *ngIf="passwordField.type === 'text'"
+                          [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                  </button>
+                  <mat-error>
+                      Password is required
+                  </mat-error>
+              </mat-form-field>
+
+              <!-- Actions -->
+              <div class="inline-flex items-center justify-between w-full mt-1.5">
+                  <mat-checkbox
+                      class="-ml-2"
+                      [color]="'primary'"
+                      [formControlName]="'rememberMe'">
+                      Remember me
+                  </mat-checkbox>
+                  <a
+                      class="text-md font-medium text-primary-500 hover:underline"
+                      [routerLink]="['/forgot-password']">Forgot password?
+                  </a>
+              </div>
+
+              <!-- Submit button -->
+              <button
+                  class="fuse-mat-button-large w-full mt-6"
+                  mat-flat-button
+                  [color]="'primary'"
+                  [disabled]="signInForm.disabled"
+                  (click)="signIn()">
+                  <span *ngIf="!signInForm.disabled">
+                      Sign in
+                  </span>
+                  <mat-progress-spinner
+                      *ngIf="signInForm.disabled"
+                      [diameter]="24"
+                      [mode]="'indeterminate'"></mat-progress-spinner>
+              </button>
+
+              <!-- Separator -->
+              <div class="flex items-center mt-8">
+                  <div class="flex-auto mt-px border-t"></div>
+                  <div class="mx-2 text-secondary">Or continue with</div>
+                  <div class="flex-auto mt-px border-t"></div>
+              </div>
+
+              <!-- Single sign-on buttons -->
+              <div class="flex items-center mt-8 space-x-4">
+                  <button
+                      class="flex-auto"
+                      type="button"
+                      mat-stroked-button>
+                      <mat-icon
+                          class="icon-size-5"
+                          [svgIcon]="'feather:facebook'"></mat-icon>
+                  </button>
+                  <button
+                      class="flex-auto"
+                      type="button"
+                      mat-stroked-button>
+                      <mat-icon
+                          class="icon-size-5"
+                          [svgIcon]="'feather:twitter'"></mat-icon>
+                  </button>
+                  <button
+                      class="flex-auto"
+                      type="button"
+                      mat-stroked-button>
+                      <mat-icon
+                          class="icon-size-5"
+                          [svgIcon]="'feather:github'"></mat-icon>
+                  </button>
+              </div>
           </form>
-          <div *ngIf="messageError" style="color: red;">
-            {{ messageError }}
-          </div>
-          <div class="register-forget opacity">
-            <a href="">FORGOT PASSWORD</a>
-          </div>
-        </div>
-        <div class="circle circle-two"></div>
       </div>
-      <div class="theme-btn-container"></div>
-    </section>
-  </body>
+  </div>
+</div>

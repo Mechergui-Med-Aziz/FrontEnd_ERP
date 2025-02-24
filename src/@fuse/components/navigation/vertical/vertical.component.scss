@@ -1,0 +1,12 @@
+@use 'styles/appearances/default';
+@use 'styles/appearances/compact';
+@use 'styles/appearances/dense';
+@use 'styles/appearances/thin';
+
+
+.left-sidebar{
+    img.logo{
+        width: 200px;
+        margin: auto;
+    }
+}

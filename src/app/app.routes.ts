@@ -1,12 +1,15 @@
-import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
+import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { importProvidersFrom } from '@angular/core';
 
 export const routes: Routes = [
-    { path:'', component :HomeComponent }
+  { path: '', loadComponent: () => import('./home/home.component').then(m => m.HomeComponent) }
 ];
+
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
-  })
-  export class AppRoutingModule { }
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+  providers: [provideRouter(routes)] // Nécessaire pour standalone
+})
+export class AppRoutingModule { }
