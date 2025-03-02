@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { HomeComponent } from "./home/home.component";
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +10,13 @@ import { HomeComponent } from "./home/home.component";
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'FrontEnd_ERP';
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']); // Rediriger si pas connecté
+    }
+}
 }

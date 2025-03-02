@@ -1,0 +1,33 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+      <div class="flex justify-center">
+        <img src="assets/images/logo/logo-talys.png" alt="Logo" class="h-12">
+      </div>
+  
+      <h2 class="mt-6 text-2xl font-bold text-center">Sign in</h2>
+  
+      <form [formGroup]="loginForm" class="mt-6" (ngSubmit)="onSubmit()">
+        <div class="form-group mb-4">
+          <label class="block text-gray-700" for="username">Username</label> <!-- Changed 'email' to 'username' -->
+          <input type="text" id="username" formControlName="username" required class="form-control w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+        </div>
+  
+        <div class="form-group mb-4">
+          <label class="block text-gray-700" for="password">Password</label>
+          <input type="password" id="password" formControlName="password" required class="form-control w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+        </div>
+  
+        <div class="flex justify-between items-center mb-4">
+          <label class="flex items-center">
+            <input type="checkbox" class="mr-2"> Remember me
+          </label>
+          <a routerLink="/forgot-password" class="text-blue-500 hover:underline">Forgot password?</a>
+        </div>
+  
+        <button type="submit" [disabled]="loginForm.invalid" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+          Sign in
+        </button>
+      </form>
+    </div>
+  </div>
+  
