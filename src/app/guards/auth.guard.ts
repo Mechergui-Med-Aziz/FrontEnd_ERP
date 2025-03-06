@@ -7,13 +7,12 @@ export const AuthGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const auth = inject(AuthService);
 
-  if (auth.isAuthenticated()) {
-    return true;
+  const isAuthenticated = !!localStorage.getItem('token');
+  
+  if (isAuthenticated) {
+    return true;  
   } else {
-    if (state.url !== '/login') {
-      alert('You need to login first');
-      router.navigate(['/login']);
-    }
-    return false;
+    router.navigate(['/login']);  
+    return false; 
   }
 };

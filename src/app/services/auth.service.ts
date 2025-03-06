@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from './environment';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(private http : HttpClient ,private router: Router) { }
     private url = environment.apiUrl;
@@ -21,28 +23,39 @@ export class AuthService {
     
   
   login(credentials:{username: string, password: string}): Observable<boolean> {
-    console.log('username:', credentials.username, 'password:', credentials.password);
+    
     return this.http.post<any>(`${this.url}/auth/login`, credentials).pipe(
       map(response => {
+        console.log('Response:', response);
         if (response.token) {
-          console.log('Token:', response.token);
           localStorage.setItem('token', response.token);
+          localStorage.setItem('username', response.username);
+          localStorage.setItem('id', response.id);
+          localStorage.setItem("msg","false");
           // localStorage.setItem('role', response.role); // Example, store role if needed
+          this.isAuthenticatedSubject.next(true);
           return true;
         }
         return false;
       }),
       tap(result => {
-        // You can add side-effects here if necessary
+        
       }),
       catchError(error => {
         console.error('Login error:', error);
-        return of(false); // Use 'of' to return an observable of false
+        return of(false); 
       })
     );
   }
   
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('token'); // Vérifie si un token existe dans localStorage
+    return !!localStorage.getItem('token'); 
+  }
+
+  logout() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('id');
+    localStorage.removeItem('token');
+    this.isAuthenticatedSubject.next(false); 
   }
 }

@@ -8,7 +8,7 @@
   
       <form [formGroup]="loginForm" class="mt-6" (ngSubmit)="onSubmit()">
         <div class="form-group mb-4">
-          <label class="block text-gray-700" for="username">Username</label> <!-- Changed 'email' to 'username' -->
+          <label class="block text-gray-700" for="username">Username</label> 
           <input type="text" id="username" formControlName="username" required class="form-control w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
         </div>
   
@@ -19,7 +19,6 @@
   
         <div class="flex justify-between items-center mb-4">
           <label class="flex items-center">
-            <input type="checkbox" class="mr-2"> Remember me
           </label>
           <a routerLink="/forgot-password" class="text-blue-500 hover:underline">Forgot password?</a>
         </div>

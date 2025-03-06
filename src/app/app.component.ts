@@ -2,21 +2,29 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { HomeComponent } from "./home/home.component";
 import { AuthService } from './services/auth.service';
+import { NavbarComponent } from "./navbar/navbar.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, NavbarComponent,CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
   title = 'FrontEnd_ERP';
+  navbarOpened = true;
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/login']); // Rediriger si pas connecté
-    }
-}
+    
+    this.authService.isAuthenticated$.subscribe(isAuthenticated => {
+      this.navbarOpened = isAuthenticated; 
+
+      if (!isAuthenticated) {
+        this.router.navigate(['/login']); 
+      }
+    });
+  }
 }

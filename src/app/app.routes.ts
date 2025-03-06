@@ -4,8 +4,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [ 
-    { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirection par défaut
-    { path: 'home', component: HomeComponent}, // Protégé
-    { path: 'login', component: LoginComponent }, // Page publique
-    { path: '**', redirectTo: 'login' } // Rediriger si la route n'existe pas];
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
+    { path: 'home', component: HomeComponent, canActivate: [AuthGuard] }, 
+    { path: 'login', component: LoginComponent }, 
+    { path: '**', redirectTo: 'login' } 
     ]

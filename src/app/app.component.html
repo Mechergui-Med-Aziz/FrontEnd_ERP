@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
+<div class="flex h-screen">
   
-  <router-outlet></router-outlet>
-</body>
-</html>
+  <div class="w-64 bg-gray-800 text-white" *ngIf="navbarOpened">
+    <app-navbar></app-navbar>
+  </div>
+
+
+  <div class="flex-1 p-6">
+    <router-outlet></router-outlet>
+  </div>
+</div>
