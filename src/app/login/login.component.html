@@ -20,7 +20,7 @@
         <div class="flex justify-between items-center mb-4">
           <label class="flex items-center">
           </label>
-          <a routerLink="/forgot-password" class="text-blue-500 hover:underline">Forgot password?</a>
+          <a (click)="goToResetPassword()" class="text-blue-500 hover:underline">Forgot password?</a>
         </div>
   
         <button type="submit" [disabled]="loginForm.invalid" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">

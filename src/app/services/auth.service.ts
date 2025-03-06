@@ -20,6 +20,10 @@ export class AuthService {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
     };
+
+    resetPassword(data: { username: string, email: string }): Observable<any> {
+      return this.http.post(`${this.url}/auth/reset-password`, data);
+    }
     
   
   login(credentials:{username: string, password: string}): Observable<boolean> {
@@ -58,4 +62,7 @@ export class AuthService {
     localStorage.removeItem('token');
     this.isAuthenticatedSubject.next(false); 
   }
+
+ 
+
 }

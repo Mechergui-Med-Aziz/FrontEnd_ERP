@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -32,12 +32,16 @@ export class LoginComponent implements OnInit{
       }).subscribe(result => {
         if (result) {
           //alert("Connexion réussie: " +result);
-           this.router.navigate(['/home']);
+           this.router.navigate(['/home'], { replaceUrl: true });
         } else {
           alert('Incorrect username or password');
           this.loginForm.reset();
         }
       });
+    }
+    goToResetPassword() {
+      console.log('Reset password');
+      this.router.navigate(['/reset-password']);
     }
     
 

@@ -28,6 +28,7 @@ export class NavbarComponent implements OnInit{
   }
 
   isModalOpen: boolean = false;
+  isModalOpen2: boolean = false;
   userForm: FormGroup = this.fb.group({
     id: [{ value: '', disabled: true }, Validators.required],
     username: [{ value: '', disabled: true }, Validators.required], 
@@ -66,14 +67,15 @@ export class NavbarComponent implements OnInit{
     this.router.navigate(['/login'], { replaceUrl: true });
   }
 
-
+message!:string ;
+message1!:string ;
   saveChanges() {
     const password = this.userForm.get('password')?.value;
     const confirmPassword = this.userForm.get('confirmPassword')?.value;
    // console.log(password, confirmPassword);
   
     if ((password!=""&& confirmPassword=="") || (confirmPassword!="" && password=="")|| password !== confirmPassword) {
-      alert("Les mots de passe ne correspondent pas !");
+      this.message1="Les mots de passe ne correspondent pas !";
       return;
     }
   
@@ -88,12 +90,15 @@ export class NavbarComponent implements OnInit{
     this.ps.updateUser(this.user.id, updatedData).subscribe(
       (response: any) => {
         if (response) {
-          alert("Modifications sauvegardées !");
-          this.userForm.reset();
-          this.closeModal();
+          this.message1=""
+          this.message="Modifications sauvegardées !";
+          
+          
         } else {
-          alert("Erreur lors de la sauvegarde des modifications !");
+          this.message1=""
+          this.message="Erreur lors de la sauvegarde des modifications !";
         }
+        this.isModalOpen2= true;
       },
       (error: any) => {
         console.error("Erreur API:", error);
@@ -108,6 +113,11 @@ export class NavbarComponent implements OnInit{
   }
   closeModal() {
     this.isModalOpen = false;
+  }
+  closeModal2() {
+    this.isModalOpen2 = false;
+    this.userForm.reset();
+    this.closeModal();
   }
   
   }
