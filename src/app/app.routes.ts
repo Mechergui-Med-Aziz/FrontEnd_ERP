@@ -3,10 +3,12 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { TypeActionsComponent } from './type-actions/type-actions.component';
 
 export const routes: Routes = [ 
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] }, 
     { path: 'login', component: LoginComponent }, 
-    { path:'reset-password', component:ResetPasswordComponent}
+    { path:'reset-password', component:ResetPasswordComponent},
+    {path:'type-actions',component:TypeActionsComponent},
     ]

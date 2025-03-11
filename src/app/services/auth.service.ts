@@ -30,13 +30,13 @@ export class AuthService {
     
     return this.http.post<any>(`${this.url}/auth/login`, credentials).pipe(
       map(response => {
-        console.log('Response:', response);
+     //   console.log('Response:', response);
         if (response.token) {
           localStorage.setItem('token', response.token);
           localStorage.setItem('username', response.username);
           localStorage.setItem('id', response.id);
           localStorage.setItem("msg","false");
-          // localStorage.setItem('role', response.role); // Example, store role if needed
+          localStorage.setItem('role', response.role); 
           this.isAuthenticatedSubject.next(true);
           return true;
         }
@@ -60,6 +60,7 @@ export class AuthService {
     localStorage.removeItem('email');
     localStorage.removeItem('id');
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     this.isAuthenticatedSubject.next(false); 
   }
 

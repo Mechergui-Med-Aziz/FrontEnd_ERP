@@ -1,5 +1,5 @@
 import { Component, NgModule, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { FormBuilder, FormGroup, FormsModule, NgModel, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -8,7 +8,7 @@ import { ProfileService } from '../services/profile.service';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [FormsModule,CommonModule,ReactiveFormsModule],
+  imports: [FormsModule,CommonModule,ReactiveFormsModule,RouterModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -42,25 +42,34 @@ export class NavbarComponent implements OnInit{
 
   ngOnInit(): void {
     const id = localStorage.getItem('id');
-    if(id){
-    this.ps.findUserById(parseInt(id)).subscribe((response:any) => {
-     // console.log('Response:', response);
-      this.user = response;});
-    
-    
-  }
-  }
+    if (id) {
+        this.ps.findUserById(parseInt(id)).subscribe(
+            (response: any) => {
+                //console.log('User Data:', response);
+                this.user = response;
+               // console.log('User:', this.user);
+            },
+            (error:any) => {
+                console.error("Erreur lors de la récupération de l'utilisateur :", error);
+            }
+        );
+    }
+}
 
-  fillForm() {
-    this.userForm.patchValue({
+
+fillForm() {
+  if (!this.user) return; 
+
+  this.userForm.patchValue({
       id: this.user.id,
       username: this.user.username,
       email: this.user.email,
       phone: this.user.phone,
       firstname: this.user.firstname,
       lastname: this.user.lastname,
-    });
-  }
+  });
+}
+
 
   logout() {
     this.authService.logout();

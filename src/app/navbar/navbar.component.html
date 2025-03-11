@@ -28,7 +28,16 @@
           </ul>
         </div>
       </div>
+
+      <span *ngIf="user?.role === 'Manager'">
+      <a class="relative group flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full" [routerLink]="['/type-actions']" routerLinkActive="router-link-active">
+        <img src="assets/images/logo/besoin.svg" alt="Logo" class="w-8 h-10"><span> <b>Type Actions</b></span>
+      </a>
+    </span>
     </nav>
+ 
+
+    
   
    
     <div class="relative group mt-auto">
@@ -81,14 +90,6 @@
           <div class="mb-4">
             <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone</label>
             <input type="number" id="phone" formControlName="phone" class="mt-1 p-2 w-full border border-gray-300 rounded bg-white text-black" />
-          </div>
-          <div class="mb-4" hidden>
-            <label for="role" class="block text-sm font-medium text-black">Rôle</label>
-            <select id="role" formControlName="role" class="mt-1 p-2 w-full border border-gray-300 rounded bg-white text-black">
-              <option value="Manager" class="text-black">Manager</option>
-              <option value="Commercial" class="text-black">Commercial</option>
-              <option value="Marketing" class="text-black">Marketing</option>
-            </select>
           </div>
 
           <div class="mb-4">

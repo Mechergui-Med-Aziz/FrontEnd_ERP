@@ -23,7 +23,7 @@ export class ProfileService {
          findUserById(id: number): any {
           return this.http.get(`${this.url}/user/${id}`, this.options).pipe(
             map(response => {
-              console.log('Response:', response);
+              //console.log('Response:', response);
               return response;
             }),
             catchError(error => {

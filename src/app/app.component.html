@@ -1,10 +1,16 @@
-<div class="flex h-screen">
-  
+<div *ngIf="isLoading">
+  <div class="h-screen w-screen flex flex-col items-center justify-center bg-[#0c0f19]">
+    <img src="assets/images/logo/logo-talys.png" alt="Talys Logo" class="w-32 mb-4" />
+    <div class="flex justify-center items-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+    </div>
+  </div>
+</div>
+
+<div class="flex h-screen" *ngIf="!isLoading">
   <div class="w-64 bg-gray-800 text-white" *ngIf="navbarOpened">
     <app-navbar></app-navbar>
   </div>
-
-
   <div class="flex-1 p-6">
     <router-outlet></router-outlet>
   </div>

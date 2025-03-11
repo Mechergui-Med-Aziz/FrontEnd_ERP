@@ -17,6 +17,14 @@ export class AppComponent implements OnInit {
   navbarOpened = true;
   constructor(private authService: AuthService, private router: Router) {}
 
+  isLoading = false;
+
+  showApp() {
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 2000); // Délai de 2 secondes avant d'afficher l'app
+  }
+
   ngOnInit(): void {
     
     this.authService.isAuthenticated$.subscribe(isAuthenticated => {
