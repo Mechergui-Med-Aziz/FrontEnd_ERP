@@ -1,0 +1,68 @@
+
+    
+    .mat-mdc-text-field-wrapper .mdc-text-field .mdc-text-field--filled mdc-text-field--no-label {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin-top: 4%;
+        /*you can tweak around with this, */
+        margin-bottom: -15%;
+        /*and this*/
+      }
+      
+      /*you also have to adjust the label, after the above*/
+      .mat-mdc-form-field:not(.mat-form-field-disabled) .mat-mdc-floating-label.mdc-floating-label {
+        top: 50%;
+      }
+      
+      .mdc-floating-label--float-above {
+        top: 80% !important;
+      }
+      
+      
+    
+      .mat-mdc-select {
+        margin-bottom: 15px;
+      }
+      
+      .status-dot {
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+      }
+      
+      .synthese-title-box {
+        --tw-text-opacity: 1 !important;
+        color: #5d7b96 !important;
+        font-size: 15px;
+      }
+      .synthese-link-edit {
+        --tw-text-opacity: 1 !important;
+        color: #4597b6 !important;
+        font-size: 13px;
+      }
+    
+    
+    .mat-form-field {
+      display: inline-block;
+    }
+    
+    .mat-select {
+      width: auto !important;
+      min-width: 50px; /* Optional: Set a minimum width */
+    }
+    
+    .mat-select-trigger {
+      display: inline-block;
+      width: auto !important;
+      min-width: inherit;
+      max-width: 100%; /* Ensures it doesn't overflow */
+    }
+    
+    .label-actions-synthese{
+      color: #778ca2;
+    }
+    .number-actions-synthese{
+      color: #33495d;
+    }

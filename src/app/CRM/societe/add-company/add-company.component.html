@@ -1,0 +1,274 @@
+<form class="w-full h-full" [formGroup]="companyForm" >
+    <div class="px-4 w-full sm:flex-col md:flex-row flex">
+        <button type="submit" (click)="saveChanges()"
+            class="fixed top-70 right-2 w-12 h-12 text-white p-1 rounded-full flex items-center justify-center shadow-lg ring-0 ring-gray-200"
+            [disabled]="companyForm.invalid" [ngClass]="{
+                'bg-gray-500 hover:bg-gray-600 ':companyForm.invalid,
+                'bg-green-500  hover:bg-green-600':!companyForm.invalid,
+
+            }">
+            <mat-icon class="icon-size-7 text-white hover:text-white self-center">
+                save
+            </mat-icon>
+        </button>
+        <div class="sm:w-full md:w-1/2 flex flex-col">
+            <app-card-synthese [customTitle]="'Informations'" [customActionLabel]="" [hasIconActions]="false">
+                <div class="label-actions-synthese text-sm italic pr-2" >
+                    MAJ le 13/08/24 à 12:24
+                </div>
+
+                <div body>
+                    <div class="grid grid-cols-2 gap-1 px-2 mt-2">
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">
+                                Societe *
+                            </div>
+
+                            <input type="text" id="input" class="form-control" placeholder=""
+                                formControlName="nom" />
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">
+                                Etat
+                            </div>
+                            <mat-select class="form-control" formControlName="statut">
+                                <mat-option *ngFor="let option of societesStatusList" [value]="option.value">
+                                    <span class="status-label">
+                                       
+                                        <span class="status-dot" [ngStyle]="{
+                                                'background-color': option.color
+                                            }"></span>
+                                        {{ option.name }}
+                                    </span>
+                                </mat-option>
+                            </mat-select>
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">
+                                Effectif
+                            </div>
+
+                            <input type="number" id="input" class="form-control" placeholder="" value="0"
+                                formControlName="effectif" />
+                        </div>
+                        <div class="">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-gray-500">Secteur</span>
+
+                                <mat-select class="form-control" formControlName="secteur">
+                                    <mat-option *ngFor="
+                                            let sector of societesSecteurList
+                                        " [value]="sector.value">
+                                        <span class="status-label">
+                                            {{ sector.name }}
+                                        </span>
+                                    </mat-option>
+                                </mat-select>
+                            </div>
+                        </div>
+                       
+
+                        <div class="">
+                            <label for="input" class="font-bold text-sm text-gray-500">Filiales</label>
+                            <input type="text" id="input" class="form-control" placeholder=""
+                                formControlName="filiales" />
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">
+                                Provenance
+                            </div>
+                            <mat-select class="form-control" formControlName="provenance">
+                                <mat-option *ngFor="
+                                        let option of societesProvenanceList
+                                    " [value]="option.value">
+                                    <span class="status-label">
+                                        {{ option.name }}
+                                    </span>
+                                </mat-option>
+                            </mat-select>
+                        </div>
+
+                        <div class="">
+                            <label for="input" class="font-bold text-sm text-gray-500">Précisez:</label>
+                            <input type="text" id="input" class="form-control" placeholder=""
+                                formControlName="precisiez" />
+                        </div>
+
+                        <div class="">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-gray-500">Responsable manager</span>
+                                <mat-select class="form-control" formControlName="responsableManager">
+                                    <mat-option *ngFor="
+                                            let option of managers
+                                        " [value]="option" >
+                                        <span class="status-label">
+                                            {{
+                                                option 
+                                                }}
+                                        </span>
+                                    </mat-option>
+                                </mat-select>
+                            </div>
+                        </div>
+                        <div class="">
+                          
+                    
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-sm text-gray-500">Pole</span>
+    
+                                    <mat-select class="form-control" formControlName="pole">
+                                        <mat-option *ngFor="let option of societesPoleList" [value]="option.value">
+                                            <span class="status-label">
+                                                {{ option.name }}
+                                            </span>
+                                        </mat-option>
+                                    </mat-select>
+                                </div>
+                          
+                        </div>
+                        <div class="">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-gray-500">Agence</span>
+
+                                <mat-select class="form-control" formControlName="agence">
+                                    <mat-option *ngFor=" let option of societesAgenceList" [value]="option.idAgency">
+                                        <span class="status-label">
+                                            {{ option.name }}
+                                        </span>
+                                    </mat-option>
+                                </mat-select>
+                              
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </app-card-synthese>
+
+            <app-card-synthese [customTitle]="'Coordonnées société'" [customActionLabel]="" [hasIconActions]="false">
+                <div body>
+                    <div class="flex flex-col px-2">
+                        <div class="flex flex-col">
+                            <label for="input" class="font-bold text-sm text-gray-500">Téléphone</label>
+                            <input type="text" id="input" class="form-control" placeholder="" formControlName="telephone" />
+
+                            <label for="input" class="font-bold text-sm text-gray-500">Adresse</label>
+                            <input type="text" id="input" class="form-control" placeholder="" formControlName="addresse"
+                                value="" />
+
+                            <div class="grid grid-cols-3 gap-2">
+                                <div class="flex flex-col">
+                                    <label for="input" class="font-bold text-sm text-gray-500">Code postal</label>
+                                    <input type="text" id="input" class="form-control" placeholder=""
+                                        formControlName="postalCode" />
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <label for="input" class="font-bold text-sm text-gray-500">Ville</label>
+                                    <input type="text" id="input" class="form-control" placeholder=""
+                                        formControlName="ville" />
+
+
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-sm text-gray-500">Pays</span>
+
+                                    
+                                    <mat-select class="form-control" formControlName="pays" 
+                                            >
+                                        <mat-option *ngFor="
+                                                    let option of societesPaysList
+                                                " [value]="option.value" class="text-sm font-medium">
+                                            <span class="status-label">
+                                                
+                                                {{ option.name }}
+                                            </span>
+                                        </mat-option>
+                                    </mat-select>
+
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <label for="input" class="font-bold text-sm text-gray-500">Site web</label>
+                                <input type="text" id="input" class="form-control" placeholder=""
+                                    formControlName="siteWeb" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </app-card-synthese>
+        </div>
+
+        <div class="sm:w-full md:w-1/2 flex flex-col">
+            <app-card-synthese [customTitle]="'Informations complémentaires'" [customActionLabel]=""
+            [hasIconActions]="false">
+                <div body>
+                    <div class="relative">
+                        <div class="input-container w-full h-30 p-2">
+                            <textarea type="text" class="input-field-commentaire" formControlName="informations"
+                                placeholder="Rédigez vos commentaires"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </app-card-synthese >
+
+            <app-card-synthese [customTitle]="'Données légales'" [customActionLabel]="" [hasIconActions]="false">
+                <div body>
+                    <div class="grid grid-cols-2 gap-1 px-2">
+
+                        <div class="flex flex-col">
+                            <label for="input" class="font-bold text-sm text-gray-500">Statut juridique</label>
+                            <input type="text" id="input" class="form-control" placeholder=""
+                                formControlName="statutJuridique" />
+
+                        </div>
+
+
+                        <div class="flex flex-col">
+                            <label for="input" class="font-bold text-sm text-gray-500">TVA IC</label>
+                            <input type="text" id="input" class="form-control" placeholder="" formControlName="tva" />
+
+
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label for="input" class="font-bold text-sm text-gray-500">SIRET</label>
+                            <input type="text" id="input" class="form-control" placeholder="" formControlName="siret" />
+
+
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label for="input" class="font-bold text-sm text-gray-500">RCS</label>
+                            <input type="text" id="input" class="form-control" placeholder="" formControlName="rcs" />
+
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label for="input" class="font-bold text-sm text-gray-500">Code APE</label>
+                            <input type="text" id="input" class="form-control" placeholder=""
+                                formControlName="codeApe" />
+
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label for="input" class="font-bold text-sm text-gray-500">Numéro fournisseur</label>
+                            <input type="text" id="input" class="form-control" placeholder=""
+                                formControlName="numeroFournisseur" />
+
+                        </div>
+
+                    </div>
+                </div>
+            </app-card-synthese>
+
+            
+
+        </div>
+    </div>
+</form>
+<p-toast />

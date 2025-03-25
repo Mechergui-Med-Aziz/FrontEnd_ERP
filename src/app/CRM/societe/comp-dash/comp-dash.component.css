@@ -1,0 +1,53 @@
+.table-row-clickable {
+  cursor: pointer;
+}
+
+.text-center{
+  text-align:center;
+}
+.mat-mdc-row:hover  {
+  border-top: 3px solid #f0f0f0;
+  border-bottom: 3px solid #f0f0f0;
+
+}
+
+
+.floating-div {
+  position: fixed;
+  bottom: 0;
+  width: 500px;
+  background-color: #0f172a;
+  text-align: center;
+  color:white;
+  padding: 10px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  margin-bottom:20px;
+  border-radius:20px;
+  z-index:10;
+}
+
+.disabled-icon {
+  color: rgb(186, 185, 185);
+  cursor: not-allowed;
+}
+.no-wrap {
+  white-space: nowrap;
+}
+.status-dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  background-color: red;
+}
+
+::ng-deep p-paginator .p-paginator-page.p-highlight {
+  background-color: #f0f8ff; /* Light highlight color */
+  border-radius: 50px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+ /* Outer margin */
+  width: 30px;
+   height: 30px;/* Width of the box */
+  text-align: center; /* Center text alignment */
+}

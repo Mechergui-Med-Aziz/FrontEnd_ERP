@@ -4,11 +4,11 @@ import { HomeComponent } from "./home/home.component";
 import { AuthService } from './services/auth.service';
 import { NavbarComponent } from "./navbar/navbar.component";
 import { CommonModule } from '@angular/common';
-
+import { NgxSpinnerModule } from 'ngx-spinner';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent,CommonModule],
+  imports: [RouterOutlet, NavbarComponent,CommonModule,NgxSpinnerModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

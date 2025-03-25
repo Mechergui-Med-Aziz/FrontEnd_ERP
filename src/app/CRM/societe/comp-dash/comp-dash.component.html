@@ -1,0 +1,62 @@
+
+  <h1 routerLink="/addcomp" >Ajouter</h1>
+  <head>
+    <link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<!-- Google Fonts -->
+<link
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+  rel="stylesheet"
+/>
+<!-- MDB -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
+  rel="stylesheet"
+/>
+  </head>
+  <table class="table align-middle mb-0 bg-white">
+    <thead class="bg-light">
+      <tr>
+        <th>Image</th>
+        <th>secteur</th>
+        <th>Status</th>
+        <th>Manager</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let company of liste">
+
+        <td>
+          <div class="d-flex align-items-center">
+            <img
+                src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                alt=""
+                style="width: 45px; height: 45px"
+                class="rounded-circle"
+                />
+            <div class="ms-3">
+              <p class="fw-bold mb-1">{{company.nom }}</p>
+              <p class="text-muted mb-0">{{company.telephone }}</p>
+            </div>
+          </div>
+        </td>
+        <td>
+          <p class="fw-normal mb-1">{{company.secteur }}</p>
+          <p class="text-muted mb-0">{{company.provenance}}</p>
+        </td>
+        <td>
+          <span class="badge badge-success rounded-pill d-inline">{{company.statut}}</span>
+        </td>
+        <td>{{company.responsableManager}}</td>
+        <td>
+          <button type="button" class="btn btn-link btn-sm btn-rounded">
+            Edit
+          </button>
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
