@@ -7,10 +7,10 @@ import { KanbanCompService } from '../../../services/kanban-comp.service';
 
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MessageService } from 'primeng/api';
@@ -24,23 +24,23 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { ToastModule } from 'primeng/toast';
 import { CompServiceService } from '../../../services/comp-service.service';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
-  selector: 'app-comp-dash',
+  selector: 'app-company-list',
   standalone: true,
-  imports: [CommonModule, DragDropModule, HttpClientModule,RouterModule,FormsModule,ReactiveFormsModule,MatTableModule,
-    CommonModule, MatIconModule,
-    MatButton, MatCheckbox,
-    MatTooltip,
-    MatFormFieldModule,
-    MatInputModule,
-    ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule],
-  templateUrl: './comp-dash.component.html',
-  styleUrl: './comp-dash.component.css',
+  imports:  [CommonModule, DragDropModule, HttpClientModule,RouterModule,FormsModule,ReactiveFormsModule,MatTableModule,
+      CommonModule, MatIconModule,
+      MatButton, MatCheckbox,
+      MatTooltip,
+      MatFormFieldModule,MatIcon,
+      MatInputModule,
+      ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule,MatButtonToggleModule,MatLabel,MatButtonModule ],
+  templateUrl: './company-list.component.html',
+  styleUrl: './company-list.component.css',
   providers: [KanbanCompService, CompServiceService, MessageService]  
 })
-
-export class CompDashComponent implements OnInit {
+export class CompanyListComponent  implements OnInit {
   checked: any[] = [];
     columnName: string[] = ['check', 'Société', 'Secteur', 'Informations', 'État', 'Coordonnées', 'Lieu', 'Manager'];
     @Input()
@@ -64,6 +64,7 @@ export class CompDashComponent implements OnInit {
     debouncedSearchValue: string = '';
 
     styleTable = 'p-datatable-sm'
+mode: any;
 
   constructor(
     private companyService: CompServiceService,
@@ -82,7 +83,9 @@ export class CompDashComponent implements OnInit {
 
     
 }
+openFilterDialog(){
 
+}
 listPaginate() {
   this.companyService.getComps().subscribe(
       (response: any) => {
@@ -143,4 +146,3 @@ imageUrl(company:any) {/*
     return this.imageServ.getFile(company.pictureName);*/
 }
 }
-  
