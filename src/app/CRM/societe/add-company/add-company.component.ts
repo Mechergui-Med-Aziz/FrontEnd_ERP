@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,7 +18,7 @@ import { MessageService } from 'primeng/api';
 import { CardSyntheseComponent } from '../card-synthese/card-synthese.component';
 import { CompServiceService } from '../../../services/comp-service.service';
 import { AuthService } from '../../../services/auth.service';
-
+import countries from 'world-countries';
 
 
 
@@ -32,7 +32,7 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './add-company.component.css',
   providers: [MessageService]
 })
-export class AddCompanyComponent {
+export class AddCompanyComponent implements OnInit {
   
   selectControl = new FormControl(1);
   societesStatusList: any[] = [
@@ -54,143 +54,9 @@ export class AddCompanyComponent {
     { id: 1, value: 'CONSEIL', name: 'Conseil', color: '#FEA500' },
     { id: 2, value: 'DEVELOPMENT', name: 'Développement', color: '#43A047' },
   ];
-  societesPaysList:any [] = [
-    { value: 'AFRIQUE-DU-SUD', name: 'Afrique du Sud' },
-    { value: 'ALGERIE', name: 'Algérie' },
-    { value: 'ALLEMAGNE', name: 'Allemagne' },
-    { value: 'ANGOLA', name: 'Angola' },
-    { value: 'ARABIE-SAOUDITE', name: 'Arabie Saoudite' },
-    { value: 'ARGENTINE', name: 'Argentine' },
-    { value: 'ARMENIE', name: 'Arménie' },
-    { value: 'AUSTRALIE', name: 'Australie' },
-    { value: 'AUTRICHE', name: 'Autriche' },
-    { value: 'AZERBAIDJAN', name: 'Azerbaïdjan' },
-    { value: 'BAHAMAS', name: 'Bahamas' },
-    { value: 'BANGLADESH', name: 'Bangladesh' },
-    { value: 'BARBADE', name: 'Barbade' },
-    { value: 'BELARUS', name: 'Bélarus' },
-    { value: 'BELGIQUE', name: 'Belgique' },
-    { value: 'BELIZE', name: 'Belize' },
-    { value: 'BENIN', name: 'Bénin' },
-    { value: 'BOLIVIE', name: 'Bolivie' },
-    { value: 'BOTSWANA', name: 'Botswana' },
-    { value: 'BRESIL', name: 'Brésil' },
-    { value: 'BULGARIE', name: 'Bulgarie' },
-    { value: 'BURKINA-FASO', name: 'Burkina Faso' },
-    { value: 'BURUNDI', name: 'Burundi' },
-    { value: 'CAMEROUN', name: 'Cameroun' },
-    { value: 'CANADA', name: 'Canada' },
-    { value: 'CAP-VERT', name: 'Cap-Vert' },
-    { value: 'CHILI', name: 'Chili' },
-    { value: 'CHINE', name: 'Chine' },
-    { value: 'COLOMBIE', name: 'Colombie' },
-    { value: 'CONGO', name: 'Congo' },
-    { value: 'COREE-DU-SUD', name: 'Corée du Sud' },
-    { value: 'COSTA-RICA', name: 'Costa Rica' },
-    { value: 'COTE-D-IVOIRE', name: 'Côte d\'Ivoire' },
-    { value: 'CROATIE', name: 'Croatie' },
-    { value: 'CUBA', name: 'Cuba' },
-    { value: 'DANEMARK', name: 'Danemark' },
-    { value: 'DJIBOUTI', name: 'Djibouti' },
-    { value: 'DOMINIQUE', name: 'Dominique' },
-    { value: 'EGYPTE', name: 'Égypte' },
-    { value: 'EMIRATS-ARABES-UNIS', name: 'Émirats Arabes Unis' },
-    { value: 'EQUATEUR', name: 'Équateur' },
-    { value: 'ERITREE', name: 'Érythrée' },
-    { value: 'ESPAGNE', name: 'Espagne' },
-    { value: 'ESTONIE', name: 'Estonie' },
-    { value: 'ETATS-UNIS', name: 'États-Unis' },
-    { value: 'ETHIOPIE', name: 'Éthiopie' },
-    { value: 'FINLANDE', name: 'Finlande' },
-    { value: 'FRANCE', name: 'France' },
-    { value: 'GABON', name: 'Gabon' },
-    { value: 'GHANA', name: 'Ghana' },
-    { value: 'GRECE', name: 'Grèce' },
-    { value: 'GUATEMALA', name: 'Guatemala' },
-    { value: 'GUINEE', name: 'Guinée' },
-    { value: 'GUINEE-BISSAU', name: 'Guinée-Bissau' },
-    { value: 'GUYANA', name: 'Guyana' },
-    { value: 'GUYANE', name: 'Guyane' },
-    { value: 'HAITI', name: 'Haïti' },
-    { value: 'HONDURAS', name: 'Honduras' },
-    { value: 'HONGRIE', name: 'Hongrie' },
-    { value: 'INDE', name: 'Inde' },
-    { value: 'INDONESIE', name: 'Indonésie' },
-    { value: 'IRAN', name: 'Iran' },
-    { value: 'IRLANDE', name: 'Irlande' },
-    { value: 'ISLANDE', name: 'Islande' },
-    { value: 'ISRAEL', name: 'Israël' },
-    { value: 'ITALIE', name: 'Italie' },
-    { value: 'JAMAIQUE', name: 'Jamaïque' },
-    { value: 'JAPON', name: 'Japon' },
-    { value: 'KAZAKHSTAN', name: 'Kazakhstan' },
-    { value: 'KENYA', name: 'Kenya' },
-    { value: 'LETTONIE', name: 'Lettonie' },
-    { value: 'LIBAN', name: 'Liban' },
-    { value: 'LIBERIA', name: 'Libéria' },
-    { value: 'LIBYE', name: 'Libye' },
-    { value: 'LITUANIE', name: 'Lituanie' },
-    { value: 'LUXEMBOURG', name: 'Luxembourg' },
-    { value: 'MADAGASCAR', name: 'Madagascar' },
-    { value: 'MALAISIE', name: 'Malaisie' },
-    { value: 'MALAWI', name: 'Malawi' },
-    { value: 'MALI', name: 'Mali' },
-    { value: 'MAROC', name: 'Maroc' },
-    { value: 'MAURICE', name: 'Maurice' },
-    { value: 'MAURITANIE', name: 'Mauritanie' },
-    { value: 'MEXIQUE', name: 'Mexique' },
-    { value: 'MOZAMBIQUE', name: 'Mozambique' },
-    { value: 'NAMIBIE', name: 'Namibie' },
-    { value: 'NIGER', name: 'Niger' },
-    { value: 'NIGERIA', name: 'Nigéria' },
-    { value: 'NORVEGE', name: 'Norvège' },
-    { value: 'NOUVELLE-ZELANDE', name: 'Nouvelle-Zélande' },
-    { value: 'OUGANDA', name: 'Ouganda' },
-    { value: 'PAKISTAN', name: 'Pakistan' },
-    { value: 'PANAMA', name: 'Panama' },
-    { value: 'PARAGUAY', name: 'Paraguay' },
-    { value: 'PEROU', name: 'Pérou' },
-    { value: 'PHILIPPINES', name: 'Philippines' },
-    { value: 'POLOGNE', name: 'Pologne' },
-    { value: 'PORTUGAL', name: 'Portugal' },
-    { value: 'REPUBLIQUE-TCHEQUE', name: 'République Tchèque' },
-    { value: 'ROUMANIE', name: 'Roumanie' },
-    { value: 'ROYAUME-UNI', name: 'Royaume-Uni' },
-    { value: 'RUSSIE', name: 'Russie' },
-    { value: 'RWANDA', name: 'Rwanda' },
-    { value: 'SAINTE-LUCIE', name: 'Sainte-Lucie' },
-    { value: 'SAINT-KITTS-ET-NEVIS', name: 'Saint-Kitts-et-Nevis' },
-    { value: 'SAINT-VINCENT-ET-LES-GRENADINES', name: 'Saint-Vincent-et-les-Grenadines' },
-    { value: 'SAO-TOME-ET-PRINCIPE', name: 'Sao Tomé-et-Principe' },
-    { value: 'SENEGAL', name: 'Sénégal' },
-    { value: 'SERBIE', name: 'Serbie' },
-    { value: 'SEYCHELLES', name: 'Seychelles' },
-    { value: 'SIERRA-LEONE', name: 'Sierra Leone' },
-    { value: 'SINGAPOUR', name: 'Singapour' },
-    { value: 'SLOVAQUIE', name: 'Slovaquie' },
-    { value: 'SOMALIE', name: 'Somalie' },
-    { value: 'SOUDAN', name: 'Soudan' },
-    { value: 'SOUDAN-DU-SUD', name: 'Soudan du Sud' },
-    { value: 'SRI-LANKA', name: 'Sri Lanka' },
-    { value: 'SUEDE', name: 'Suède' },
-    { value: 'SUISSE', name: 'Suisse' },
-    { value: 'SURINAME', name: 'Suriname' },
-    { value: 'TANZANIE', name: 'Tanzanie' },
-    { value: 'TCHAD', name: 'Tchad' },
-    { value: 'THAILANDE', name: 'Thaïlande' },
-    { value: 'TOGO', name: 'Togo' },
-    { value: 'TRINITE-ET-TOBAGO', name: 'Trinité-et-Tobago' },
-    { value: 'TUNISIE', name: 'Tunisie' },
-    { value: 'TURQUIE', name: 'Turquie' },
-    { value: 'UKRAINE', name: 'Ukraine' },
-    { value: 'URUGUAY', name: 'Uruguay' },
-    { value: 'VATICAN', name: 'Vatican' },
-    { value: 'VENEZUELA', name: 'Venezuela' },
-    { value: 'VIETNAM', name: 'Vietnam' },
-    { value: 'ZAMBIE', name: 'Zambie' },
-    { value: 'ZIMBABWE', name: 'Zimbabwe' }
-]
-;
+  societesPaysList: { value: string; name: string }[] = [];
+
+
   societesSecteurList: any [] = [
     { value: 'Aéronautique', name: 'Aéronautique' },
     { value: 'Aérospatial', name: 'Aérospatial' },
@@ -230,6 +96,16 @@ export class AddCompanyComponent {
     { value: 'Publicité', name: 'Publicité' },
     { value: 'Restauration', name: 'Restauration' },
   ]
+  agenceList: any [] = [
+    { value: 'BU Conseil Tunisie', name: 'BU-Conseil-Tunisie' },
+    { value: 'BU Conseil France', name: 'BU-Conseil-France' },
+    { value: 'BU SP-BP', name: 'BU-SP-BP' },
+    { value: 'BU Solution France', name: 'BU-Solution-France' },
+    { value: 'BU Expertise France', name: 'BU-Expertise-France' },
+    { value: 'BU Solution Tunisie', name: 'BU-Solution-Tunisie' },
+    { value: 'BU Expertise Tunisie', name: 'BU-Expertise-Tunisie' },
+    
+  ]
   societesProvenanceList:any [] = [
     { value: 'Prospection', name: 'Prospection' },
     { value: 'Apporteur', name: 'Apporteur' },
@@ -247,7 +123,10 @@ export class AddCompanyComponent {
 
   idCompany: number = 0;
   companyForm: FormGroup;
-  managers:any[] = [];
+  managers:any[] = [
+    { value: 'Ilyes', name: 'Ilyes' },
+    { value: 'Aziz' , name: 'Aziz' },
+  ];
   
  
   formData = new FormData();
@@ -270,14 +149,14 @@ export class AddCompanyComponent {
       filiales: ['', []],
       provenance: [, [Validators.required]],
       precisiez: ['', []],
-      responsableManager: ['ilyes', [Validators.required]],
+      responsableManager: ['', [Validators.required]],
       pole: [null, [Validators.required]],
-      agence: ['conseil', [Validators.required]],
+      agence: ['', [Validators.required]],
       telephone: ['', [Validators.required , Validators.pattern('^[0-9]*$')]],
       addresse: ['', []],
       postalCode: ['', []],
       ville: ['', []],
-      pays: [, [Validators.required]],
+      pays: ['', [Validators.required]],
       siteWeb: ['', []],
       informations: ['', []],
       statutJuridique: ['', []],
@@ -298,20 +177,49 @@ export class AddCompanyComponent {
       
     });
   }
+  ngOnInit(): void {
+    this.loadCountries();
+
+  }
+ 
+
   saveChanges() {
     const comp = this.companyForm.value;
     console.log('Company:', comp);
-    this.compService.createComp(comp).subscribe({
-      next: (response: any) => {
+    this.compService.createComp(comp).subscribe(
+      (response: any) => {
       console.log('Company created successfully:', response);
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Company created successfully' });
-      this.router.navigate(['/compDash']);
+      this.router.navigate(['/company']);
       },
-      error: (error: any ) => {
+      (error: any ) => {
       console.error('Error creating company:', error);
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create company' });
       }
-    });
+    );
   }
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  loadCountries() {
+    // Format countries for dropdown (example: use common name + flag)
+    this.societesPaysList = countries.map((country) => ({
+      value: country.name.common,
+      name: country.name.common, 
+    }));
+    this.societesPaysList.sort((a, b) => a.name.localeCompare(b.name));
+  }
 }

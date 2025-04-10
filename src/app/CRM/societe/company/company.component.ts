@@ -24,7 +24,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { ToastModule } from 'primeng/toast';
 import { CompServiceService } from '../../../services/comp-service.service';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { CompanyKanbanComponent } from "../company-kanban/company-kanban.component";
 import { CompanyListComponent } from "../company-list/company-list.component";
 @Component({
@@ -44,6 +44,9 @@ import { CompanyListComponent } from "../company-list/company-list.component";
   providers: [KanbanCompService, CompServiceService, MessageService]  
 })
 export class CompanyComponent implements OnInit {
+switchMode($event: MatButtonToggleChange) {
+throw new Error('Method not implemented.');
+}
   mode: any;
   constructor(private companyService: CompServiceService, private fb: FormBuilder) { }
   ngOnInit(): void {

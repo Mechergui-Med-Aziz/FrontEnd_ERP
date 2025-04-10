@@ -37,7 +37,8 @@ export class CompServiceService {
                 }));
   }
 
-  // Update a task
+ 
+  
   updateComp(id: number, comp: any): any {
     return this.http.put(`${this.apiUrl}/company/${id}`, comp, this.options).pipe(
                 map(response => {

@@ -13,9 +13,7 @@
         </button>
         <div class="sm:w-full md:w-1/2 flex flex-col">
             <app-card-synthese [customTitle]="'Informations'" [customActionLabel]="" [hasIconActions]="false">
-                <div class="label-actions-synthese text-sm italic pr-2" >
-                    MAJ le 13/08/24 à 12:24
-                </div>
+                
 
                 <div body>
                     <div class="grid grid-cols-2 gap-1 px-2 mt-2">
@@ -101,10 +99,10 @@
                                 <mat-select class="form-control" formControlName="responsableManager">
                                     <mat-option *ngFor="
                                             let option of managers
-                                        " [value]="option" >
+                                        " [value]="option.value" >
                                         <span class="status-label">
                                             {{
-                                                option 
+                                                option.name 
                                                 }}
                                         </span>
                                     </mat-option>
@@ -132,7 +130,7 @@
                                 <span class="font-bold text-sm text-gray-500">Agence</span>
 
                                 <mat-select class="form-control" formControlName="agence">
-                                    <mat-option *ngFor=" let option of societesAgenceList" [value]="option.idAgency">
+                                    <mat-option *ngFor=" let option of agenceList" [value]="option.value">
                                         <span class="status-label">
                                             {{ option.name }}
                                         </span>
@@ -176,17 +174,13 @@
                                     <span class="font-bold text-sm text-gray-500">Pays</span>
 
                                     
-                                    <mat-select class="form-control" formControlName="pays" 
-                                            >
-                                        <mat-option *ngFor="
-                                                    let option of societesPaysList
-                                                " [value]="option.value" class="text-sm font-medium">
-                                            <span class="status-label">
-                                                
-                                                {{ option.name }}
-                                            </span>
+                                    <mat-select class="form-control" formControlName="pays">
+                                        <mat-option *ngFor="let option of societesPaysList" [value]="option.name">
+                                          <span class="status-label">
+                                            {{ option.name }} <!-- Displays flag + country name -->
+                                          </span>
                                         </mat-option>
-                                    </mat-select>
+                                      </mat-select>
 
                                 </div>
                             </div>
