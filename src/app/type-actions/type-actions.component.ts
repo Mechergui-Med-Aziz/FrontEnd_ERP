@@ -22,6 +22,11 @@ export class TypeActionsComponent implements OnInit {
   isAddModalOpen: boolean = false;
   message!:string ;
 
+  acion={
+    name: 'Email',
+    belongTo: 'CRM'
+  }
+
   typeActionForm = this.fb.group({
     id: [''],
     name: ['',[Validators.required]],
@@ -55,8 +60,22 @@ export class TypeActionsComponent implements OnInit {
   id!:number;
 
   modifyTypeAction() {
+    this.type_action.findByNameAndBelongTo(this.typeActionForm.get('name')!.value!, this.typeActionForm.get('belongTo')!.value!).subscribe(
+      (response: any) => {
+        if (response.message) {
+          this.message = "Action déjà existante !";
+          this.isModalOpen2 = true;
+        } else {
+          this.updateTypeAction();
+        }
+      }
+    );
+  }
+
+  updateTypeAction() {
     this.id=Number(this.typeActionForm.get('id')?.value);
     this.action=this.typeActionForm.value;
+    
     this.type_action.modifyTypeAction(this.id, this.action).subscribe(
       (response: any) => {
         if(response)
@@ -73,6 +92,19 @@ export class TypeActionsComponent implements OnInit {
   }
 
   addTypeAction() {
+  this.type_action.findByNameAndBelongTo(this.AddTypeActionForm.get('typeActionName')!.value!, this.AddTypeActionForm.get('typeActionbelongTo')!.value!).subscribe(
+    (response: any) => {
+      if (response.message) {
+        this.message = "Action déjà existante !";
+        this.isModalOpen2 = true;
+      } else {
+        this.addNewTypeAction();
+      }
+    }
+  );
+}
+
+  addNewTypeAction() {
     // Prépare l'objet à envoyer
     const actionToAdd = {
       name: this.AddTypeActionForm.get('typeActionName')?.value,

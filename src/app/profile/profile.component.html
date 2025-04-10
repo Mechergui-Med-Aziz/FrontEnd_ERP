@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Modifier mes informations</title>
+</head>
+<body>
+  <div class="container">
+    <div class="form-wrapper">
+      <h2>Modifier mes informations</h2>
+      <form [formGroup]="userForm" novalidate>
+        <!-- Champ ID caché -->
+        <div class="hidden">
+          <label for="id">ID</label>
+          <input type="text" id="id" formControlName="id" readonly />
+        </div>
+        <!-- Nom d'utilisateur -->
+        <div>
+          <label for="username">Nom d'utilisateur</label>
+          <input type="text" id="username" formControlName="username" readonly />
+        </div>
+        <!-- Email -->
+        
+        <!-- Prénom -->
+        <div>
+          <label for="firstname">Prénom</label>
+          <input type="text" id="firstname" formControlName="firstname" readonly />
+        </div>
+
+        <!-- Nom -->
+        <div>
+          <label for="lastname">Nom</label>
+          <input type="text" id="lastname" formControlName="lastname" readonly/>
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" formControlName="email" />
+          </div>
+        <!-- Téléphone -->
+        <div>
+          <label for="phone">Téléphone</label>
+          <input type="number" id="phone" formControlName="phone" />
+        </div>
+        <!-- Nouveau Mot De Passe -->
+        <div>
+          <label for="password">Nouveau Mot De Passe</label>
+          <div class="input-wrapper">
+            <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" (keyup)="verifyPasswords()"/>
+            <button type="button" (click)="togglePasswordVisibility()">
+              <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Confirmer Mot De Passe -->
+        <div>
+          <label for="confirmPassword">Confirmer Mot De Passe</label>
+          <div class="input-wrapper">
+            <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" formControlName="confirmPassword" (keyup)="verifyPasswords()"/>
+            <button type="button" (click)="toggleConfirmPasswordVisibility()">
+              <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
+          <span class="text-sm" [ngClass]="{
+            'text-red-500': message1 === 'Les mots de passe ne correspondent pas !' || message1 === 'Veuillez entrer un mot de passe !' || message1=== 'Veuillez confirmer le mot de passe !',
+            'text-green-500': message1 === 'Les mots de passe correspondent !'
+          }">
+            {{ message1 }}
+          </span>
+          
+          
+        </div>
+        <!-- Boutons -->
+        <div class="button-group">
+          <button type="button" class="btn btn-annuler" [routerLink]="['/home']">Annuler</button>
+          <button type="button" class="btn btn-sauvegarder" (click)="saveChanges()" (click)="saveChanges()" [disabled]="userForm.invalid">Sauvegarder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="isModalOpen" class="aa fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white rounded-lg w-1/3 p-6">
+      <h2 class="text-2xl font-bold mb-4 bg-white text-black">{{message}}</h2>
+      
+      <div class="flex justify-end">
+        <button type="button" class="bg-green-400 text-white px-4 py-2 rounded" (click)="closeModal()">Ok</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,15 +1,15 @@
-/* S'assurer que le conteneur Kanban commence sous la navbar */
 .kanban-container {
   margin-top: 150px;
   margin-left: 250px; /* Ajuste cette valeur selon la hauteur de ta navbar */
-  overflow-x: auto;
-  display: flex;
   padding: 10px;
+  display: flex;
   gap: 10px;
+  height: 80vh; 
+  overflow-x: auto;
+  overflow-y:auto;
 }
 
-
-/* S'assurer que le scroll horizontal est bien géré */
+/* Masquer la scrollbar si elle est trop visible */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -19,21 +19,26 @@
   scrollbar-width: none; /* Firefox */
 }
 
+
 /* Assurer que le kanban ne se décale pas sous la navbar */
 .relative.w-full {
   padding-top: 60px; /* Ajuste cette valeur selon la hauteur de la navbar */
 }
 .aa {
+  margin-left: auto;
+  margin-right: 0;
   position: fixed;
-  top: 0;
-  left: 19%;
-  right: 2%;
-  width: auto; /* Ajuste automatiquement */
-  max-width: 100%; /* Évite le débordement */
+  justify-content: right;
+  right: 0;
+  top: 2px;
+  left: 0%;
+  right: 0%; /* Ajuste automatiquement */
+  /* Évite le débordement */
   padding: 10px 20px;
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 50;
+  
 }
+
 
 

@@ -100,4 +100,17 @@ addBesoin(besoin: any): any {
                 );
               }
 
+              findBesoinByCreationDate(date: any): any {
+                return this.http.get(`${this.url}/besoin/date/${date}`, this.options).pipe(
+                  map(response => {
+                    console.log('Response du service:', response);
+                    return response;
+                  }),
+                  catchError(error => {
+                    console.error('Error:', error);
+                    return error;
+                  })
+                );
+              }
+
             }
