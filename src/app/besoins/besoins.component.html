@@ -1,113 +1,321 @@
-<div class="relative">
-  <!-- Barre fixe -->
-  <div class="aa sticky w-5/6  bg-white ">
-    <!-- Titre Besoins -->
-    <div class="text-center">
-      <hr class="border-gray-300">
-      <h1 class="text-2xl font-bold py-2 text-gray-700 ">Besoins ({{ nbBesoins}})</h1>
-      <hr class="border-gray-300">
-    </div>
+<div class="flex flex-col w-full bg-white">
+  <div class="w-full flex flex-col">
+    <div
+    class="fixed top-0 left-[250px] right-0  flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent " >
+    <div class="flex">
+      <!-- Title -->
+      <div class="flex-1">
+        <h2
+          class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate flex flex-row items-center"
+        >
+          <mat-icon class="icon-size-10 ml-4 relative-t-5">group </mat-icon>
+          <span class="ml-4">Besoins ({{nbBesoins}})</span>
+        </h2>
 
-    <!-- Barre de recherche et bouton Ajouter -->
-    <div class="flex w-full justify-between items-center mt-4">
-      <input type="text" placeholder="Rechercher..." class="mr-auto border p-2 rounded-md w-1/3">
-      <button class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg z-50" (click)="openAddModal()">
-        + Ajouter
-      </button>
-    </div>
-  </div>
+        <div class="flex flex-row items-center">
+          <mat-button-toggle-group
+          [(ngModel)]="mode"
+            class="mt-1"
+            name="favoriteColor"
+            aria-label="Favorite Color"
+            (change)="switchMode($event)"
+          >
+            <mat-button-toggle value="kanban">
+              <mat-icon
+                aria-hidden="false"
+                aria-label="Example home icon"
+                fontIcon="view_kanban"
+              >
+              </mat-icon
+              >Kanban
+            </mat-button-toggle>
+            <mat-button-toggle value="list">
+              <mat-icon
+                aria-hidden="false"
+                aria-label="Example home icon"
+                fontIcon="list"
+              >
+              </mat-icon
+              >List
+            </mat-button-toggle>
+          </mat-button-toggle-group>
 
-  <!-- Conteneur Kanban (avec padding pour ne pas cacher les éléments sous la barre fixe) -->
-  <div class="kanban-container scrollbar-hide">
-      <div #scrollContainer cdkDropListGroup class="flex space-x-4">
-        <div *ngFor="let column of columns" class="w-80 bg-white p-4 rounded-lg shadow-lg min-w-max">
-           <!-- Titre de la colonne -->
-        <div class="flex items-center space-x-2">
-          <span class="w-3 h-3 rounded-full" [ngStyle]="{'background-color': column.color}"></span>
-          <h2 class="font-bold text-lg text-gray-700">{{ column.title }} ({{ column.besoins.length }})</h2>
-        </div>
-        <div class="h-1 w-full mt-2" [ngStyle]="{'background-color': column.color}"></div>
-
-        <!-- Liste des besoins -->
-        <div cdkDropList [cdkDropListData]="column.besoins" 
-             (cdkDropListDropped)="drop($event, column.status)" 
-             class="min-h-[100px] p-2 bg-gray-100 rounded-md">
-             <div *ngFor="let besoin of column.besoins" 
-             cdkDrag 
-             class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between"
-             >
-          
-          <!-- Barre de priorité à gauche -->
-          <div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}" class="w-10 h-[85px] rounded-l-lg "></div>
-
-          <!-- Contenu principal -->
-          <div class="p-4 w-full flex items-center justify-between" (click)="openModal(besoin)" style="margin-left: -8%;">
-            <!-- Icône circulaire + titre -->
-            <div class="flex items-center space-x-2" >
-              <div class="w-8 h-8 flex items-center justify-center rounded-full text-white font-bold"
-                   [ngStyle]="{'background-color': besoin.color}">
-                {{ besoin.initiales }}
+          <div class="flex flex-row items-center ml-2">
+            <label for="table-search" class="sr-only">Search</label>
+            <div class="relative mt-1">
+              <div
+                class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none"
+              >
+                <svg
+                  class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
               </div>
-              <div >
-                <h3 class="font-semibold right-10">{{ besoin.title }}</h3>
-                <p class="text-sm text-gray-500 left-10">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</p>
-              </div>
+              <input
+                type="text"
+                id="table-search"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Rechercher"
+              />
             </div>
-        
-            <!-- Date + Entreprise -->
-            <div class="flex flex-col">
-              <p class="text-sm text-gray-500">&nbsp; {{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
-              <p class="text-sm text-gray-500 font-semibold"> &nbsp;{{ besoin.contact?.company?.name}}</p>
-            </div>
+            <button
+              
+              class="ml-2"
+              mat-icon-button
+              matSuffix
+            >
+              <mat-icon>tune</mat-icon>
+            </button>
+
           </div>
-        <div>
-          <button class="bg-blue-500 text-white text-xs leading-tight text-center py-2 rounded w-12 h-20 flex items-center justify-center" (click)="getHistoricBesoin(besoin)">
-            Voir<br>Historique
-          </button>
-          
-          
-
-
         </div>
+        <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;"/>
+      </div>
+      
+
+      <!-- Actions -->
+
+      <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+        <button class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg z-50" (click)="openAddModal()">
+          + Ajouter
+        </button>
+       
+      </div>
+
+    </div>
+      
+      <div class="px-4 w-full sm:flex-col md:flex-row flex">
+        <div class="sm:w-full w-2/3 flex flex-col sm:mt-2 md:mt-0">
+          <div class="py-4">
+            <!--<app-company-list *ngIf="mode === 'list'"></app-company-list>-->
+          </div>
+          <div>
+
+            <div class="relative" *ngIf="mode === 'kanban'">
+              <!-- Bouton gauche -->
+              <button 
+                (click)="scrollKanban('left')"
+                class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
+                aria-label="Scroll Left">
+                <!-- Tu peux utiliser une icône ou du texte -->
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+            
+              <!-- Conteneur Kanban -->
+              <div #scrollContainer class="kanban-container overflow-x-auto">
+                <div #scrollInner cdkDropListGroup class="flex space-x-4 pb-4">
+                  <div *ngFor="let column of columns" class="w-90 flex-shrink-0 bg-white p-4 rounded-lg shadow-lg h-full flex flex-col">
+                    <!-- Titre et contenu de la colonne -->
+                    <div class="flex-shrink-0">
+                      <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full" [ngStyle]="{'background-color': column.color}"></span>
+                        <h2 class="font-bold text-lg text-gray-700">
+                          {{ column.title }} ({{ column.besoins.length }}) <span *ngIf="column.besoins.length==0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        </h2>
+                      </div>
+                      <div class="h-1 w-full mt-2" [ngStyle]="{'background-color': column.color}"></div>
+                    </div>
+            
+                    <!-- Liste des besoins -->
+                    <div cdkDropList [cdkDropListData]="column.besoins" 
+                         (cdkDropListDropped)="drop($event, column.status)" 
+                         class="min-h-[100px] p-2 bg-gray-100 rounded-md">
+                      <div *ngFor="let besoin of column.besoins" 
+                      cdkDrag 
+                      (cdkDragMoved)="onDragMoved($event)"
+                           class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between h-24 w-full">
+                        <!-- Barre de priorité -->
+                        <div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}" class="w-10 h-[85px] rounded-l-lg"></div>
+            
+                        <!-- Contenu principal -->
+                        <div class="p-4 w-full flex items-center justify-between" (click)="openModal(besoin)" style="margin-left: -8%;">
+                          <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full text-white font-bold"
+                                 [ngStyle]="{'background-color': besoin.color}">
+                              {{ besoin.initiales }}
+                            </div>
+                            <div>
+                              <h3 class="font-semibold">{{ besoin.title }}</h3>
+                              <p class="text-sm text-gray-500">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</p>
+                            </div>
+                          </div>
+            
+                          <div class="flex flex-col">
+                            <p class="text-sm text-gray-500">{{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
+                            <p class="text-sm text-gray-500 font-semibold">{{ besoin.contact?.company?.name }}</p>
+                          </div>
+                        </div>
+            
+                        <!-- Bouton historique -->
+                        <div>
+                          <button class="bg-blue-500 text-white text-xs leading-tight text-center py-2 rounded w-12 h-20 flex items-center justify-center" (click)="getHistoricBesoin(besoin)">
+                            Voir<br>Historique
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+              <!-- Bouton droit -->
+              <button 
+                (click)="scrollKanban('right')"
+                class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
+                aria-label="Scroll Right">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+
+
+
+
+
+
+
+
+            <div class="flex flex-col w-full bg-white" *ngIf="mode === 'list'">
+              <div class="w-full flex flex-col">
+                
+                <head>
+                  <link
+                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+                    rel="stylesheet"
+                  />
+                  <!-- Google Fonts -->
+                  <link
+                    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+                    rel="stylesheet"
+                  />
+                  <!-- MDB -->
+                  <link
+                    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
+                    rel="stylesheet"
+                  />
+                </head>
+                <table class="table align-middle mb-0 bg-white">
+                  <thead class="bg-light">
+                    <tr>
+                      <th>Titre du Besoin</th>
+                      <th>description</th>
+                      <th>Status</th>
+                      <th>Date de Creation</th>
+                      <th>Créer Par</th>
+                      <th>Priorité</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let besoin of besoins">
+                      <td>
+                        
+                          <div class="ms-3">
+                            <p class="fw-bold mb-1">{{ besoin.title }}</p>
+                          </div>
+                        
+                      </td>
+                      <td>
+                        <p class="fw-normal mb-1">{{ besoin.description }}</p>
+                        
+                      </td>
+                      <td>
+                        <span class="badge badge-success rounded-pill d-inline">{{besoin.status}}</span>
+                      </td>
+                      <td> {{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</td>
+
+                      <td><p class="text-sm text-gray-500">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</p></td>
+
+                      <td>
+                        <span [ngClass]="{
+                          'badge-danger': besoin.priority === 'TRÉS_HAUTE',
+                          'badge-warning': besoin.priority === 'HAUTE',
+                          'badge-success': besoin.priority === 'BASSE',
+                          'badge-info': besoin.priority === 'MOYENNE'
+                        }">{{besoin.priority}}</span>
+                      <td class="d-flex gap-2">
+                        <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="openModal(besoin)">
+                          Edit
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm btn-rounded" (click)="getHistoricBesoin(besoin)">
+                          Voir Historique
+                        </button>
+                      </td>
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+
+
+
+
+
+
+
+
+
+
+
+            
+            <!--<app-company-kanban *ngIf="mode === 'kanban'"></app-company-kanban>-->
+          </div>
         </div>
       </div>
+    
     </div>
+    
   </div>
 </div>
-
 
 <div *ngIf="isHistoricModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-  <div class="bg-white p-4 rounded-lg w-1/2">
-    <h2 class="text-xl font-bold justify-center text-center">Historique du Besoin</h2>
-      <br>
-    <div class="flex flex-col">
-      <table class="table-auto w-full text-left border-collapse">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="px-4 py-2">Titre du besoin</th>
-            <th class="px-4 py-2">Description de l'historique</th>
-            <th class="px-4 py-2">Status</th>
-            <th class="px-4 py-2">Date De Création/Changement</th>
-            <th class="px-4 py-2">Faites Par</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let besoin of historiqueDuBesoin" class="hover:bg-gray-100">
-            <td class="px-4 py-2">{{ besoin.title }}</td>
-            <td class="px-4 py-2">{{ besoin.description }}</td>
-            <td class="px-4 py-2">{{ besoin.status }}</td>
-            <td class="px-4 py-2">{{ besoin.actionDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-            <td class="px-4 py-2">{{ besoin.actionBy }}</td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <div class="flex justify-end gap-4">
-        <button type="button" class="bg-blue-400 text-white px-4 py-2 rounded" (click)="closeHistoricModal()">OK</button>
+  <div class="bg-white p-4 rounded-lg w-2/3 max-h-[80vh] flex flex-col">
+    <h2 class="text-xl font-bold text-center">Historique du Besoin</h2>
+    <br />
+
+    <!-- Partie tableau -->
+    <div class="flex-1 overflow-hidden border rounded">
+      <div class="overflow-y-auto max-h-[50vh]">
+        <table class="table-auto w-full text-left border-collapse">
+          <thead class="sticky top-0 bg-gray-200 z-10">
+            <tr>
+              <th class="px-4 py-2">Titre du besoin</th>
+              <th class="px-4 py-2">Description de l'historique</th>
+              <th class="px-4 py-2">Status</th>
+              <th class="px-4 py-2">Date De Création/Changement</th>
+              <th class="px-4 py-2">Faites Par</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let besoin of historiqueDuBesoin" class="hover:bg-gray-100">
+              <td class="px-4 py-2">{{ besoin.title }}</td>
+              <td class="px-4 py-2">{{ besoin.description }}</td>
+              <td class="px-4 py-2">{{ besoin.status }}</td>
+              <td class="px-4 py-2">{{ besoin.actionDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+              <td class="px-4 py-2">{{ besoin.actionBy }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
+
+    <!-- Bouton toujours visible -->
+    <div class="flex justify-end gap-4 mt-4 border-t pt-4">
+      <button type="button" class="bg-blue-400 text-white px-4 py-2 rounded" (click)="closeHistoricModal()">OK</button>
+    </div>
   </div>
 </div>
-  </div>
+
+
 
 
 <div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
@@ -206,3 +414,4 @@
     </form>
   </div>
 </div>
+

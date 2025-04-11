@@ -1,19 +1,22 @@
 import { Component,ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragMove, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { BesoinsService } from '../services/besoins.service';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContactsService } from '../services/contacts.service';
 import { ProfileService } from '../services/profile.service';
 import { HistoriqueBesoinsService } from '../services/historique-besoins.service';
 import dayjs from 'dayjs';
 import { AuthService } from '../services/auth.service';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 
 
 @Component({
   selector: 'app-besoins',
   standalone: true,
-  imports: [CommonModule,DragDropModule,ReactiveFormsModule],
+  imports: [CommonModule,DragDropModule,ReactiveFormsModule,MatIconModule,MatButtonModule,MatButtonToggleModule,FormsModule],
   templateUrl: './besoins.component.html',
   styleUrl: './besoins.component.css'
 })
@@ -26,12 +29,30 @@ export class BesoinsComponent implements OnInit{
   isHistoricModalOpen: boolean = false;
   creationDate: any;
   nbBesoins: number = 0;
+  mode: string = 'kanban';
+
+  besoins: any[] = [];
+
+  switchMode($event: MatButtonToggleChange) {
+  
+  }
 
   contacts: any[] = [];
   historiqueDuBesoin: any[] = [];
   user: any 
   
+  @ViewChild('scrollContainer', { static: false }) scrollContainer!: ElementRef;
 
+  scrollKanban(direction: 'left' | 'right'): void {
+    const container = this.scrollContainer.nativeElement;
+    const scrollAmount = 300; // Ajuste la valeur selon tes besoins
+
+    if (direction === 'left') {
+      container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  }
 
   columns: { title: string, status: string, color:string, besoins: any[] }[] = [
     { title: 'À TRAITER', status: 'A_TRAITER', color: "#FFA500", besoins: [] },
@@ -42,6 +63,25 @@ export class BesoinsComponent implements OnInit{
     { title: 'PERDU', status: 'PERDU',color: "#FA0000", besoins: [] },
     { title: 'REPORTÉ', status: 'REPORTE',color: "#FF80FF", besoins: [] }
   ];
+
+
+  scrollThreshold = 50; // en pixels, distance du bord pour déclencher le scroll
+  scrollStep = 10;      // en pixels, pas de scroll à chaque événement
+
+  onDragMoved(event: CdkDragMove<any>): void {
+    const container = this.scrollContainer.nativeElement;
+    const containerRect = container.getBoundingClientRect();
+    const pointerX = event.pointerPosition.x;
+
+    // Si le curseur est proche du bord gauche
+    if (pointerX < containerRect.left + this.scrollThreshold) {
+      container.scrollLeft -= this.scrollStep;
+    }
+    // Si le curseur est proche du bord droit
+    else if (pointerX > containerRect.right - this.scrollThreshold) {
+      container.scrollLeft += this.scrollStep;
+    }
+  }
 
 
 
@@ -83,6 +123,7 @@ export class BesoinsComponent implements OnInit{
 
 
     loadBesoins() {
+      this.besoins = [];
       this.columns.forEach(column => {
         this.besoinsService.findBesoinByStatus(column.status).subscribe(
           (besoins: any) => {
@@ -90,13 +131,16 @@ export class BesoinsComponent implements OnInit{
             besoins.sort((a: any, b: any) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
     
             column.besoins = besoins;
+            
     
             besoins.forEach((element: any) => {
+              this.besoins.push(element);
               if (parseInt(element.contact)) {
                 this.loadContact(element);
               }
             });
-    
+
+            if(column.status != 'REPORTE' && column.status != 'PERDU' && column.status != 'GAGNÉ')
             this.nbBesoins += besoins.length;
           },
           (error: any) => {
@@ -104,6 +148,7 @@ export class BesoinsComponent implements OnInit{
           }
         );
       });
+      this.besoins.sort((a: any, b: any) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
     }
     
 
@@ -316,8 +361,9 @@ addBesoin() {
     const id = Number(updatedData.id);
     this.besoinsService.updateBesoin(id, updatedData).subscribe(
       (response: any) => {
-        this.ngOnInit();
+        
         console.log(`Besoin ${updatedData.id} mis à jour`);
+        this.ngOnInit();
         this.closeModal();
         const movedHistoricBesoin = {
           besoinId: updatedData.id,
@@ -329,6 +375,7 @@ addBesoin() {
         };
         
         console.log('Historique besoin changé:', movedHistoricBesoin);
+        if(this.selectedBesoin.status!=movedHistoricBesoin.status){
         this.hbs.addHistoriqueBesoin(movedHistoricBesoin).subscribe(
           (response: any) => {
             console.log('Statut d\'historique changé avec succès:', response);
@@ -336,7 +383,8 @@ addBesoin() {
           (error: any) => {
             console.error('Erreur lors du changement du statut de l\'historique:', error);
           }
-        );
+        )};
+        
       },
       (error: any) => {
         console.error(`Erreur lors de la mise à jour du besoin ${updatedData.id}`, error);

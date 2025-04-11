@@ -1,44 +1,61 @@
+
+
+/* S'assurer que le conteneur Kanban commence sous la navbar */
 .kanban-container {
-  margin-top: 150px;
-  margin-left: 250px; /* Ajuste cette valeur selon la hauteur de ta navbar */
-  padding: 10px;
-  display: flex;
-  gap: 10px;
-  height: 80vh; 
+  height: calc(100vh - [hauteur-de-votre-header]px); 
   overflow-x: auto;
   overflow-y:auto;
+  display: flex;
+  gap: 10px;
+  padding: 5px;  
+  
 }
 
-/* Masquer la scrollbar si elle est trop visible */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+/* Pour un scroll personnalisé (optionnel) */
+.overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f1f1f1;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 4px;
+  }
 }
+
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f1f1f1;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 4px;
+  }
+}
+  
 
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE & Edge */
   scrollbar-width: none; /* Firefox */
 }
-
-
-/* Assurer que le kanban ne se décale pas sous la navbar */
 .relative.w-full {
   padding-top: 60px; /* Ajuste cette valeur selon la hauteur de la navbar */
 }
-.aa {
-  margin-left: auto;
-  margin-right: 0;
-  position: fixed;
-  justify-content: right;
-  right: 0;
-  top: 2px;
-  left: 0%;
-  right: 0%; /* Ajuste automatiquement */
-  /* Évite le débordement */
-  padding: 10px 20px;
-  background-color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   
-}
-
-
-
