@@ -71,4 +71,17 @@ export class TypeActionsService {
         })
       );
     }
+
+    findByNameAndBelongTo(name: string, belongTo: string): any {
+      return this.http.get(`${this.url}/type-actions/exists/${name}/${belongTo}`, this.options).pipe(
+        map(response => {
+          console.log('Response:', response);
+          return response;
+        }),
+        catchError(error => {
+          console.error('Error:', error);
+          return error;
+        })
+      );
+    }
   }

@@ -1,4 +1,4 @@
-<div *ngIf="isLoading">
+<div class="container" *ngIf="isLoading">
   <div class="h-screen w-screen flex flex-col items-center justify-center bg-[#0c0f19]">
     <img src="assets/images/logo/logo-talys.png" alt="Talys Logo" class="w-60 mb-4" />
     <div class="flex justify-center items-center">
@@ -8,10 +8,10 @@
 </div>
 
 <div class="flex h-screen" *ngIf="!isLoading">
-  <div class="w-64 bg-gray-800 text-white" *ngIf="navbarOpened">
+  <div class="w-1/6 bg-gray-800 text-white" *ngIf="navbarOpened">
     <app-navbar></app-navbar>
   </div>
-  <div class="flex-1 p-6">
+  <div class="grow h-3/4 p-4">
     <router-outlet></router-outlet>
   </div>
 </div>

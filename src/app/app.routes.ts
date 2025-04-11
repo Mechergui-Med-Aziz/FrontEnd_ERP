@@ -10,6 +10,7 @@ import { BesoinsComponent } from './besoins/besoins.component';
 import { CompanyListComponent } from './CRM/societe/company-list/company-list.component';
 import { CompanyKanbanComponent } from './CRM/societe/company-kanban/company-kanban.component';
 import { CompanyComponent } from './CRM/societe/company/company.component';
+import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [ 
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -21,6 +22,7 @@ export const routes: Routes = [
     {path:'addcomp',component:AddCompanyComponent},
     {path:'type-actions',component:TypeActionsComponent ,canActivate:[typeActionsGuard]},
     {path:'besoins',component:BesoinsComponent},
+    {path:'profile',component:ProfileComponent},
     {path:'companyKanban' ,component:CompanyKanbanComponent },
     { path: 'addcomp/:id', component: AddCompanyComponent }
     ];
