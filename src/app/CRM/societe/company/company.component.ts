@@ -45,7 +45,7 @@ import { CompanyListComponent } from "../company-list/company-list.component";
 })
 export class CompanyComponent implements OnInit {
 switchMode($event: MatButtonToggleChange) {
-throw new Error('Method not implemented.');
+
 }
   mode: any;
   constructor(private companyService: CompServiceService, private fb: FormBuilder) { }
