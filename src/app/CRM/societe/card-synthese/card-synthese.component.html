@@ -1,0 +1,36 @@
+<div
+    [class]="customClass"
+    class="sm:ml-0 md:ml-2 mt-2 rounded overflow-hidden shadow-md shadow-gray-300 shadow-lg bg-white"
+>
+    <div class="py-4">
+        <div
+            class="h-3 flex justify-between justify-center items-center mb-2 ml-2" [class]="customTitleClass"
+        >
+            <div class="flex flex-row items-center">
+                <div class="font-bold synthese-title-box">
+                    {{ customTitle }}
+                </div>
+                <ng-content select="[action-side]"></ng-content>
+            </div>
+            <div class="flex flex-row">
+                <button
+                    *ngIf="hasIconActions"
+                    mat-flat-button
+                    class="flex font-normal items-center text-gray-600 hover:text-gray-700"
+                    (click)="navigateSynthese()"
+                >
+                    <span class="text-base synthese-link-edit mb-1">
+                        {{ customActionLabel  }}
+                    </span>
+                    <mat-icon class="material-icons synthese-link-edit ml mt"
+                        >edit</mat-icon
+                    >
+                </button>
+                <ng-content select="[actions]"></ng-content>
+            </div>
+        </div>
+        <!-- 
+        <div class="border-b border-gray-300 mb-4"></div> -->
+        <ng-content select="[body]"> </ng-content>
+    </div>
+</div>
