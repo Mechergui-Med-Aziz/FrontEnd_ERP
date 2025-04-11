@@ -54,10 +54,12 @@
           </td>
           <td>{{ company.responsableManager }}</td>
           <td>
-            <button type="button" class="btn btn-link btn-sm btn-rounded">
+            <button type="button" class="btn btn-link btn-sm btn-rounded" (click)="editCompany(company)">
               Edit
             </button>
-            
+            <button type="button" class="btn btn-link btn-sm btn-rounded text-danger" (click)="deleteCompany(company)">
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>

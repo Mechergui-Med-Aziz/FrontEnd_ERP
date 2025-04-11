@@ -37,10 +37,8 @@ export class CompServiceService {
                 }));
   }
 
- 
-  
-  updateComp(id: number, comp: any): any {
-    return this.http.put(`${this.apiUrl}/company/${id}`, comp, this.options).pipe(
+ deleteComp(id: any): any {
+    return this.http.delete(`${this.apiUrl}/company/delete/${id}`, this.options).pipe( 
                 map(response => {
                   console.log('Response:', response); 
                   return response;
@@ -50,6 +48,8 @@ export class CompServiceService {
                   return error;
                 }));
   }
+  
+  
   findCompanyByStatut(statut: any): any {
     return this.http.get(`${this.apiUrl}/company/statut/${statut}`, this.options).pipe(
       map(response => {
@@ -74,6 +74,18 @@ export class CompServiceService {
                   return error;
                 }));
   }
+  updateCompanystatus(id:any,company: any): any {
+    return this.http.put(`${this.apiUrl}/company/updatestatus/${id}`, company, this.options).pipe(
+      map(response => {
+        console.log('Response:', response); 
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error:', error);
+        throw error;  // Utilise throw error pour rejeter l'erreur de manière propre
+      })
+    );
+  }
   updateCompany(id:any,company: any): any {
     return this.http.put(`${this.apiUrl}/company/update/${id}`, company, this.options).pipe(
       map(response => {
@@ -86,5 +98,17 @@ export class CompServiceService {
       })
     );
   }
-}
 
+getCompById(id: number): any {
+  return this.http.get(`${this.apiUrl}/company/${id}`, this.options).pipe(
+    map(response => {
+      console.log('Response:', response); 
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error:', error);
+      return error;
+    }));
+  }
+
+}

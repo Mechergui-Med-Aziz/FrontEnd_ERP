@@ -177,27 +177,59 @@ export class AddCompanyComponent implements OnInit {
       
     });
   }
-  ngOnInit(): void {
-    this.loadCountries();
+  // Modifiez votre composant AddCompanyComponent pour gérer l'édition
 
-  }
- 
+ngOnInit(): void {
+  this.loadCountries();
+  
+  // Récupérer l'ID de l'URL si on est en mode édition
+  this.activatedRoute.params.subscribe(params => {
+    if (params['id']) {
+      this.idCompany = params['id'];
+      this.loadCompanyData(this.idCompany);
+    }
+  });
+}
 
-  saveChanges() {
-    const comp = this.companyForm.value;
-    console.log('Company:', comp);
-    this.compService.createComp(comp).subscribe(
+loadCompanyData(id: number) {
+  this.compService.getCompById(id).subscribe(
+    (company: any) => {
+      this.companyForm.patchValue(company);
+    },
+    (error: any) => {
+      console.error('Error loading company data:', error);
+    }
+  );
+}
+
+saveChanges() {
+  if (this.idCompany) {
+    // Mode édition
+    this.compService.updateCompany(this.idCompany, this.companyForm.value).subscribe(
+      
       (response: any) => {
-      console.log('Company created successfully:', response);
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Company created successfully' });
-      this.router.navigate(['/company']);
+        console.log('Company updated successfully:', response);
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société mise à jour avec succès' });
+        this.router.navigate(['/company']);
       },
-      (error: any ) => {
-      console.error('Error creating company:', error);
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create company' });
+      (error: any) => {
+        console.error('Error updating company:', error);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la mise à jour' });
+      }
+    );
+  } else {
+    // Mode création
+    this.compService.createComp(this.companyForm.value).subscribe(
+      (response: any) => {
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société créée avec succès' });
+        this.router.navigate(['/company']);
+      },
+      (error: any) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la création' });
       }
     );
   }
+}
 
 
 

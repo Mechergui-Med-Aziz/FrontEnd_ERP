@@ -89,7 +89,7 @@ export class CompanyKanbanComponent implements OnInit{
   
       console.log('Besoin déplacé:', movedItem);
       console.log('Nouveau statut:', newStatut);
-      this.companyService.updateCompany(movedItem.id,movedItem).subscribe(
+      this.companyService.updateCompanystatus(movedItem.id,movedItem).subscribe(
         (response: any) => {
           console.log(`Besoin ${movedItem.id} mis à jour avec le statut ${newStatut}`);
           this.ngOnInit();

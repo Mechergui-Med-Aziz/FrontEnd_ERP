@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { KanbanCompService } from '../../../services/kanban-comp.service';
 
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
@@ -65,11 +65,12 @@ export class CompanyListComponent  implements OnInit {
 
     styleTable = 'p-datatable-sm'
 mode: any;
+    
 
   constructor(
     private companyService: CompServiceService,
         private messageService: MessageService,
-        
+        private router: Router,
         private dialog: MatDialog,
         
   ) {}
@@ -116,9 +117,6 @@ viewPhone(phone :any) {
 
 
 
-deleteCompany = () => {
-
-}
 
 
 deleted() {/*
@@ -145,4 +143,23 @@ paginate(event:any) {
 imageUrl(company:any) {/*
     return this.imageServ.getFile(company.pictureName);*/
 }
+editCompany(company: any) {
+    this.router.navigate(['/addcomp', company.id]); // ou company._id selon votre modèle
+  }
+  
+  deleteCompany(company: any) {
+    
+    if (confirm('Voulez-vous vraiment supprimer cette société ?')) {
+        console.log('Suppression de la société:', company.id);
+      this.companyService.deleteComp(company.id).subscribe(
+        (response: any) => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société supprimée avec succès' });
+          this.listPaginate(); // Rafraîchir la liste
+        },
+        (error: any) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la suppression' });
+        }
+      );
+    }
+  }
 }

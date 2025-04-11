@@ -21,5 +21,6 @@ export const routes: Routes = [
     {path:'addcomp',component:AddCompanyComponent},
     {path:'type-actions',component:TypeActionsComponent ,canActivate:[typeActionsGuard]},
     {path:'besoins',component:BesoinsComponent},
-    {path:'companyKanban' ,component:CompanyKanbanComponent }
+    {path:'companyKanban' ,component:CompanyKanbanComponent },
+    { path: 'addcomp/:id', component: AddCompanyComponent }
     ];
