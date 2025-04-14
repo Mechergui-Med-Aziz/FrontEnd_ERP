@@ -61,6 +61,7 @@ export class BesoinsComponent implements OnInit{
   loadContacts() {
     this.contactsService.findAllContacts().subscribe(
       (contacts: any) => {
+        console.log('Contacts:', contacts); // Debugging line
         this.contacts = contacts;
       },
       (error: any) => {

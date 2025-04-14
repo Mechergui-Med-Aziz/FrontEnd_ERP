@@ -1,0 +1,366 @@
+<form class="px-4 w-full sm:flex-col md:flex-row flex " [formGroup]="contact">
+
+    <button
+        class="fixed top-500 right-4 w-12 h-12 bg-green-500 text-white p-1 rounded-full hover:bg-green-600 flex items-center justify-center shadow-lg ring-0 ring-gray-200 z-50"
+        (click)="saveChanges()">
+        <mat-icon class="icon-size-7 text-white hover:text-white self-center">
+            save
+        </mat-icon>
+    </button>
+
+    <div class="sm:w-full md:w-1/2 flex flex-col">
+        <app-card-synthese [customTitle]="'Informations générales'" [customActionLabel]="" [hasIconActions]="false">
+            <div class="label-actions-synthese text-sm italic pr-2" actions>
+                
+            </div>
+
+            <div body>
+                <div class="grid grid-cols-6 gap-2 px-2">
+                    <div class="col-span-1">
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">Civilité</div>
+                            <mat-form-field class="w-full h-15 rounded">
+                                <mat-select class=" " formControlName="civilite" >
+                                    <mat-option *ngFor="let cv of civilities" [value]="cv.value"
+                                        class="text-sm font-medium">
+                                        <span class="status-label">
+                                            {{ cv.name }}
+                                        </span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="font-bold text-sm text-gray-500">Nom</div>
+                        <div class="input-container">
+                            <input type="text" class="form-control" placeholder="" formControlName="nom"   />
+                        </div>
+                    </div>
+                    <div class="col-span-3">
+                        <div class="font-bold text-sm text-gray-500">Prénoms</div>
+                        <div class="input-container">
+                            <input type="text" class="form-control" placeholder="" formControlName="prenom"  />
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-1 px-2">
+                    <div class="">
+                        <div class="font-bold text-sm text-gray-500">Fonction</div>
+                        <div class="input-container">
+                            <input type="text" class="form-control" placeholder="" formControlName="fonction" />
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">Service</div>
+                            <mat-form-field class="w-full h-15 rounded">
+                                <mat-select formControlName="service" formControlName="service">
+                                    <mat-option *ngFor="
+                                            let s of services
+                                        " [value]="s.value" class="text-sm font-medium">
+                                        <span class="status-label">
+
+                                            {{ s.name }}
+                                        </span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">Manager</div>
+                            <mat-form-field class="w-full h-15 rounded">
+                                <mat-select formControlName="manager">
+                                    <mat-option *ngFor="
+                                            let m of managers
+                                        " [value]="m" class="text-sm font-medium">
+                                        <span class="status-label">
+
+                                            {{m}}
+                                        </span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">Type</div>
+                            <mat-form-field class="w-full h-15 rounded">
+                                <mat-select class=" " formControlName="type">
+                                    <mat-option *ngFor="let tp of listeTypes" [value]="tp" class="text-sm font-medium">
+                                        <span class="status-label">
+                                            {{ tp}}
+                                        </span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">Etat</div>
+                            <mat-form-field class="w-full h-15 rounded">
+                                <mat-select class=" " formControlName="statut">
+                                    <mat-option *ngFor="let tp of listeEtat" [value]="tp.name"
+                                        class="text-sm font-medium">
+
+                                        <span class="status-label">
+                                            <span class="status-dot" [ngStyle]="{
+                                                    'background-color': tp.color
+                                                }"></span>
+                                            {{ tp.name }}
+                                        </span>
+
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">Provenance</div>
+                            <mat-form-field class="w-full h-15 rounded">
+                                <mat-select class=" " formControlName="provenance">
+                                    <mat-option *ngFor="let tp of listeProvenance" [value]="tp"
+                                        class="text-sm font-medium">
+                                        <span class="status-label">
+                                            {{ tp }}
+                                        </span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <div class="flex flex-col">
+                            <div class="font-bold text-sm text-gray-500">Agence</div>
+                            <mat-form-field class="w-full h-15 rounded">
+                                <mat-select class=" " formControlName="agence">
+                                    <mat-option *ngFor="let tp of listeAgence" [value]="tp" class="text-sm font-medium">
+                                        <span class="status-label">
+                                            {{ tp }}
+                                        </span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <div class="font-bold text-sm text-gray-500">Précisez la provenance</div>
+                        <div class="input-container">
+                            <input type="text" class="form-control" placeholder=""
+                                formControlName="precisiez" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </app-card-synthese>
+
+        <app-card-synthese [customTitle]="'Coordonnées contact'" [customActionLabel]="" [hasIconActions]="false">
+            <div body>
+                <div class="flex flex-col px-2">
+                    <div class="flex flex-col">
+                        <div class="input-container  marge">
+                            <div class="font-bold text-sm text-gray-500">Email</div>
+                            <!-- <span class="material-icons input-icon">alternate_email</span> -->
+                            <input type="text" class="form-control" placeholder="" formControlName="email" />
+                        </div>
+                        <!-- <div class="">
+                            <div class="flex items-center label-actions-synthese" (click)="addEmail()">
+                                <span class="mr-2 text-xl synthese-link-edit"
+                                    >+</span
+                                >
+                                <span
+                                    class="cursor-pointer synthese-link-edit hover:underline"
+                                    >Ajouter un Email</span
+                                >
+                            </div>
+                        </div> -->
+                        <div class="input-container  marge">
+                            <div class="font-bold text-sm text-gray-500">Téléphone</div>
+                            <!--  <span class="material-icons input-icon">phone</span> -->
+                            <input type="tel" class="form-control" placeholder="" formControlName="telephone"/>
+                        </div>
+                        <div class="">
+                            <!-- <div class="flex items-center label-actions-synthese">
+                                <span class="mr-2 text-xl synthese-link-edit"
+                                    >+</span
+                                >
+                                <span
+                                    class="cursor-pointer synthese-link-edit hover:underline"
+                                    >Ajouter un téléphone</span
+                                >
+                            </div> -->
+                        </div>
+                        <div class="input-container  marge">
+                            <div class="font-bold text-sm text-gray-500">Adresse</div>
+                            <!-- <span class="material-icons input-icon">home</span> -->
+                            <input type="text" class="form-control" placeholder="" formControlName="adresse" />
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2  marge">
+                            <div class="input-container">
+                                <div class="font-bold text-sm text-gray-500">Code postal</div>
+                                <input type="text" class="form-control" placeholder=""
+                                    formControlName="postalCode" />
+                            </div>
+
+                            <div class="input-container  marge">
+                                <div class="font-bold text-sm text-gray-500">Ville</div>
+                                <input type="text" class="form-control" placeholder="" formControlName="ville" />
+                            </div>
+
+                            <div class="flex flex-col ">
+                                <div class="font-bold text-sm text-gray-500">Pays</div>
+                                <mat-form-field class="w-full h-15 rounded">
+                                    <mat-select formControlName="pays">
+                                        <mat-option *ngFor="
+                                                let ct of societesPaysList
+                                            " [value]="ct.name" class="text-sm font-medium">
+                                            <span class="status-label">
+                                                {{ ct.name }}
+                                            </span>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="input-container">
+                                <div class="font-bold text-sm text-gray-500">Réseaux sociaux</div>
+                                <!-- <mat-icon class="material-icons input-icon"
+                                    >link</mat-icon> -->
+                                <input type="text" class="form-control" placeholder="" formControlName="reseauxsociaux" />
+                            </div>
+                        </div>
+
+
+                        <!-- <div class="">
+                            <div class="flex items-center label-actions-synthese">
+                                <span class="mr-2 text-xl synthese-link-edit"
+                                    >+</span
+                                >
+                                <span
+                                    class="cursor-pointer synthese-link-edit hover:underline"
+                                    >Ajouter des réseaux sociaux</span
+                                >
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </app-card-synthese>
+        <app-card-synthese [customTitle]="'Périmètre technique (nuage de mots clés)'" [customActionLabel]=""
+            [hasIconActions]="false">
+            <div body>
+                <div class="input-container w-full h-30 p-2">
+                    <textarea type="text" class="input-field-commentaire"
+                        formControlName="perimetreTechnique"></textarea>
+                </div>
+            </div>
+        </app-card-synthese>
+        <app-card-synthese [customTitle]="'Périmètre fonctionnel'" [customActionLabel]="" [hasIconActions]="false">
+            <div body>
+                <div class="flex flex-col px-2 marge">
+                    <div class="flex flex-col">
+                        <div class="font-bold text-sm text-gray-500">Domaines</div>
+                        <p-multiSelect [options]="domaines"  formControlName="domaines"
+                        appendTo="body" [maxSelectedLabels]="domainesSelected.length" display="chip">
+                            <ng-template let-group pTemplate="group">
+                                <div class="flex align-items-center">
+                                    <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                                        [class]="'mr-2 flag flag-' + group.value" style="width: 20px" />
+                                    <span>{{ group.label }}</span>
+                                </div>
+                            </ng-template>
+                        </p-multiSelect>
+                    </div>
+                </div>
+                <div class="flex flex-col px-2">
+                    <div class="flex flex-col">
+                        <div class="font-bold text-sm text-gray-500">Outils</div>
+                        <p-multiSelect [options]="tools"  formControlName="outils"
+                        appendTo="body" [maxSelectedLabels]="toolsSelected.length" display="chip" />
+                    </div>
+                </div>
+            </div>
+        </app-card-synthese>
+    </div>
+
+    <div class="sm:w-full md:w-1/2 flex flex-col">
+        <app-card-synthese [customTitle]="'Informations société'" [customActionLabel]="" [hasIconActions]="false">
+            <div body>
+                <div class="grid grid-cols-2 gap-2 px-2">
+                    <div class="flex flex-col">
+                        <div class="font-bold text-sm text-gray-500">Société</div>
+                        <div class="cursor-pointer synthese-link-edit hover:underline" *ngIf="lock">
+                            <span>
+                                <a [routerLink]="['/addcomp/'+this.company?.id]">
+                                    {{company?.nom || ''}}
+                                </a>
+                                <span (click)="lock=false">
+                                    
+                                </span>
+                            </span>
+                        </div>
+                        <div *ngIf="!lock">
+                            <div *ngIf="companies.length > 0" class="w-100%">
+                                <p-autoComplete class=" w-100% text-sm h-15 font-medium"
+                                    [dropdown]="true" 
+                                     />
+                                    
+                            </div>
+                        </div>
+                    </div>
+                    <div class="" *ngIf="lock"></div>
+                    <div class="flex flex-col" *ngIf="!lock">
+                        <span style="margin-top:25px"
+                            class="cursor-pointer synthese-link-edit hover:underline">
+                           
+                        </span>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="font-bold text-sm text-gray-500">Adresse</div>
+                        <div>
+                            {{company?.addresse || ''}}
+                        </div>
+                    </div>
+                    <div class=""></div>
+                    <div class="flex flex-col">
+                        <div class="font-bold text-sm text-gray-500">Secteur</div>
+                        <div>{{company?.secteur || ''}}</div>
+                    </div>
+                    <div class="flex flex-col" *ngIf="company?.effectif">
+                        <div class="font-bold text-sm text-gray-500">Effectif</div>
+                        <div>{{company.effectif || ''}}</div>
+                    </div>
+                    <div class="flex flex-col" *ngIf="company?.phone">
+                        <div class="font-bold text-sm text-gray-500">Téléphone</div>
+                        <div>{{company.telephone || ''}}</div>
+                    </div>
+                    <div class="flex flex-col" *ngIf="company?.website">
+                        <div class="font-bold text-sm text-gray-500">Site web</div>
+                        <div>{{company.siteweb || ''}}</div>
+                    </div>
+                </div>
+            </div>
+        </app-card-synthese>
+        <app-card-synthese [customTitle]="'Informations complémentaires'" [customActionLabel]=""
+            [hasIconActions]="false">
+            <div body>
+                <div class="input-container w-full h-30 p-2">
+                    <textarea type="text" class="input-field-commentaire font-bold text-gray-700"
+                        [value]="company?.information" ></textarea>
+                </div>
+            </div>
+        </app-card-synthese>
+    </div>
+</form>
+    <p-toast />
