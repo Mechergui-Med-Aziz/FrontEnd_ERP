@@ -6,7 +6,7 @@ export const typeActionsGuard: CanActivateFn = (route, state) => {
   const router=inject(Router);
   const auth=inject(TypeActionsService);
 
-  const isAllowed=localStorage.getItem('role')=="Manager";
+  const isAllowed=localStorage.getItem('role')!="Manager De Production";
   if(isAllowed){
     return true;
 }else{

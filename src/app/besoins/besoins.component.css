@@ -59,3 +59,32 @@
   padding-top: 60px; /* Ajuste cette valeur selon la hauteur de la navbar */
 }
   
+
+
+
+
+
+
+.main-layout {
+  display: flex;
+  gap: 20px; /* espace entre gauche et droite */
+  padding: 20px;
+}
+
+.left-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* espace entre les 2 containers à gauche */
+  flex: 1; /* prend de l'espace */
+}
+
+.right-side {
+  flex: 1; /* prend aussi de l'espace */
+}
+
+.container1, .container2, .container3 {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}

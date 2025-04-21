@@ -2,7 +2,7 @@ import { Component,ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CdkDragDrop, CdkDragMove, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { BesoinsService } from '../services/besoins.service';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContactsService } from '../services/contacts.service';
 import { ProfileService } from '../services/profile.service';
 import { HistoriqueBesoinsService } from '../services/historique-besoins.service';
@@ -11,6 +11,10 @@ import { AuthService } from '../services/auth.service';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ActionService } from '../services/action.service';
+import { TypeActionsService } from '../services/type-actions.service';
+import { Route, Router } from '@angular/router';
+
 
 
 @Component({
@@ -21,17 +25,29 @@ import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/
   styleUrl: './besoins.component.css'
 })
 export class BesoinsComponent implements OnInit{
-  constructor(private AuthSer:AuthService,private hbs:HistoriqueBesoinsService,private ps:ProfileService,private contactsService: ContactsService ,private besoinsService:BesoinsService,private fb: FormBuilder,private profileService : ProfileService) { }
+  constructor(private typeAction:TypeActionsService,private actionService: ActionService,private AuthSer:AuthService,private hbs:HistoriqueBesoinsService,private ps:ProfileService,private contactsService: ContactsService ,private besoinsService:BesoinsService,private fb: FormBuilder,private profileService : ProfileService) { }
   status:any;
-  selectedBesoin: any;
+  selectedBesoin!: any;
   isModalOpen: boolean = false;
   isAddModalOpen: boolean = false;
   isHistoricModalOpen: boolean = false;
+  isAddActionModalOpen: boolean = false;
   creationDate: any;
   nbBesoins: number = 0;
   mode: string = 'kanban';
 
   besoins: any[] = [];
+
+  Dashboard:any=false;
+
+  selectedTab: string = 'synthese';
+
+  selectTab(tab: string): void {
+    this.selectedTab = tab;
+    this.loadActions(this.selectedBesoin);
+
+    // Si besoin, ajouter ici des actions spécifiques au changement d'onglet
+  }
 
   switchMode($event: MatButtonToggleChange) {
   
@@ -39,7 +55,7 @@ export class BesoinsComponent implements OnInit{
 
   contacts: any[] = [];
   historiqueDuBesoin: any[] = [];
-  user: any 
+  user!: any 
   
   @ViewChild('scrollContainer', { static: false }) scrollContainer!: ElementRef;
 
@@ -93,8 +109,19 @@ export class BesoinsComponent implements OnInit{
     this.nbBesoins = 0;
     this.loadBesoins();
     this.loadContacts();
-    
+    this.loadProductionManagers();
 
+  }
+  productionManagers: any[] = [];
+
+  loadProductionManagers(){
+    this.profileService.findUSerByRole("Manager De Production").subscribe(
+      (users: any) => {
+        this.productionManagers = users;
+      },
+      (error: any) => {
+        console.error('Erreur lors du chargement des managers de production:', error);
+      });
   }
 
 
@@ -153,6 +180,8 @@ export class BesoinsComponent implements OnInit{
     
 
   drop(event: CdkDragDrop<any[], any, any>, newStatus: string) {
+    if(this.user.role=='Manager De Production')
+      return
     const previousContainer = event.previousContainer;
     const currentContainer = event.container;
   
@@ -218,6 +247,7 @@ export class BesoinsComponent implements OnInit{
     contact:[''],
     createdBy:['',Validators.required],
     priority:['',Validators.required],
+    managerResponsable:[]
   });
 
   besoinAddForm = this.fb.group({
@@ -228,32 +258,215 @@ export class BesoinsComponent implements OnInit{
     contact:[Validators.required],
     createdBy:[],
     priority:[{value:''},Validators.required],
+    managerResponsable:[]
   });
+
+
+
+  
+  selectedFiles: File[] = [];
+
+  actionAddForm= this.fb.group({
+    description: ['', Validators.required],
+    typeAction: ['', Validators.required],
+    dateAction: [dayjs().toISOString()],
+    createdBy: [''],
+    besoinId: [],
+    manager:[''],
+  });
+
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.selectedFiles = Array.from(input.files);
+    }
+  }
+  message: string = '';
+
+  addAction(): void {
+
+    if(this.selectedFiles.length >10) {
+      this.message = 'Vous ne pouvez pas ajouter plus de 10 fichiers.';
+      this.isModalOpen=true
+      return
+    }
+
+    for (const file of this.selectedFiles) {
+      if (file.size > 10 * 1024 * 1024) {
+        this.message = `Le fichier "${file.name}" dépasse la taille limite de 10 Mo.`;
+        this.isModalOpen = true;
+        return;
+      }
+    }
+    this.actionAddForm.patchValue({
+      besoinId: this.selectedBesoin.id,
+      createdBy: this.user.id,
+      manager:this.productionManagers.find(manager => manager.id == this.actionAddForm.value.manager)
+    });
+    if (this.actionAddForm.valid) {
+      const actionData = this.actionAddForm.value;
+      console.log('actionData:',actionData);
+      console.log('selectedFiles:',this.selectedFiles);
+      this.actionService.createActionBesoin(actionData, this.selectedFiles).subscribe(
+        response => {
+
+          this.message = 'Action enregistrée avec succès';
+          this.isModalOpen=true
+          //this.Dashboard=false;
+          this.selectTab("actions")
+          //console.log('Action enregistrée avec succès', response);
+          // Réinitialiser le formulaire et la sélection des fichiers si besoin
+          this.actionAddForm.reset();
+          this.selectedFiles = [];
+
+        },
+        error => {
+          console.error('Erreur lors de l\'enregistrement de l\'action', error);
+        }
+      );
+    }
+  }
+
+  DetailsActionForm = this.fb.group({
+    id: [Validators.required],
+    description: [{value:''},Validators.required],
+    typeAction: [{value:''},Validators.required],
+    dateAction: ['', Validators.required],
+    createdBy:'',
+    besoinId: [],
+    manager:[]
+  });
+
+  fillActionDetailsForm(action: any) {
+        this.DetailsActionForm.patchValue({
+          id: action.id,
+          description: action.description,
+          typeAction: action.typeAction,
+          dateAction: action.dateAction ? new Date(action.dateAction).toLocaleDateString('fr-FR') : '',
+          createdBy: action.createdBy.firstname + ' ' + action.createdBy.lastname,
+          besoinId: action.besoinId,
+          manager: action.manager ? action.manager.id : null
+        });
+        console.log(this.DetailsActionForm.value.manager);
+        (error: any) => {
+        console.error('Erreur lors du chargement de l\'action:', error);
+      }
+
+  }
+
+  selectedAction!: any;
+  isActionDetailsModalOpen: boolean = false;
+
+  openDetailsActionModal(action: any) {
+
+    this.selectedAction = action;
+    this.fillActionDetailsForm(action);
+    this.isActionDetailsModalOpen = true;
+    
+  }
+  isDetailsActionModalOpen: boolean = false;
+
+
+  closeDetailsActionModal() {
+    this.isActionDetailsModalOpen = false;
+    this.DetailsActionForm.reset();
+  }
+
+  EditAction() {
+
+    if(this.selectedFiles.length >10) {
+      this.message = 'Vous ne pouvez pas ajouter plus de 10 fichiers.';
+      this.isModalOpen=true
+      return
+    }
+
+    for (const file of this.selectedFiles) {
+      if (file.size > 10 * 1024 * 1024) {
+        this.message = `Le fichier "${file.name}" dépasse la taille limite de 10 Mo.`;
+        this.isModalOpen = true;
+        return;
+      }
+    }
+    console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
+
+    const updatedData = this.DetailsActionForm.value;
+    updatedData.besoinId = this.selectedAction.besoinId;
+    updatedData.createdBy = this.selectedAction.createdBy.id;
+    updatedData.dateAction = new Date(this.selectedAction.dateAction).toISOString();
+    updatedData.manager=this.productionManagers.find(manager => manager.id == this.DetailsActionForm.value.manager)
+
+    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh"+updatedData?.manager)
+
+    this.actionService.modifyActionBesoin(updatedData, this.selectedAction.id, this.selectedFiles).subscribe(
+      (response: any) => {
+        //console.log(`Action ${updatedData.id} mise à jour`);
+        this.message = 'Action modifiée avec succès';
+        this.isActionDetailsModalOpen = false;
+        this.isModalOpen=true
+        //this.Dashboard=false;
+        //this.Dashboard=true;
+        this.selectTab("actions")
+      },
+      (error: any) => {
+        console.error(`Erreur lors de la mise à jour de l'action ${updatedData.id}`, error);
+      }
+    );
+
+  }
+
+    
+
   
   
   userr!:any;
   
   fillForm(besoin: any) {
-    if (!besoin) return;
     this.ps.findUserById(besoin.createdBy).subscribe(
       (user: any) => {
         this.userr = user;
-        //console.log('User:', this.userr);
-      })
+      }
+    );
+  
     this.selectedBesoin = besoin;
-    //console.log('besoin:',besoin);
     this.creationDate = new Date(besoin.creationDate).toLocaleDateString('fr-FR');
-    //console.log('creationDate:',this.creationDate);
+  
     this.besoinForm.patchValue({
       id: besoin.id,
       title: besoin.title,
       description: besoin.description,
       creationDate: this.creationDate,
-      status:besoin.status,
-      contact:besoin.contact.lastname+' '+besoin.contact.firstname,
-      createdBy:this.user.firstname+' '+this.user.lastname,
-      priority:besoin.priority
+      status: besoin.status,
+      contact: besoin.contact ? besoin.contact.firstname + ' ' + besoin.contact.lastname : '',
+      createdBy: this.user.firstname + ' ' + this.user.lastname,
+      priority: besoin.priority,
+      managerResponsable: besoin.managerResponsable ? besoin.managerResponsable.id : null
     });
+  }
+  
+
+typeActions: any[] = [];
+loadTypeActions() {
+  this.typeAction.findTypeActionsByBelongTo("Besoin").subscribe(
+    (typeActions: any) => {
+      this.typeActions = typeActions;
+    },
+    (error: any) => {
+      console.error('Erreur lors du chargement des typeActions:', error);
+    }
+  );
+}
+openActionAddModal(){
+  this.loadTypeActions();
+  this.isAddActionModalOpen = true;
+}
+closeActionAddModal(){
+  this.isAddActionModalOpen = false;
+  this.actionAddForm.reset();
+}
+
+closeDashboard() {
+  this.Dashboard=false;
 }
 
 addBesoin() {
@@ -275,9 +488,13 @@ addBesoin() {
     status: "A_TRAITER",
     contact: contactObject, // Envoyer uniquement l'ID du contact
     createdBy:this.user.id,
-    priority: formValue.priority
-    
+    priority: formValue.priority,
+    managerResponsable:null
   };
+
+  if(formValue.managerResponsable!=null){
+    newBesoin.managerResponsable=this.productionManagers.find(manager => manager.id == formValue.managerResponsable);
+  }
 
   //console.log('Données envoyées:', newBesoin);
 
@@ -322,12 +539,74 @@ addBesoin() {
 }
 
 
+BesoinActions: any[] = [];
+
+loadActions(besoin: any) {
+  this.actionService.findActionsByBssoinId(besoin.id).subscribe(
+    (actions: any) => {
+      console.log(actions)
+      // Tri des actions par date de façon décroissante (la plus récente en premier)
+      this.BesoinActions = actions.sort(
+        (a:any, b:any) => new Date(b.dateAction).getTime() - new Date(a.dateAction).getTime()
+      );
+
+      this.BesoinActions.forEach(element => {
+        this.profileService.findUserById(element.createdBy).subscribe(
+          (user: any) => {
+            element.createdBy = user;
+          },
+          (error :any) => {
+            console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+          }
+        );
+      });
+    },
+    (error) => {
+      console.error('Erreur lors du chargement des actions', error);
+    }
+  );
+}
+isDeleteModalOpen=false
+
+
+deletedAction:any;
+openDeleteModal(action: any) {
+  this.deletedAction=action;
+  this.isDeleteModalOpen = true;
+}
+
+closeDeleteModal() {
+  this.isDeleteModalOpen = false;
+}
+
+deleteAction(id: number) {
+  this.actionService.deleteAction(id).subscribe(
+    (response: any) => {
+      console.log('Réponse du backend :', response);
+      this.isDeleteModalOpen = false;
+      this.deletedAction = null;
+      this.loadActions(this.selectedBesoin);
+      this.selectTab("actions");
+    },
+    (error: any) => {
+      console.error('Erreur lors de la suppression de l\'action :', error);
+    }
+  );
+
+}
+
+
+
   
 
   openModal(besoin: any) {
+
     this.fillForm(besoin);
+    this.Dashboard=true;
+    this.getHistoricBesoin(besoin);
+    this.selectTab("synthese");
     //console.log('besoin:',besoin);
-    this.isModalOpen = true;    
+    //this.isModalOpen = true;   
   }
   openAddModal() {
     console.log('openAddModal');
@@ -342,13 +621,32 @@ addBesoin() {
 
   closeModal() {
     this.isModalOpen = false;
+    if(this.message=='Action enregistrée avec succès')
+    this.closeActionAddModal();
+  this.closeDetailsActionModal();
   }
+manager:  any;
+
+loadManager(id:any){
+      this.profileService.findUserById(id).subscribe(
+      (user: any) => {
+        this.manager= user;
+        console.log('selectedBesoin.managerResponsable:',this.manager);
+      },
+      (error: any) => {
+        console.error('Erreur lors du chargement du manager responsable:', error);
+      }
+    );
+}
 
   saveChanges() {
-  
+    //this.loadManager(this.besoinForm.value.managerResponsable);  
+    console.log ("idddddddddddd"+this.besoinForm.value.managerResponsable);
     const updatedData = this.besoinForm.value;
     //console.log('updatedData:',updatedData);
     updatedData.contact = this.selectedBesoin.contact;
+    updatedData.managerResponsable=this.productionManagers.find(manager => manager.id == this.besoinForm.value.managerResponsable);
+    console.log('updatedData.managerResponsable:',updatedData.managerResponsable);
     updatedData.creationDate = this.selectedBesoin.creationDate;
     
     if(updatedData.status=='PERDU' || updatedData.status=='GAGNÉ' || updatedData.status=='REPORTE'){
@@ -390,6 +688,7 @@ addBesoin() {
         console.error(`Erreur lors de la mise à jour du besoin ${updatedData.id}`, error);
       }
     );
+    this.closeDashboard();
   }
 
   getPriorityColor(priority: string): string {
@@ -409,6 +708,7 @@ addBesoin() {
   }
 
   getHistoricBesoin(besoin :any){
+    console.log('besoin:',besoin);
     this.hbs.findHistoriqueBesoinsById(besoin.id).subscribe(
       (historique: any) => {
         console.log('Historique:', historique);

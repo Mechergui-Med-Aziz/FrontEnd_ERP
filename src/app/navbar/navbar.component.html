@@ -21,7 +21,7 @@
         <img src="assets/images/logo/besoin.svg" alt="Logo" class="w-8 h-10"><span> <b>Besoins</b></span>
       </a>
 
-      <span *ngIf="user?.role === 'Manager'">
+      <span *ngIf="user?.role != 'Manager De Production'">
       <a class="relative group flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full" [routerLink]="['/type-actions']" routerLinkActive="router-link-active">
         <img src="assets/images/logo/besoin.svg" alt="Logo" class="w-8 h-10"><span> <b>Type Actions</b></span>
       </a>
