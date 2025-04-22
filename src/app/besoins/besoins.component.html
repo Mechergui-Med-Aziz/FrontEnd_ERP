@@ -1,113 +1,318 @@
-<div class="relative">
-  <!-- Barre fixe -->
-  <div class="aa sticky w-5/6  bg-white ">
-    <!-- Titre Besoins -->
-    <div class="text-center">
-      <hr class="border-gray-300">
-      <h1 class="text-2xl font-bold py-2 text-gray-700 ">Besoins ({{ nbBesoins}})</h1>
-      <hr class="border-gray-300">
-    </div>
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- (Optionnel) Inclusion de Material Icons si besoin -->
+<link
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet"
+/>
+<div class="flex flex-col w-full bg-white" *ngIf="Dashboard==false">
+  <div class="w-full flex flex-col">
+    <div
+    class="fixed top-0 left-[250px] right-0  flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent " >
+    <div class="flex">
+      <!-- Title -->
+      <div class="flex-1">
+        <h2
+          class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate flex flex-row items-center"
+        >
+          <mat-icon class="icon-size-10 ml-4 relative-t-5">group </mat-icon>
+          <span class="ml-4">Besoins ({{nbBesoins}})</span>
+        </h2>
 
-    <!-- Barre de recherche et bouton Ajouter -->
-    <div class="flex w-full justify-between items-center mt-4">
-      <input type="text" placeholder="Rechercher..." class="mr-auto border p-2 rounded-md w-1/3">
-      <button class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg z-50" (click)="openAddModal()">
-        + Ajouter
-      </button>
-    </div>
-  </div>
+        <div class="flex flex-row items-center">
+          <mat-button-toggle-group
+          [(ngModel)]="mode"
+            class="mt-1"
+            name="favoriteColor"
+            aria-label="Favorite Color"
+            (change)="switchMode($event)"
+          >
+            <mat-button-toggle value="kanban">
+              <mat-icon
+                aria-hidden="false"
+                aria-label="Example home icon"
+                fontIcon="view_kanban"
+              >
+              </mat-icon
+              >Kanban
+            </mat-button-toggle>
+            <mat-button-toggle value="list">
+              <mat-icon
+                aria-hidden="false"
+                aria-label="Example home icon"
+                fontIcon="list"
+              >
+              </mat-icon
+              >List
+            </mat-button-toggle>
+          </mat-button-toggle-group>
 
-  <!-- Conteneur Kanban (avec padding pour ne pas cacher les éléments sous la barre fixe) -->
-  <div class="kanban-container scrollbar-hide">
-      <div #scrollContainer cdkDropListGroup class="flex space-x-4">
-        <div *ngFor="let column of columns" class="w-80 bg-white p-4 rounded-lg shadow-lg min-w-max">
-           <!-- Titre de la colonne -->
-        <div class="flex items-center space-x-2">
-          <span class="w-3 h-3 rounded-full" [ngStyle]="{'background-color': column.color}"></span>
-          <h2 class="font-bold text-lg text-gray-700">{{ column.title }} ({{ column.besoins.length }})</h2>
-        </div>
-        <div class="h-1 w-full mt-2" [ngStyle]="{'background-color': column.color}"></div>
-
-        <!-- Liste des besoins -->
-        <div cdkDropList [cdkDropListData]="column.besoins" 
-             (cdkDropListDropped)="drop($event, column.status)" 
-             class="min-h-[100px] p-2 bg-gray-100 rounded-md">
-             <div *ngFor="let besoin of column.besoins" 
-             cdkDrag 
-             class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between"
-             >
-          
-          <!-- Barre de priorité à gauche -->
-          <div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}" class="w-10 h-[85px] rounded-l-lg "></div>
-
-          <!-- Contenu principal -->
-          <div class="p-4 w-full flex items-center justify-between" (click)="openModal(besoin)" style="margin-left: -8%;">
-            <!-- Icône circulaire + titre -->
-            <div class="flex items-center space-x-2" >
-              <div class="w-8 h-8 flex items-center justify-center rounded-full text-white font-bold"
-                   [ngStyle]="{'background-color': besoin.color}">
-                {{ besoin.initiales }}
+          <div class="flex flex-row items-center ml-2">
+            <label for="table-search" class="sr-only">Search</label>
+            <div class="relative mt-1">
+              <div
+                class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none"
+              >
+                <svg
+                  class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
               </div>
-              <div >
-                <h3 class="font-semibold right-10">{{ besoin.title }}</h3>
-                <p class="text-sm text-gray-500 left-10">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</p>
-              </div>
+              <input
+                type="text"
+                id="table-search"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Rechercher"
+              />
             </div>
-        
-            <!-- Date + Entreprise -->
-            <div class="flex flex-col">
-              <p class="text-sm text-gray-500">&nbsp; {{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
-              <p class="text-sm text-gray-500 font-semibold"> &nbsp;{{ besoin.contact?.company?.name}}</p>
-            </div>
+            <button
+              
+              class="ml-2"
+              mat-icon-button
+              matSuffix
+            >
+              <mat-icon>tune</mat-icon>
+            </button>
+
           </div>
-        <div>
-          <button class="bg-blue-500 text-white text-xs leading-tight text-center py-2 rounded w-12 h-20 flex items-center justify-center" (click)="getHistoricBesoin(besoin)">
-            Voir<br>Historique
-          </button>
-          
-          
-
-
         </div>
+        <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;"/>
+      </div>
+      
+
+      <!-- Actions -->
+
+      <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+        <button class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg z-50" (click)="openAddModal()" [disabled]="user?.role=='Manager De Production'">
+          + Ajouter
+        </button>
+       
+      </div>
+
+    </div>
+      
+      <div class="px-4 w-full sm:flex-col md:flex-row flex">
+        <div class="sm:w-full w-2/3 flex flex-col sm:mt-2 md:mt-0">
+          <div class="py-4">
+            <!--<app-company-list *ngIf="mode === 'list'"></app-company-list>-->
+          </div>
+          <div>
+
+            <div class="relative" *ngIf="mode === 'kanban'">
+              <!-- Bouton gauche -->
+              <button 
+                (click)="scrollKanban('left')"
+                class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
+                aria-label="Scroll Left">
+                <!-- Tu peux utiliser une icône ou du texte -->
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+            
+              <!-- Conteneur Kanban -->
+              <div #scrollContainer class="kanban-container overflow-x-auto">
+                <div #scrollInner cdkDropListGroup class="flex space-x-4 pb-4">
+                  <div *ngFor="let column of columns" class="w-90 flex-shrink-0 bg-white p-4 rounded-lg shadow-lg h-full flex flex-col">
+                    <!-- Titre et contenu de la colonne -->
+                    <div class="flex-shrink-0">
+                      <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full" [ngStyle]="{'background-color': column.color}"></span>
+                        <h2 class="font-bold text-lg text-gray-700">
+                          {{ column.title }} ({{ column.besoins.length }}) <span *ngIf="column.besoins.length==0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        </h2>
+                      </div>
+                      <div class="h-1 w-full mt-2" [ngStyle]="{'background-color': column.color}"></div>
+                    </div>
+            
+                    <!-- Liste des besoins -->
+                    <div cdkDropList [cdkDropListData]="column.besoins" 
+                         (cdkDropListDropped)="drop($event, column.status)" 
+                         class="min-h-[100px] p-2 bg-gray-100 rounded-md">
+                      <div *ngFor="let besoin of column.besoins" 
+                      cdkDrag 
+                      (cdkDragMoved)="onDragMoved($event)"
+                           class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between h-24 w-full">
+                        <!-- Barre de priorité -->
+                        <div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}" class="w-10 h-[85px] rounded-l-lg"></div>
+            
+                        <!-- Contenu principal -->
+                        <div class="p-4 w-full flex items-center justify-between" (click)="openModal(besoin)" style="margin-left: -8%;">
+                          <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full text-white font-bold"
+                                 [ngStyle]="{'background-color': besoin.color}">
+                              {{ besoin.initiales }}
+                            </div>
+                            <div>
+                              <h3 class="font-semibold">{{ besoin.title }}</h3>
+                              <p class="text-sm text-gray-500">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</p>
+                            </div>
+                          </div>
+            
+                          <div class="flex flex-col">
+                            <p class="text-sm text-gray-500">{{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
+                            <p class="text-sm text-gray-500 font-semibold">{{ besoin.contact?.company?.nom }}</p>
+                          </div>
+                        </div>
+            
+                        <!-- Bouton historique -->
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+              <!-- Bouton droit -->
+              <button 
+                (click)="scrollKanban('right')"
+                class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
+                aria-label="Scroll Right">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+
+
+
+
+
+
+
+
+            <div class="flex flex-col w-full bg-white" *ngIf="mode === 'list'">
+              <div class="w-full flex flex-col">
+                
+                <head>
+                  <link
+                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+                    rel="stylesheet"
+                  />
+                  <!-- Google Fonts -->
+                  <link
+                    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+                    rel="stylesheet"
+                  />
+                  <!-- MDB -->
+                  <link
+                    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
+                    rel="stylesheet"
+                  />
+                </head>
+                <div class="max-h-[100vh] overflow-y-auto">
+                <table class="table align-middle mb-0 bg-white min-w-full">
+                  <thead class="bg-light">
+                    <tr>
+                      <th>Titre du Besoin</th>
+                      <th>description</th>
+                      <th>Status</th>
+                      <th>Date de Creation</th>
+                      <th>Créer Par</th>
+                      <th>Manager Responsable</th>
+                      <th>Priorité</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let besoin of besoins">
+                      <td>
+                        
+                          <div class="ms-3">
+                            <p class="fw-bold mb-1">{{ besoin.title }}</p>
+                          </div>
+                        
+                      </td>
+                      <td>
+                        <p class="fw-normal mb-1">{{ besoin.description }}</p>
+                        
+                      </td>
+                      <td>
+                        <span class="badge badge-success rounded-pill d-inline">{{besoin.status}}</span>
+                      </td>
+                      <td> {{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</td>
+
+                      <td><p class="text-sm text-gray-500">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</p></td>
+
+                      <td><p class="text-sm text-gray-500">{{ besoin?.managerResponsable?.firstname!=null ? besoin?.managerResponsable?.firstname: '-' }} {{ besoin?.managerResponsable?.lastname!=null ? besoin?.managerResponsable?.lastname:'-' }}</p></td>
+
+                      <td>
+                        <span 
+                          [ngClass]="{
+                            'badge-danger': besoin.priority === 'TRÉS_HAUTE',
+                            'badge-warning': besoin.priority === 'HAUTE',
+                            'badge-success': besoin.priority === 'BASSE',
+                            'badge-info': besoin.priority === 'MOYENNE'
+                          }">
+                          {{ besoin.priority !== 'RIEN' ? besoin.priority : '-' }}
+                        </span>
+                      </td>
+                      
+                        <span class="d-flex "><button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="openModal(besoin)">
+                          Ouvrir Fiche
+                        </button>
+                        </span>
+                        
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+                </div>
+              </div>
+            </div>
+            
+          </div>
         </div>
       </div>
+    
+    </div>
+    
+  </div>
+</div>
+
+<!--<div *ngIf="isHistoricModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div class="bg-white p-4 rounded-lg w-2/3 max-h-[80vh] flex flex-col">
+    <h2 class="text-xl font-bold text-center">Historique du Besoin</h2>
+    <br />
+
+    
+    <div class="flex-1 overflow-hidden border rounded">
+      <div class="overflow-y-auto max-h-[50vh]">
+        <table class="table-auto w-full text-left border-collapse">
+          <thead class="sticky top-0 bg-gray-200 z-10">
+            <tr>
+              <th class="px-4 py-2">Titre du besoin</th>
+              <th class="px-4 py-2">Description de l'historique</th>
+              <th class="px-4 py-2">Status</th>
+              <th class="px-4 py-2">Date De Création/Changement</th>
+              <th class="px-4 py-2">Faites Par</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let besoin of historiqueDuBesoin" class="hover:bg-gray-100">
+              <td class="px-4 py-2">{{ besoin.title }}</td>
+              <td class="px-4 py-2">{{ besoin.description }}</td>
+              <td class="px-4 py-2">{{ besoin.status }}</td>
+              <td class="px-4 py-2">{{ besoin.actionDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+              <td class="px-4 py-2">{{ besoin.actionBy }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  >
+    <div class="flex justify-end gap-4 mt-4 border-t pt-4">
+      <button type="button" class="bg-blue-400 text-white px-4 py-2 rounded" (click)="closeHistoricModal()">OK</button>
     </div>
   </div>
 </div>
 
 
-<div *ngIf="isHistoricModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-  <div class="bg-white p-4 rounded-lg w-1/2">
-    <h2 class="text-xl font-bold justify-center text-center">Historique du Besoin</h2>
-      <br>
-    <div class="flex flex-col">
-      <table class="table-auto w-full text-left border-collapse">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="px-4 py-2">Titre du besoin</th>
-            <th class="px-4 py-2">Description de l'historique</th>
-            <th class="px-4 py-2">Status</th>
-            <th class="px-4 py-2">Date De Création/Changement</th>
-            <th class="px-4 py-2">Faites Par</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let besoin of historiqueDuBesoin" class="hover:bg-gray-100">
-            <td class="px-4 py-2">{{ besoin.title }}</td>
-            <td class="px-4 py-2">{{ besoin.description }}</td>
-            <td class="px-4 py-2">{{ besoin.status }}</td>
-            <td class="px-4 py-2">{{ besoin.actionDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-            <td class="px-4 py-2">{{ besoin.actionBy }}</td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <div class="flex justify-end gap-4">
-        <button type="button" class="bg-blue-400 text-white px-4 py-2 rounded" (click)="closeHistoricModal()">OK</button>
-      </div>
-  </div>
-</div>
-  </div>
 
 
 <div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
@@ -167,7 +372,7 @@
         </div>
     </form>
   </div>
-</div>
+</div>-->
 
 
 <div *ngIf="isAddModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
@@ -199,10 +404,465 @@
             <option value="BASSE">BASSE</option>
           </select>
         </div>
+        <div>
+          <label for="manager">Manager Responable </label>
+          <select id="manager" formControlName="managerResponsable" class="w-full p-2 mt-1 border rounded"
+            [class.pointer-events-none]="user.role !== 'Directeur Associé'"
+            [class.bg-gray-200]="user.role !== 'Directeur Associé'">
+  
+            <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
+              {{ manager.firstname }} {{ manager.lastname }}
+            </option>
+          </select>
+        </div>
+
         <div class="flex justify-end gap-4">
           <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeAddModal()">Annuler</button>
           <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="addBesoin()" [disabled]="besoinAddForm.invalid">Sauvegarder</button>
         </div>
     </form>
   </div>
+</div>  
+
+<div *ngIf="isModalOpen" class="aa fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"> 
+  <div class="bg-white rounded-lg w-1/3 p-6">
+    <h2 class="text-2xl font-bold mb-4 bg-white text-black">{{message}}</h2>
+    
+    <div class="flex justify-end">
+      <button type="button" class="bg-green-400 text-white px-4 py-2 rounded" (click)="closeModal()">Ok</button>
+    </div>
+  </div>
 </div>
+
+
+
+<div *ngIf="isAddActionModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
+  <div class="bg-white p-4 rounded-lg w-1/3">
+    <h2 class="text-xl font-bold">Ajout d'une Action</h2>
+    <form [formGroup]="actionAddForm" (ngSubmit)="addAction()">
+      <div>
+        <label for="description">Description :</label>
+        <input type="text" id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description">
+      </div>
+
+      <div class="mt-4">
+        <label for="type">Type d'Action</label>
+        <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
+            <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name}}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="manager">Manager Responable </label>
+        <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
+          [class.pointer-events-none]="user.role == 'Manager De Production'"
+          [class.bg-gray-200]="user.role == 'Manager De Production'">
+
+          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
+            {{ manager.firstname }} {{ manager.lastname }}
+          </option>
+        </select>
+      </div>
+    
+      <div class="mt-4">
+        <label for="files">Fichiers :</label>
+        <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded">
+        <span class="text-sm text-gray-700">
+          Max : 10 fichiers de 10Mo max
+        </span>
+      </div>
+
+      <div class="flex justify-end gap-4 mt-4">
+      <button type="submit" [disabled]="actionAddForm.invalid" class="bg-blue-500 text-white px-4 py-2 rounded">Enregistrer</button>
+      <button type="button" (click)="closeActionAddModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Annuler</button>
+      </div>
+    </form>
+    
+  </div>
+</div>
+
+
+
+
+
+<div class="h-screen overflow-hidden bg-gray-100" *ngIf="Dashboard==true">
+  <!-- Conteneur principal en flex column -->
+  
+
+  <!-- Contenu principal décalé pour tenir compte de la sidebar -->
+  <div class="ml-[4%] flex flex-col h-full">
+    <!-- Header fixe en haut de la zone de contenu, avec un décalage à gauche -->
+    <header class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-10 h-[20%] rounded-lg">
+      <div class="flex flex-col sm:flex-row items-center justify-between">
+        <!-- Zone titre et navigation -->
+        <!-- Zone titre et navigation -->
+<div class="flex-1">
+  <h1 class="text-3xl font-extrabold tracking-tight flex items-center">
+    <span class="material-icons text-4xl ml-4">group</span>
+    <span class="ml-4 font-bold">Besoin Dashboard</span>
+  </h1>
+  <!-- Liens Synthèse et Actions alignés en bas -->
+  <div class="flex gap-4 items-end mt-2">
+    <button
+      (click)="selectTab('synthese')"
+      [ngClass]="selectedTab === 'synthese' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+      class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+      Synthèse
+    </button>
+    <button
+      (click)="selectTab('actions')"
+      [ngClass]="selectedTab === 'actions' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+      class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+      Actions
+    </button>
+  </div>
+</div>
+
+        <!-- Bouton d'action -->
+        <div class="mt-4 sm:mt-0 pt-10">
+          <button *ngIf="selectedTab=='synthese'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow "(click)="saveChanges()" [disabled]="besoinForm.invalid || user.role == 'Manager De Production'">
+            Sauvegarder
+          </button>
+
+          <button *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'">
+            Ajouter Une Action
+          </button>
+
+          <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" (click)="closeDashboard()">
+            Retour
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content scrollable -->
+    <main class="pt-[100px] overflow-y-auto h-full px-4 mt-8" *ngIf="selectedTab === 'synthese'">
+      <div class="flex flex-col md:flex-row gap-4 right-100">
+        <!-- Colonne de gauche (2/3 de largeur) -->
+        <div class="md:w-2/3 flex flex-col gap-4">
+          <!-- Container 1 : Détails du Besoin -->
+          <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-xl font-bold text-center mb-4">
+              Détails du Besoin
+            </h2>
+    <form [formGroup]="besoinForm">
+      <br>
+      <div hidden>
+          <label for="id">ID</label>
+          <input id="id"  formControlName="id" class="w-full p-2 mt-1 border rounded" />
+        </div>
+      <div>
+        <label for="title">Titre</label>
+        <input id="title" type="text" formControlName="title" class="w-full p-2 mt-1 border rounded" [readOnly]="user.role == 'Manager De Production'" />
+      </div>
+      <div>
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="user.role == 'Manager De Production'"></textarea>
+      </div>
+      <div>
+          <label for="creationDate">Date De Création</label>
+          <input id="creationDate" formControlName="creationDate" class="w-full p-2 mt-1 border rounded" readonly/>
+        </div>
+      <div>
+        <label for="status">Statut</label>
+        <select id="status" formControlName="status" class="w-full p-2 mt-1 border rounded" [class.pointer-events-none]="user.role == 'Manager De Production'"
+        [class.bg-gray-200]="user.role == 'Manager De Production'">
+          <option value="A_TRAITER">À TRAITER</option>
+          <option value="ABANDONNÉ">ABANDONNÉ</option>
+          <option value="OK_PREQUALIFIE">OK PRÉ-QUALIFIÉ</option>
+          <option value="EN_COURS">EN COURS</option>
+          <option value="GAGNÉ">GAGNÉ</option>
+          <option value="PERDU">PERDU</option>
+          <option value="REPORTE">REPORTÉ</option>
+        </select>
+      </div>
+      <div>
+        <label for="priority">Priorité</label>
+        <select id="priority" formControlName="priority" class="w-full p-2 mt-1 border rounded" [class.pointer-events-none]="user.role == 'Manager De Production'"
+        [class.bg-gray-200]="user.role == 'Manager De Production'">
+          <option value="TRÉS_HAUTE">TRÉS_HAUTE</option>
+          <option value="HAUTE">HAUTE</option>
+          <option value="MOYENNE">MOYENNE</option>
+          <option value="BASSE">BASSE</option>
+        </select>
+      </div>
+      <div>
+        <label for="manager">Manager Responable </label>
+        <select id="manager" formControlName="managerResponsable" class="w-full p-2 mt-1 border rounded"
+          [class.pointer-events-none]="user.role !== 'Directeur Associé'"
+          [class.bg-gray-200]="user.role !== 'Directeur Associé'">
+
+          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
+            {{ manager.firstname }} {{ manager.lastname }}
+          </option>
+        </select>
+      </div>
+        
+      <div>
+        <label for="contact">Contact</label>
+        <input id="contact" formControlName="contact" class="w-full p-2 mt-1 border rounded" readonly />
+      </div>
+
+      <div>
+        <label for="createdBy">Créer Par :</label>
+        <input id="createdBy" formControlName="createdBy" class="w-full p-2 mt-1 border rounded" readonly />
+      </div>
+              
+            </form>
+          </div>
+          <!-- Container 2 : Historique du Besoin -->
+          <div class="bg-white p-4 rounded-lg shadow max-h-[100vh] overflow-y-auto">
+            <h2 class="text-xl font-bold text-center mb-4">
+              Historique du Besoin
+            </h2>
+            <table class="min-w-full text-left">
+              <thead class="bg-gray-200">
+                <tr>
+                  <th class="px-2 py-2">Titre du besoin</th>
+                  <th class="px-2 py-2">Description de l'historique</th>
+                  <th class="px-2 py-2">Status</th>
+                  <th class="px-2 py-2">Date De Création/Changement</th>
+                  <th class="px-2 py-2">Faites Par</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let besoin of historiqueDuBesoin" class="hover:bg-gray-100">
+                  <td class="px-2 py-2">{{ besoin.title }}</td>
+                  <td class="px-2 py-2">{{ besoin.description }}</td>
+                  <td class="px-2 py-2">{{ besoin.status }}</td>
+                  <td class="px-2 py-2">{{ besoin.actionDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                  <td class="px-2 py-2">{{ besoin.actionBy }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Colonne de droite (1/3 de largeur) -->
+        <div class="md:w-1/3">
+          <div class="bg-white p-4 rounded-lg shadow">
+            <h2 class="text-xl font-bold text-center mb-4">
+              Informations Complémentaire
+            </h2>
+            <div class="mt-2">
+              <label for="name">Nom Du Société</label>
+              <input id="name" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.company?.nom}}" readonly/>
+            </div>
+
+            <div class="mt-2">
+              <label for="numm">Numéro Du Société</label>
+              <input id="numm" type="number" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.company?.telephone}}" readonly/>
+            </div>
+
+            <div class="mt-2">
+              <label for="secteur">Secteur Du Société</label>
+              <input id="secteur" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.company?.secteur}}" readonly/>
+            </div>
+            <div class="mt-2">
+              <label for="contact">Contact</label>
+              <input id="contact" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.firstname}} {{selectedBesoin.contact.lastname}}" readonly/>
+            </div>
+
+            <div class="mt-2">
+              <label for="num">Numéro Du Contact</label>
+              <input id="num" type="number" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.phone}}" readonly/>
+            </div>
+
+            <div class="mt-2">
+              <label for="email">Email Du Contact</label>
+              <input id="email" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.email}}" readonly/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+
+    <main class="pt-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="selectedTab === 'actions'">
+      <div class="w-full max-w-7xl">
+        <div class="flex flex-col md:flex-row gap-8">
+          <div class="w-full flex flex-col gap-8">
+            <div class="bg-white p-8 rounded-2xl shadow-lg">
+              <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+                Liste Des Actions
+              </h2>
+    
+              <div class="flex-1 overflow-hidden border rounded-lg">
+                <div class="overflow-y-auto max-h-[70vh]">
+                  <table class="min-w-full table-auto text-left border-collapse">
+                    <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                      <tr>
+                        <th class="px-4 py-6">Type d'action</th>
+                        <th class="px-4 py-6">Description</th>
+                        <th class="px-4 py-6">Créé Par</th>
+                        <th class="px-4 py-6">Manager Responsable</th>
+                        <th class="px-4 py-6">Fichiers</th>
+                        <th class="px-4 py-6">Date Action</th>
+                        <th class="px-4 py-6">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let action of BesoinActions" class="hover:bg-gray-50 text-gray-600 text-base">
+                        <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
+                        <td class="px-4 py-6">{{ action.description }}</td>
+                        <td class="px-4 py-6">{{ action.createdBy.firstname}} {{action.createdBy.lastname}}</td>
+                        <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td>
+                        <td class="px-4 py-6">
+                          <ul class="list-disc list-inside space-y-1" *ngIf="action.attachments.length!=0">
+                            <li *ngFor="let file of action.attachments">
+                              {{ file.fileName }}
+                            </li>
+                          </ul>
+                          <span *ngIf="action.attachments.length==0">--------</span>
+                        </td>
+                        <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                        <td>
+                          <div class="flex space-x-2">
+                            <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action)">
+                              Edit
+                            </button>
+                            <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action)" [disabled]="user.role=='Manager De Production'">
+                              Supprimer
+                            </button>
+                          </div>
+                        </td>
+                        
+                        
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>      
+        </div>
+      </div>
+    </main>
+
+    <div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div class="bg-white rounded-lg w-1/3 p-6">
+        <h2 class="text-2xl font-bold mb-4 bg-white text-black">Etes-Vous Sûr de supprimer l'action</h2>
+        
+        <div class="flex justify-end gap-4">
+          <button type="button" class="bg-green-400 text-white px-4 py-2 rounded" (click)="closeDeleteModal()">Non</button>
+          <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"(click)="deleteAction(deletedAction.id)">Oui</button>
+        </div>
+      </div>
+    </div>
+
+    
+  <!--  <div *ngIf="isHistoricModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+      <div class="bg-white p-4 rounded-lg w-2/3 max-h-[80vh] flex flex-col">
+        <h2 class="text-xl font-bold text-center">Historique du Besoin</h2>
+        <br />
+    
+        
+        <div class="flex-1 overflow-hidden border rounded">
+          <div class="overflow-y-auto max-h-[50vh]">
+            <table class="table-auto w-full text-left border-collapse">
+              <thead class="sticky top-0 bg-gray-200 z-10">
+                <tr>
+                  <th class="px-4 py-2">Titre du besoin</th>
+                  <th class="px-4 py-2">Description de l'historique</th>
+                  <th class="px-4 py-2">Status</th>
+                  <th class="px-4 py-2">Date De Création/Changement</th>
+                  <th class="px-4 py-2">Faites Par</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let besoin of historiqueDuBesoin" class="hover:bg-gray-100">
+                  <td class="px-4 py-2">{{ besoin.title }}</td>
+                  <td class="px-4 py-2">{{ besoin.description }}</td>
+                  <td class="px-4 py-2">{{ besoin.status }}</td>
+                  <td class="px-4 py-2">{{ besoin.actionDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                  <td class="px-4 py-2">{{ besoin.actionBy }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+    
+      >
+        <div class="flex justify-end gap-4 mt-4 border-t pt-4">
+          <button type="button" class="bg-blue-400 text-white px-4 py-2 rounded" (click)="closeHistoricModal()">OK</button>
+        </div>
+      </div>
+    </div>-->
+    
+    
+    
+    
+    <div *ngIf="isActionDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+      <div class="bg-white p-6 rounded-lg w-1/3">
+        <h2 class="text-xl font-bold mb-4">Détails d'Action</h2>
+        <div class="max-h-[85vh] overflow-y-auto">
+        <form [formGroup]="DetailsActionForm">
+          <div hidden>
+            <label for="id">ID</label>
+            <input id="id" formControlName="id" class="w-full p-2 mt-1 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label for="type">Type</label>
+            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="user.role=='Manager De Production'" />
+          </div>
+          <div class="mb-4">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="user.role=='Manager De Production'"></textarea>
+          </div>
+          <div class="mb-4">
+            <label for="creationDate">Date De Création</label>
+            <input id="creationDate" formControlName="dateAction" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+          <div class="mb-4">
+            <label for="createdBy">Créé Par</label>
+            <input id="createdBy" formControlName="createdBy" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+
+          <div class="mb-4">
+            <label for="manager">Manager Responsable</label>
+          <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
+          [class.pointer-events-none]="user.role == 'Manager De Production'"
+          [class.bg-gray-200]="user.role == 'Manager De Production'">
+
+          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
+            {{ manager.firstname }} {{ manager.lastname }}
+          </option>
+        </select>
+
+      </div>
+    
+          <!-- Section affichant les fichiers existants sous forme de liens cliquables -->
+          <div class="mb-4">
+            <label class="block">Fichiers déjà joints :</label>
+            <ul class="list-disc list-inside space-y-1">
+              <li *ngFor="let file of selectedAction.attachments">
+                <!-- Ici, on concatène la base URL du serveur avec le chemin du fichier. Adaptez l’URL selon votre configuration -->
+                <a [attr.download]="file.fileName" [href]="'http://localhost:8080/api/action-besoin/files/' + file.filePath.replace('uploads\\', '')" target="_blank" class="text-blue-500 hover:underline">
+                    {{ file.fileName }}
+                  </a>
+              </li>
+            </ul>
+            <span class="text-sm text-gray-700">
+              Téléchargez les fichiers avant de joindre de nouveaux fichiers si besoin.
+            </span>
+          </div>
+    
+          <!-- Section pour joindre de nouveaux fichiers -->
+          <div class="mb-4">
+            <label for="files" class="block">Joindre de nouveaux fichiers :</label>
+            <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="user.role=='Manager De Production'">
+            <span class="text-sm text-gray-700">
+              NB : La jointure de fichiers supprimera les anciens fichiers. Si vous souhaitez les conserver, veuillez les télécharger.
+            </span>
+          </div>
+    
+          <div class="flex justify-end gap-4 mt-4">
+            <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeDetailsActionModal()">Annuler</button>
+            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="EditAction()" [disabled]="DetailsActionForm.invalid || user.role=='Manager De Production'">
+              Sauvegarder
+            </button>
+          </div>
+        </form>
+      </div>
+      </div>
+    </div>
+      </div>

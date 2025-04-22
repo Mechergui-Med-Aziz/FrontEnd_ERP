@@ -43,4 +43,18 @@ export class ProfileService {
               console.error('Error:', error);
               return error;
             }));}
+
+
+            findUSerByRole(role: string): any {
+              return this.http.get(`${this.url}/user/role/${role}`, this.options).pipe(
+                map(response => {
+                  //console.log('Response:', response);
+                  return response;
+                }),
+                catchError(error => {
+                  console.error('Error:', error);
+                  return error;
+                })
+              );
+            }
 }

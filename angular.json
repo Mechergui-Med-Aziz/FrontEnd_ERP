@@ -34,9 +34,10 @@
               "src/styles.css",
               
           
-              "node_modules/ngx-spinner/animations/ball-pulse.css"
+              "node_modules/ngx-spinner/animations/ball-pulse.css",
               
               
+              "src/styles.css"              
             ],
             "scripts": []
           },
