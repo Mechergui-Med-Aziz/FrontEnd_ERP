@@ -16,7 +16,8 @@ import { CompServiceService } from '../../../services/comp-service.service';
   styleUrl: './company-kanban.component.css'
 })
 export class CompanyKanbanComponent implements OnInit{
-  constructor(private companyService:CompServiceService,private fb: FormBuilder) { }
+  companycontacts: any;
+  constructor(private companyService:CompServiceService,private fb: FormBuilder,private contactsService: ContactsService) { }
   statut:any;
   selectedCompany: any;
   
@@ -85,9 +86,9 @@ export class CompanyKanbanComponent implements OnInit{
       
   
       movedItem.statut = newStatut;
-      ;
+      this.companycontacts = movedItem.contacts;
   
-      console.log('Besoin déplacé:', movedItem);
+      console.log('societe déplacé:', movedItem);
       console.log('Nouveau statut:', newStatut);
       this.companyService.updateCompanystatus(movedItem.id,movedItem).subscribe(
         (response: any) => {
@@ -98,6 +99,23 @@ export class CompanyKanbanComponent implements OnInit{
           console.error(`Erreur lors de la mise à jour du besoin ${movedItem.id}`, error);
         }
       );
+      this.companycontacts.forEach((element: any) => {
+        console.log('Contact hahah :', element);
+        console.log('ID du contact:', element.id); // Debugging line
+        console.log('Statut du societe:', newStatut); // Debugging line
+        this.contactsService.updateContactStatut(element.id,newStatut).subscribe(
+          (response: any) => {
+            console.log(`contact ${element.nom} mis à jour avec le statut ${newStatut}`);
+            this.ngOnInit();
+          },
+          (error: any) => {
+            console.error(`Erreur lors de la mise à jour du contact ${element.id}`, error);
+          }
+        );
+       
+  
+        
+      });
     }
   }
 

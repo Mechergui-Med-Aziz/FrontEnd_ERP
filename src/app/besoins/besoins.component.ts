@@ -128,6 +128,7 @@ export class BesoinsComponent implements OnInit{
   loadContacts() {
     this.contactsService.findAllContacts().subscribe(
       (contacts: any) => {
+        console.log('Contacts:', contacts); // Debugging line
         this.contacts = contacts;
       },
       (error: any) => {
@@ -717,6 +718,7 @@ loadManager(id:any){
         this.historiqueDuBesoin.forEach(element => {
           this.profileService.findUserById(element.actionBy).subscribe(
             (user: any) => {
+              console.log('User:', user);
               element.actionBy = user.firstname + ' ' + user.lastname;
             }
           );

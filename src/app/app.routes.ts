@@ -11,6 +11,9 @@ import { CompanyListComponent } from './CRM/societe/company-list/company-list.co
 import { CompanyKanbanComponent } from './CRM/societe/company-kanban/company-kanban.component';
 import { CompanyComponent } from './CRM/societe/company/company.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ContactComponent } from './CRM/contact/contact/contact.component';
+import { AddContactComponent } from './CRM/contact/add-contact/add-contact.component';
+
 
 export const routes: Routes = [ 
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -24,5 +27,10 @@ export const routes: Routes = [
     {path:'besoins',component:BesoinsComponent},
     {path:'profile',component:ProfileComponent},
     {path:'companyKanban' ,component:CompanyKanbanComponent },
-    { path: 'addcomp/:id', component: AddCompanyComponent }
+    { path: 'addcomp/:id', component: AddCompanyComponent },
+    { path: 'contact', component: ContactComponent },
+    { path: 'addcontact', component: AddContactComponent },
+    { path: 'updatecontact/:idContact', component: AddContactComponent },
+    { path: 'addcontact/:idCompany', component: AddContactComponent },
+    
     ];

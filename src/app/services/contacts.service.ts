@@ -45,5 +45,83 @@ findAllContacts(): any {
   );
 
 }
-
+findContactByStatut(statut: any): any {
+  console.log('Statut service:', statut); // Debugging line
+  return this.http.get(`${this.url}/contact/statut/${statut}`, this.options).pipe(
+   
+    map(response => {
+      //console.log('Response:', response);
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error:', error);
+      return error;
+    })
+  );
 }
+
+updateContactStatus(id:any,contact: any): any {
+  return this.http.put(`${this.url}/contact/updatestatus/${id}`, contact, this.options).pipe(
+    map(response => {
+      console.log('Response:', response); 
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error:', error);
+      throw error;  // Utilise throw error pour rejeter l'erreur de manière propre
+    })
+  );
+}
+updateContactStatut(id:any, statut: String): any {
+  console.log('Statut dans le service:', statut); // Debugging line
+  return this.http.put(`${this.url}/contact/updatestatut/${id}`,  statut , this.options).pipe(
+    map(response => {
+      console.log('Response:', response); // Debugging line
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error:', error);
+      throw error; // Utilise throw error pour rejeter l'erreur de manière propre
+    })
+  );
+}
+updateContact(id: number, contact: any): any {
+  return this.http.put(`${this.url}/contact/update/${id}`, contact, this.options).pipe(
+    map(response => {
+      //console.log('Response:', response);
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error:', error);
+      return error;
+    })
+  );
+}
+
+
+createContact(contact: any): any {
+  console.log('Creating contact:', contact); // Debugging line
+  return this.http.post(`${this.url}/contact/add`, contact, this.options).pipe(
+    map(response => {
+      //console.log('Response:', response);
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error:', error);
+      return error;
+    })
+  );
+}
+deleteContact(id: any): any {
+  return this.http.delete(`${this.url}/contact/delete/${id}`, this.options).pipe(
+    map(response => {
+      console.log('response in service', response);
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error:', error);
+      return error;
+    })
+  );
+
+}}
