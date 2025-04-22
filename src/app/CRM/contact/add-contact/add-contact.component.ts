@@ -92,7 +92,7 @@ export class AddContactComponent implements OnInit{
   listeProvenance: any[] = ["Prospection", "Apporteur", "Collègue", "Réseau", "Appel d'offre", "Appel entrant", "Client", "Salon", "Google", "Hitechpros", "Linkedin & RS", "Turnover"];
   listeAgence: any[] = ["BU expertise France", "BU Solution France", "BU Conseil France", "BU expertise Tunisie", "BU Solution Tunisie", "BU Conseil Tunisie", "BU SP - BP"];
   
-
+mode: any;
   
   domainesSelected: any[] = [];
   toolsSelected: any[] = [];
@@ -154,9 +154,11 @@ export class AddContactComponent implements OnInit{
       }
     );
     if (this.idCompany) {
+      this.mode='add';
       this.loadCompanyData(this.idCompany);
     } 
     else {
+      this.mode='edit';
       this.loadContactData(this.idContact);
       
     }

@@ -370,6 +370,7 @@ addBesoin() {
         this.historiqueDuBesoin.forEach(element => {
           this.profileService.findUserById(element.actionBy).subscribe(
             (user: any) => {
+              console.log('User:', user);
               element.actionBy = user.firstname + ' ' + user.lastname;
             }
           );

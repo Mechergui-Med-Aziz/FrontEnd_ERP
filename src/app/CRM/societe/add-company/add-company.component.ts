@@ -19,6 +19,7 @@ import { CardSyntheseComponent } from '../card-synthese/card-synthese.component'
 import { CompServiceService } from '../../../services/comp-service.service';
 import { AuthService } from '../../../services/auth.service';
 import countries from 'world-countries';
+import { ContactsService } from '../../../services/contacts.service';
 
 
 
@@ -38,7 +39,7 @@ export class AddCompanyComponent implements OnInit {
   societesStatusList: any[] = [
     { value: 'Prospect', name: 'Prospect', color: 'green' },
     { value: 'Client', name: 'Client', color: 'red' },
-    { value: 'Client direct', name: 'Client direct', color: 'blue' },
+    { value: 'Client_direct', name: 'Client direct', color: 'blue' },
     { value: 'Partenaire', name: 'Partenaire', color: 'orange' },
     { value: 'Piste', name: 'Piste', color: 'purple' },
     { value: 'Fournisseur', name: 'Fournisseur', color: 'yellow' },
@@ -130,6 +131,8 @@ export class AddCompanyComponent implements OnInit {
   
  
   formData = new FormData();
+  companycontacts: any;
+  newContact:any;
   
   constructor(
     private fb: FormBuilder,
@@ -138,7 +141,8 @@ export class AddCompanyComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private messageService: MessageService,
    
-    private compService: CompServiceService
+    private compService: CompServiceService,
+    private contactsService: ContactsService,
   )
   {
     this.companyForm = this.fb.group({
@@ -165,6 +169,7 @@ export class AddCompanyComponent implements OnInit {
       rcs: ['', []],
       codeApe: ['', []],
       numeroFournisseur: ['', []],
+     
       
       
       
@@ -176,6 +181,7 @@ export class AddCompanyComponent implements OnInit {
       
       
     });
+    
   }
   // Modifiez votre composant AddCompanyComponent pour gérer l'édition
 
@@ -195,6 +201,11 @@ loadCompanyData(id: number) {
   this.compService.getCompById(id).subscribe(
     (company: any) => {
       this.companyForm.patchValue(company);
+      console.log('Company data loaded:', this.companyForm.value);
+      this.companycontacts = company.contacts || []; // Assurez-vous que contacts est un tableau
+      console.log('Company contacts:', this.companycontacts);
+
+
     },
     (error: any) => {
       console.error('Error loading company data:', error);
@@ -217,7 +228,25 @@ saveChanges() {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la mise à jour' });
       }
     );
-  } else {
+    this.companycontacts.forEach((element: any) => {
+      console.log('Contact hahah :', element);
+      console.log('ID du contact:', element.id); // Debugging line
+      console.log('Statut du societe:', this.companyForm.value.statut); // Debugging line
+      this.contactsService.updateContactStatut(element.id,this.companyForm.value.statut).subscribe(
+        (response: any) => {
+          console.log(`contact ${element.nom} mis à jour avec le statut ${this.companyForm.value.statut}`);
+          this.ngOnInit();
+        },
+        (error: any) => {
+          console.error(`Erreur lors de la mise à jour du contact ${element.id}`, error);
+        }
+      );
+     
+
+      
+    });
+    } 
+    else {
     // Mode création
     this.compService.createComp(this.companyForm.value).subscribe(
       (response: any) => {

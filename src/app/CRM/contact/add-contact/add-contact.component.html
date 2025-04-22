@@ -104,21 +104,8 @@
                     <div class="">
                         <div class="flex flex-col">
                             <div class="font-bold text-sm text-gray-500">Etat</div>
-                            <mat-form-field class="w-full h-15 rounded">
-                                <mat-select class=" " formControlName="statut">
-                                    <mat-option *ngFor="let tp of listeEtat" [value]="tp.name"
-                                        class="text-sm font-medium">
-
-                                        <span class="status-label">
-                                            <span class="status-dot" [ngStyle]="{
-                                                    'background-color': tp.color
-                                                }"></span>
-                                            {{ tp.name }}
-                                        </span>
-
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
+                          
+                            <input type="text" class="form-control"  [(ngModel)]="this.company.statut" formControlName="statut" readonly/>
                         </div>
                     </div>
 

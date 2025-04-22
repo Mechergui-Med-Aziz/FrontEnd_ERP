@@ -72,7 +72,19 @@ updateContactStatus(id:any,contact: any): any {
     })
   );
 }
-
+updateContactStatut(id:any, statut: String): any {
+  console.log('Statut dans le service:', statut); // Debugging line
+  return this.http.put(`${this.url}/contact/updatestatut/${id}`,  statut , this.options).pipe(
+    map(response => {
+      console.log('Response:', response); // Debugging line
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error:', error);
+      throw error; // Utilise throw error pour rejeter l'erreur de manière propre
+    })
+  );
+}
 updateContact(id: number, contact: any): any {
   return this.http.put(`${this.url}/contact/update/${id}`, contact, this.options).pipe(
     map(response => {

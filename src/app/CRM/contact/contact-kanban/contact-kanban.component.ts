@@ -56,7 +56,7 @@ export class ContactKanbanComponent implements OnInit{
     });
   }
 
-  drop(event: CdkDragDrop<any[], any, any>, newStatut: string) {
+ /* drop(event: CdkDragDrop<any[], any, any>, newStatut: string) {
     const previousContainer = event.previousContainer;
     const currentContainer = event.container;
   
@@ -77,6 +77,7 @@ export class ContactKanbanComponent implements OnInit{
       ;
   
       console.log('contact déplacé:', movedItem);
+      console.log('id du contact', movedItem.id);
       console.log('Nouveau statut:', newStatut);
       this.contactsService.updateContactStatus(movedItem.id,movedItem).subscribe(
         (response: any) => {
@@ -87,5 +88,5 @@ export class ContactKanbanComponent implements OnInit{
           console.error(`Erreur lors de la mise à jour du contact ${movedItem.id}`, error);
         }
       );
-    }}
+    }}*/
 }

@@ -16,7 +16,7 @@
         <!-- Liste des entreprises avec scroll vertical -->
         <div cdkDropList 
              [cdkDropListData]="column.contacts" 
-             (cdkDropListDropped)="drop($event, column.statut)" 
+              
              class="flex-1 overflow-y-auto mt-2 p-2 bg-gray-100 rounded-md">
           <div *ngFor="let contact of column.contacts" 
                cdkDrag 
