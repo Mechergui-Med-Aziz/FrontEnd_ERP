@@ -1,4 +1,6 @@
-<div class="flex flex-col w-full bg-white">
+
+
+  <div class="flex flex-col w-full bg-white" >
     <div class="w-full flex flex-col">
       
       <head>
@@ -17,51 +19,67 @@
           rel="stylesheet"
         />
       </head>
-      <table class="table align-middle mb-0 bg-white">
+      <div class="max-h-[100vh] overflow-y-auto">
+      <table class="table align-middle mb-0 bg-white min-w-full">
         <thead class="bg-light">
           <tr>
-            <th>Image</th>
-            <th>secteur</th>
-            <th>Status</th>
-            <th>Manager</th>
-            <th>Actions</th>
+            <th>Titre du contact</th>
+            <th>Fonction</th>
+            <th>Service</th>
+            <th>Date de Creation</th>
+            <th>Créer Par</th>
+            <th>Type</th>
+            <th>Statut</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let contact of liste">
             <td>
-              <div class="d-flex align-items-center">
-                <img
-                  src="https://mdbootstrap.com/img/new/avatars/8.jpg"
-                  alt=""
-                  style="width: 45px; height: 45px"
-                  class="rounded-circle"
-                />
+              
                 <div class="ms-3">
-                  <p class="fw-bold mb-1">{{ contact.nom }}</p>
-                  <p class="text-muted mb-0">{{ contact.telephone }}</p>
+                  <p class="fw-bold mb-1">{{ contact.firstname }} {{ contact.lastname }}</p>
                 </div>
-              </div>
-            </td>
-            <td>
-              <p class="fw-normal mb-1">{{ contact.secteur }}</p>
-              <p class="text-muted mb-0">{{ contact.provenance }}</p>
-            </td>
-            <td>
-              <span class="badge badge-success rounded-pill d-inline">{{
-                contact.statut
-              }}</span>
-            </td>
-            <td>{{ contact.manager }}</td>
-            <td>
-              <button type="button" class="btn btn-link btn-sm btn-rounded" (click)="editContact(contact)">
-                Edit
-              </button>
               
             </td>
+            <td>
+              <p class="fw-normal mb-1">{{ contact.function }}</p>
+              
+            </td>
+            <td>
+              <span class="badge badge-success rounded-pill d-inline">{{contact.service}}</span>
+            </td>
+            <td> {{ contact.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</td>
+
+            <td><p class="text-sm text-gray-500">{{ contact.manager}} </p></td>
+
+            <td><p class="text-sm text-gray-500">{{contact.type }}</p></td>
+
+            <td>
+              <span 
+                [ngClass]="{
+                  'badge-danger': contact.status === 'prospect',
+                  'badge-warning': contact.status === 'Client'
+                
+                }">
+                {{ contact.status }}
+              </span>
+            </td>
+            
+              <span class="d-flex "><button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="editContact(contact)">
+                Ouvrir Fiche
+              </button>
+              </span>
+              
+            
+            
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
   </div>
+
+
+
   

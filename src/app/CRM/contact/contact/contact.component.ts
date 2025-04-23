@@ -54,6 +54,7 @@ import { CompServiceService } from '../../../services/comp-service.service';
   styleUrl: './contact.component.css'
 })
 export class ContactComponent implements OnInit {
+  
  
   switchMode($event: MatButtonToggleChange) {
   
@@ -61,6 +62,7 @@ export class ContactComponent implements OnInit {
   isModalOpen: boolean = false;
     mode: any;
       val: any;
+      nbContacts: number = 0;
      
       filteredOptions: any;
       companies: any[] = [];
@@ -72,6 +74,8 @@ export class ContactComponent implements OnInit {
     ) { }
   ngOnInit(): void {
     this.mode="kanban";
+    this.nbContacts = 0;
+    this.loadContacts();
   }
  
   openFilterDialog(){
@@ -100,9 +104,25 @@ companyname :any;
 
 create() {
   
-  const company = this.companies.find(c => c.nom === this.companyname);
+  const company = this.companies.find(c => c.name === this.companyname);
  console.log('Selected company:', company);
   this.router.navigate([`addcontact/${company.id}`]);
   this.closeAddModal();
 }
+
+
+loadContacts() {
+  
+    this.contactsService.findAllContacts().subscribe(
+      (response: any) => {
+        console.log('Response:', response); // Debugging line
+        
+        this.nbContacts = response.length;
+        },
+      (error: any) => {
+        console.error(`Erreur lors du chargement des contact`, error);
+      }
+    );
+  }
 }
+

@@ -20,7 +20,7 @@
                         <div class="flex flex-col">
                             <div class="font-bold text-sm text-gray-500">Civilité</div>
                             <mat-form-field class="w-full h-15 rounded">
-                                <mat-select class=" " formControlName="civilite" >
+                                <mat-select class=" " formControlName="civility" >
                                     <mat-option *ngFor="let cv of civilities" [value]="cv.value"
                                         class="text-sm font-medium">
                                         <span class="status-label">
@@ -34,13 +34,13 @@
                     <div class="col-span-2">
                         <div class="font-bold text-sm text-gray-500">Nom</div>
                         <div class="input-container">
-                            <input type="text" class="form-control" placeholder="" formControlName="nom"   />
+                            <input type="text" class="form-control" placeholder="" formControlName="lastname"   />
                         </div>
                     </div>
                     <div class="col-span-3">
                         <div class="font-bold text-sm text-gray-500">Prénoms</div>
                         <div class="input-container">
-                            <input type="text" class="form-control" placeholder="" formControlName="prenom"  />
+                            <input type="text" class="form-control" placeholder="" formControlName="firstname"  />
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                     <div class="">
                         <div class="font-bold text-sm text-gray-500">Fonction</div>
                         <div class="input-container">
-                            <input type="text" class="form-control" placeholder="" formControlName="fonction" />
+                            <input type="text" class="form-control" placeholder="" formControlName="function" />
                         </div>
                     </div>
                     <div class="">
@@ -70,7 +70,7 @@
                     </div>
                     <div class="">
                         <div class="flex flex-col">
-                            <div class="font-bold text-sm text-gray-500">Manager</div>
+                            <div class="font-bold text-sm text-gray-500">Created By</div>
                             <mat-form-field class="w-full h-15 rounded">
                                 <mat-select formControlName="manager">
                                     <mat-option *ngFor="
@@ -105,7 +105,7 @@
                         <div class="flex flex-col">
                             <div class="font-bold text-sm text-gray-500">Etat</div>
                           
-                            <input type="text" class="form-control"  [(ngModel)]="this.company.statut" formControlName="statut" readonly/>
+                            <input type="text" class="form-control"  [(ngModel)]="this.company.status" formControlName="status" readonly/>
                         </div>
                     </div>
 
@@ -129,7 +129,7 @@
                         <div class="flex flex-col">
                             <div class="font-bold text-sm text-gray-500">Agence</div>
                             <mat-form-field class="w-full h-15 rounded">
-                                <mat-select class=" " formControlName="agence">
+                                <mat-select class=" " formControlName="agency">
                                     <mat-option *ngFor="let tp of listeAgence" [value]="tp" class="text-sm font-medium">
                                         <span class="status-label">
                                             {{ tp }}
@@ -144,7 +144,7 @@
                         <div class="font-bold text-sm text-gray-500">Précisez la provenance</div>
                         <div class="input-container">
                             <input type="text" class="form-control" placeholder=""
-                                formControlName="precisiez" />
+                                formControlName="precisionValue" />
                         </div>
                     </div>
 
@@ -152,104 +152,13 @@
             </div>
         </app-card-synthese>
 
-        <app-card-synthese [customTitle]="'Coordonnées contact'" [customActionLabel]="" [hasIconActions]="false">
-            <div body>
-                <div class="flex flex-col px-2">
-                    <div class="flex flex-col">
-                        <div class="input-container  marge">
-                            <div class="font-bold text-sm text-gray-500">Email</div>
-                            <!-- <span class="material-icons input-icon">alternate_email</span> -->
-                            <input type="text" class="form-control" placeholder="" formControlName="email" />
-                        </div>
-                        <!-- <div class="">
-                            <div class="flex items-center label-actions-synthese" (click)="addEmail()">
-                                <span class="mr-2 text-xl synthese-link-edit"
-                                    >+</span
-                                >
-                                <span
-                                    class="cursor-pointer synthese-link-edit hover:underline"
-                                    >Ajouter un Email</span
-                                >
-                            </div>
-                        </div> -->
-                        <div class="input-container  marge">
-                            <div class="font-bold text-sm text-gray-500">Téléphone</div>
-                            <!--  <span class="material-icons input-icon">phone</span> -->
-                            <input type="tel" class="form-control" placeholder="" formControlName="telephone"/>
-                        </div>
-                        <div class="">
-                            <!-- <div class="flex items-center label-actions-synthese">
-                                <span class="mr-2 text-xl synthese-link-edit"
-                                    >+</span
-                                >
-                                <span
-                                    class="cursor-pointer synthese-link-edit hover:underline"
-                                    >Ajouter un téléphone</span
-                                >
-                            </div> -->
-                        </div>
-                        <div class="input-container  marge">
-                            <div class="font-bold text-sm text-gray-500">Adresse</div>
-                            <!-- <span class="material-icons input-icon">home</span> -->
-                            <input type="text" class="form-control" placeholder="" formControlName="adresse" />
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-2  marge">
-                            <div class="input-container">
-                                <div class="font-bold text-sm text-gray-500">Code postal</div>
-                                <input type="text" class="form-control" placeholder=""
-                                    formControlName="postalCode" />
-                            </div>
-
-                            <div class="input-container  marge">
-                                <div class="font-bold text-sm text-gray-500">Ville</div>
-                                <input type="text" class="form-control" placeholder="" formControlName="ville" />
-                            </div>
-
-                            <div class="flex flex-col ">
-                                <div class="font-bold text-sm text-gray-500">Pays</div>
-                                <mat-form-field class="w-full h-15 rounded">
-                                    <mat-select formControlName="pays">
-                                        <mat-option *ngFor="
-                                                let ct of societesPaysList
-                                            " [value]="ct.name" class="text-sm font-medium">
-                                            <span class="status-label">
-                                                {{ ct.name }}
-                                            </span>
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <div class="input-container">
-                                <div class="font-bold text-sm text-gray-500">Réseaux sociaux</div>
-                                <!-- <mat-icon class="material-icons input-icon"
-                                    >link</mat-icon> -->
-                                <input type="text" class="form-control" placeholder="" formControlName="reseauxsociaux" />
-                            </div>
-                        </div>
-
-
-                        <!-- <div class="">
-                            <div class="flex items-center label-actions-synthese">
-                                <span class="mr-2 text-xl synthese-link-edit"
-                                    >+</span
-                                >
-                                <span
-                                    class="cursor-pointer synthese-link-edit hover:underline"
-                                    >Ajouter des réseaux sociaux</span
-                                >
-                            </div>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-        </app-card-synthese>
+        
         <app-card-synthese [customTitle]="'Périmètre technique (nuage de mots clés)'" [customActionLabel]=""
             [hasIconActions]="false">
             <div body>
                 <div class="input-container w-full h-30 p-2">
                     <textarea type="text" class="input-field-commentaire"
-                        formControlName="perimetreTechnique"></textarea>
+                        formControlName="technicalPerimetar"></textarea>
                 </div>
             </div>
         </app-card-synthese>
@@ -258,7 +167,7 @@
                 <div class="flex flex-col px-2 marge">
                     <div class="flex flex-col">
                         <div class="font-bold text-sm text-gray-500">Domaines</div>
-                        <p-multiSelect [options]="domaines"  formControlName="domaines"
+                        <p-multiSelect [options]="domaines"  formControlName="domains"
                         appendTo="body" [maxSelectedLabels]="domainesSelected.length" display="chip">
                             <ng-template let-group pTemplate="group">
                                 <div class="flex align-items-center">
@@ -273,7 +182,7 @@
                 <div class="flex flex-col px-2">
                     <div class="flex flex-col">
                         <div class="font-bold text-sm text-gray-500">Outils</div>
-                        <p-multiSelect [options]="tools"  formControlName="outils"
+                        <p-multiSelect [options]="tools"  formControlName="tools"
                         appendTo="body" [maxSelectedLabels]="toolsSelected.length" display="chip" />
                     </div>
                 </div>
@@ -290,7 +199,7 @@
                         <div class="cursor-pointer synthese-link-edit hover:underline" *ngIf="lock">
                             <span>
                                 <a [routerLink]="['/addcomp/'+this.company?.id]">
-                                    {{company?.nom || ''}}
+                                    {{company?.name || ''}}
                                 </a>
                                 <span (click)="lock=false">
                                     
@@ -316,38 +225,119 @@
                     <div class="flex flex-col">
                         <div class="font-bold text-sm text-gray-500">Adresse</div>
                         <div>
-                            {{company?.addresse || ''}}
+                            {{company?.address || ''}}
                         </div>
                     </div>
                     <div class=""></div>
                     <div class="flex flex-col">
                         <div class="font-bold text-sm text-gray-500">Secteur</div>
-                        <div>{{company?.secteur || ''}}</div>
+                        <div>{{company?.sector || ''}}</div>
                     </div>
-                    <div class="flex flex-col" *ngIf="company?.effectif">
+                    <div class="flex flex-col" *ngIf="company?.effective">
                         <div class="font-bold text-sm text-gray-500">Effectif</div>
-                        <div>{{company.effectif || ''}}</div>
+                        <div>{{company.effective || ''}}</div>
                     </div>
                     <div class="flex flex-col" *ngIf="company?.phone">
                         <div class="font-bold text-sm text-gray-500">Téléphone</div>
-                        <div>{{company.telephone || ''}}</div>
+                        <div>{{company.phone || ''}}</div>
                     </div>
-                    <div class="flex flex-col" *ngIf="company?.website">
-                        <div class="font-bold text-sm text-gray-500">Site web</div>
-                        <div>{{company.siteweb || ''}}</div>
-                    </div>
+                    
                 </div>
             </div>
         </app-card-synthese>
-        <app-card-synthese [customTitle]="'Informations complémentaires'" [customActionLabel]=""
-            [hasIconActions]="false">
+        <app-card-synthese [customTitle]="'Coordonnées contact'" [customActionLabel]="" [hasIconActions]="false">
             <div body>
-                <div class="input-container w-full h-30 p-2">
-                    <textarea type="text" class="input-field-commentaire font-bold text-gray-700"
-                        [value]="company?.information" ></textarea>
+                <div class="flex flex-col px-2">
+                    <div class="flex flex-col">
+                        <div class="input-container  marge">
+                            <div class="font-bold text-sm text-gray-500">Email</div>
+                            <!-- <span class="material-icons input-icon">alternate_email</span> -->
+                            <input type="text" class="form-control" placeholder="" formControlName="email" />
+                        </div>
+                        <!-- <div class="">
+                            <div class="flex items-center label-actions-synthese" (click)="addEmail()">
+                                <span class="mr-2 text-xl synthese-link-edit"
+                                    >+</span
+                                >
+                                <span
+                                    class="cursor-pointer synthese-link-edit hover:underline"
+                                    >Ajouter un Email</span
+                                >
+                            </div>
+                        </div> -->
+                        <div class="input-container  marge">
+                            <div class="font-bold text-sm text-gray-500">Téléphone</div>
+                            <!--  <span class="material-icons input-icon">phone</span> -->
+                            <input type="tel" class="form-control" placeholder="" formControlName="phone"/>
+                        </div>
+                        <div class="">
+                            <!-- <div class="flex items-center label-actions-synthese">
+                                <span class="mr-2 text-xl synthese-link-edit"
+                                    >+</span
+                                >
+                                <span
+                                    class="cursor-pointer synthese-link-edit hover:underline"
+                                    >Ajouter un téléphone</span
+                                >
+                            </div> -->
+                        </div>
+                        <div class="input-container  marge">
+                            <div class="font-bold text-sm text-gray-500">Adresse</div>
+                            <!-- <span class="material-icons input-icon">home</span> -->
+                            <input type="text" class="form-control" placeholder="" formControlName="address" />
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2  marge">
+                            <div class="input-container">
+                                <div class="font-bold text-sm text-gray-500">Code postal</div>
+                                <input type="text" class="form-control" placeholder=""
+                                    formControlName="postalCode" />
+                            </div>
+
+                            <div class="input-container  marge">
+                                <div class="font-bold text-sm text-gray-500">Ville</div>
+                                <input type="text" class="form-control" placeholder="" formControlName="city" />
+                            </div>
+
+                            <div class="flex flex-col ">
+                                <div class="font-bold text-sm text-gray-500">Pays</div>
+                                <mat-form-field class="w-full h-15 rounded">
+                                    <mat-select formControlName="country">
+                                        <mat-option *ngFor="
+                                                let ct of societesPaysList
+                                            " [value]="ct.name" class="text-sm font-medium">
+                                            <span class="status-label">
+                                                {{ ct.name }}
+                                            </span>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="input-container">
+                                <div class="font-bold text-sm text-gray-500">Réseaux sociaux</div>
+                                <!-- <mat-icon class="material-icons input-icon"
+                                    >link</mat-icon> -->
+                                <input type="text" class="form-control" placeholder="" formControlName="socialMedea" />
+                            </div>
+                        </div>
+
+
+                        <!-- <div class="">
+                            <div class="flex items-center label-actions-synthese">
+                                <span class="mr-2 text-xl synthese-link-edit"
+                                    >+</span
+                                >
+                                <span
+                                    class="cursor-pointer synthese-link-edit hover:underline"
+                                    >Ajouter des réseaux sociaux</span
+                                >
+                            </div>
+                        </div> -->
+                    </div>
                 </div>
             </div>
         </app-card-synthese>
+       
     </div>
 </form>
     <p-toast />

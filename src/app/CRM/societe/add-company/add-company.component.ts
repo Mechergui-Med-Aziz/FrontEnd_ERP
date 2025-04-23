@@ -107,20 +107,7 @@ export class AddCompanyComponent implements OnInit {
     { value: 'BU Expertise Tunisie', name: 'BU-Expertise-Tunisie' },
     
   ]
-  societesProvenanceList:any [] = [
-    { value: 'Prospection', name: 'Prospection' },
-    { value: 'Apporteur', name: 'Apporteur' },
-    { value: 'client', name: 'Client' },
-    { value: 'Collègue', name: 'Collègue' },
-    { value: 'Réseau', name: 'Réseau' },
-    { value: 'Salon', name: 'Salon' },
-    { value: 'Appel d\'offre', name: 'Appel d\'offre' },
-    { value: 'Appel entrant', name: 'Appel entrant' },
-    { value: 'Google', name: 'Google' },
-    { value: 'Hitechpros', name: 'Hitechpros' },
-    { value: 'linkedin', name: 'Linkedin' },
-    { value: 'Turnover', name: 'Turnover' },
-  ];
+  
 
   idCompany: number = 0;
   companyForm: FormGroup;
@@ -146,29 +133,27 @@ export class AddCompanyComponent implements OnInit {
   )
   {
     this.companyForm = this.fb.group({
-      nom: ['', [Validators.required]],
-      statut: [, [Validators.required]],
-      effectif: [1, [Validators.required,Validators.pattern('^[0-9]+$')]],
-      secteur: [null, [Validators.required]],
-      filiales: ['', []],
-      provenance: [, [Validators.required]],
-      precisiez: ['', []],
-      responsableManager: ['', [Validators.required]],
-      pole: [null, [Validators.required]],
-      agence: ['', [Validators.required]],
-      telephone: ['', [Validators.required , Validators.pattern('^[0-9]*$')]],
-      addresse: ['', []],
+      name: ['', []],
+      status: [, []],
+      effective: [1, [Validators.pattern('^[0-9]+$')]],
+      sector: [null, []],
+      
+      
+      pole: [null, []],
+      agency: ['', []],
+      phone: ['', [Validators.pattern('^[0-9]*$')]],
+      address: ['', []],
       postalCode: ['', []],
-      ville: ['', []],
-      pays: ['', [Validators.required]],
-      siteWeb: ['', []],
+      city: ['', []],
+      country: ['', []],
+      
       informations: ['', []],
-      statutJuridique: ['', []],
-      tva: ['', []],
+      legalStatus: ['', []],
+      
       siret: ['', []],      
-      rcs: ['', []],
-      codeApe: ['', []],
-      numeroFournisseur: ['', []],
+     
+      apeCode: ['', []],
+      
      
       
       
@@ -231,10 +216,10 @@ saveChanges() {
     this.companycontacts.forEach((element: any) => {
       console.log('Contact hahah :', element);
       console.log('ID du contact:', element.id); // Debugging line
-      console.log('Statut du societe:', this.companyForm.value.statut); // Debugging line
-      this.contactsService.updateContactStatut(element.id,this.companyForm.value.statut).subscribe(
+      console.log('Statut du societe:', this.companyForm.value.status); // Debugging line
+      this.contactsService.updateContactStatut(element.id,this.companyForm.value.status).subscribe(
         (response: any) => {
-          console.log(`contact ${element.nom} mis à jour avec le statut ${this.companyForm.value.statut}`);
+          console.log(`contact ${element.name} mis à jour avec le statut ${this.companyForm.value.status}`);
           this.ngOnInit();
         },
         (error: any) => {

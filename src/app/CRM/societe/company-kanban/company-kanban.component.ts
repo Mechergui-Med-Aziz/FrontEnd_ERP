@@ -68,7 +68,7 @@ export class CompanyKanbanComponent implements OnInit{
     });
   }
 
-  drop(event: CdkDragDrop<any[], any, any>, newStatut: string) {
+  drop(event: CdkDragDrop<any[], any, any>, newStatus: string) {
     const previousContainer = event.previousContainer;
     const currentContainer = event.container;
   
@@ -85,27 +85,27 @@ export class CompanyKanbanComponent implements OnInit{
       );
       
   
-      movedItem.statut = newStatut;
+      movedItem.status = newStatus;
       this.companycontacts = movedItem.contacts;
   
       console.log('societe déplacé:', movedItem);
-      console.log('Nouveau statut:', newStatut);
+      console.log('Nouveau statut:', newStatus);
       this.companyService.updateCompanystatus(movedItem.id,movedItem).subscribe(
         (response: any) => {
-          console.log(`Besoin ${movedItem.id} mis à jour avec le statut ${newStatut}`);
+          console.log(`societe ${movedItem.id} mis à jour avec le statut ${newStatus}`);
           this.ngOnInit();
         },
         (error: any) => {
-          console.error(`Erreur lors de la mise à jour du besoin ${movedItem.id}`, error);
+          console.error(`Erreur lors de la mise à jour le la societe ${movedItem.id}`, error);
         }
       );
       this.companycontacts.forEach((element: any) => {
         console.log('Contact hahah :', element);
         console.log('ID du contact:', element.id); // Debugging line
-        console.log('Statut du societe:', newStatut); // Debugging line
-        this.contactsService.updateContactStatut(element.id,newStatut).subscribe(
+        console.log('Statut du societe :', newStatus); // Debugging line
+        this.contactsService.updateContactStatut(element.id,newStatus).subscribe(
           (response: any) => {
-            console.log(`contact ${element.nom} mis à jour avec le statut ${newStatut}`);
+            console.log(`contact ${element.lastname} mis à jour avec le statut ${newStatus}`);
             this.ngOnInit();
           },
           (error: any) => {

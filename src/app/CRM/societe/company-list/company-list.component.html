@@ -23,7 +23,7 @@
           <th>Image</th>
           <th>secteur</th>
           <th>Status</th>
-          <th>Manager</th>
+          <th>Phone</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -38,21 +38,21 @@
                 class="rounded-circle"
               />
               <div class="ms-3">
-                <p class="fw-bold mb-1">{{ company.nom }}</p>
-                <p class="text-muted mb-0">{{ company.telephone }}</p>
+                <p class="fw-bold mb-1">{{ company.name }}</p>
+                <p class="text-muted mb-0">{{ company.phone }}</p>
               </div>
             </div>
           </td>
           <td>
-            <p class="fw-normal mb-1">{{ company.secteur }}</p>
-            <p class="text-muted mb-0">{{ company.provenance }}</p>
+            <p class="fw-normal mb-1">{{ company.sector }}</p>
+            
           </td>
           <td>
             <span class="badge badge-success rounded-pill d-inline">{{
-              company.statut
+              company.status
             }}</span>
           </td>
-          <td>{{ company.responsableManager }}</td>
+          <td>{{ company.phone }}</td>
           <td>
             <button type="button" class="btn btn-link btn-sm btn-rounded" (click)="editCompany(company)">
               Edit

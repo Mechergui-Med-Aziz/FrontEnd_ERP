@@ -75,10 +75,14 @@ export class CompServiceService {
                 }));
   }
   updateCompanystatus(id:any,company: any): any {
+    console.log('company in the service 2222222:', company);
     return this.http.put(`${this.apiUrl}/company/updatestatus/${id}`, company, this.options).pipe(
+      
       map(response => {
-        console.log('Response:', response); 
+        console.log('Response updatee statuususssss:', response); 
+        console.log('helooooooooo:');
         return response;
+        
       }),
       catchError(error => {
         console.error('Error:', error);

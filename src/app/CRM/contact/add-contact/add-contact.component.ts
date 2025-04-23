@@ -79,13 +79,15 @@ export class AddContactComponent implements OnInit{
     { name: "Autre", value: "Autre" }
   ];
   listeEtat: any[] = [
-      { name: "Archivé", color: "#3e2f1c" },
-      { name: "Client_direct", color: "#f0a2c1" },
-      { name: "Client_via_intermédiaire", color: "#5b8e8c" },
-      { name: "Fournisseur", color: "#be3af6" },
-      { name: "Partenaire", color: "#c74f12" },
-      { name: "Pist", color: "#e4a98d" },
-      { name: "Prospect", color: "#72d491" }
+    { value: 'Prospect', name: 'Prospect', color: 'green' },
+    { value: 'Client', name: 'Client', color: 'red' },
+    { value: 'Client_direct', name: 'Client direct', color: 'blue' },
+    { value: 'Partenaire', name: 'Partenaire', color: 'orange' },
+    { value: 'Piste', name: 'Piste', color: 'purple' },
+    { value: 'Fournisseur', name: 'Fournisseur', color: 'yellow' },
+    { value: 'Archivé', name: 'Archivé', color: 'grey' },
+    { value: 'Intermédiaire de facturation', name: 'Intermédiaire de facturation', color: 'pink'},
+    { value: 'Client via intermédiaire', name: 'Client via intermédiaire', color: 'brown' },
     ]
     ;
   
@@ -107,29 +109,30 @@ mode: any;
       private location: Location,
   ) { 
     this.contact = this.fb.group({
-      civilite: ['', []],
-      nom: ['', []],
-      prenom: ['', []],
-      fonction: [null, []],
+      civility: ['', []],
+      lastname: ['', []],
+      firstname: ['', []],
+      function: [null, []],
       service: ['', []],
       manager: ['', []],
       type: ['', []],
-      statut: ['', []],
+      status: ['', []],
       provenance: [null, []],
-      precisiez: ['', []],
-      agence: ['', []],
+      precisionValue: ['', []],
+      agency: ['', []],
       email: ['', []],
-      telephone: ['', []],
-      adresse: ['', []],
+      phone: ['', []],
+      address: ['', []],
       postalCode: ['', []],
-      ville: ['', []],
-      pays: ['', []],
-      reseauxsociaux: ['', []],
-      perimetreTechnique: ['', []],
-      domaines: ['', []],      
-      outils: ['', []],
-      informationsComplementaires: ['', []],
+      city: ['', []],
+      country: ['', []],
+      socialMedea: ['', []],
+      technicalPerimetar: ['', []],
+      domains: ['', []],      
+      tools: ['', []],
+      complementaryInformations: ['', []],
       company: [null, []],
+      creationDate: [{value:new Date().toLocaleDateString('fr-FR')}],
      
       
       
@@ -202,6 +205,9 @@ mode: any;
         }
       );
     } else {
+      let creationdate = new Date().toISOString();
+      this.contact.patchValue({ creationDate: creationdate });
+
       console.log('Creating new contact:', this.contact.value);
       console.log('Company ID:', this.idCompany); // Debugging line
       this.contact.patchValue({ company: this.company });
