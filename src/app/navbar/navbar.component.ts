@@ -4,6 +4,7 @@ import { AuthService } from '../services/auth.service';
 import { FormBuilder, FormGroup, FormsModule, NgModel, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ProfileService } from '../services/profile.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-navbar',
@@ -44,6 +45,11 @@ export class NavbarComponent implements OnInit{
 
 
 
-  
+  isCRMOpen = false;
+
+toggleCRM() {
+  this.isCRMOpen = !this.isCRMOpen;
+}
+
   
   }

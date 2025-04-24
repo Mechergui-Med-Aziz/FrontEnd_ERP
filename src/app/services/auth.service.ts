@@ -26,32 +26,35 @@ export class AuthService {
     }
     
   
-  login(credentials:{username: string, password: string}): Observable<boolean> {
-    
-    return this.http.post<any>(`${this.url}/auth/login`, credentials).pipe(
-      map(response => {
-     //   console.log('Response:', response);
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('username', response.username);
-          localStorage.setItem('id', response.id);
-          localStorage.setItem("msg","false");
-          localStorage.setItem('role', response.role); 
-          this.isAuthenticatedSubject.next(true);
-          return true;
-        }
-        return false;
-      }),
-      tap(result => {
-        
-      }),
-      catchError(error => {
-        console.error('Login error:', error);
-        return of(false); 
-      })
-    );
-  }
-  
+    login(credentials: { username: string, password: string }): Observable<any> {
+      return this.http.post<any>(`${this.url}/auth/login`, credentials).pipe(
+        map(response => {
+          // En cas de succès, la réponse contient le token et autres informations.
+          if (response.token) {
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('username', response.username);
+            localStorage.setItem('id', response.id);
+            localStorage.setItem("msg", "false");
+            localStorage.setItem('role', response.role); 
+            this.isAuthenticatedSubject.next(true);
+            return { success: true };
+          }
+          return { success: false };
+        }),
+        catchError(error => {
+          console.log(error);
+          // Ici on récupère l'erreur customisée renvoyée par le backend.
+          let errorMsg = "Erreur lors de la connexion !";
+          if (error.error && error.error.error) {
+            console.log(error.error);
+            console.log(error.error.error);
+            errorMsg = error.error.error;
+          }
+          return of({ success: false, error: errorMsg });
+        })
+      );
+    }
+      
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token'); 
   }

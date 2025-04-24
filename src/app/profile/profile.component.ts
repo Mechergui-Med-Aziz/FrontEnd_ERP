@@ -37,7 +37,9 @@ export class ProfileComponent implements OnInit{
     lastname: ['', Validators.required],
     password: [''],
     confirmPassword: [''],
-    phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],    
+    phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],   
+    status: [Validators.required],
+    role: [Validators.required], 
   });
 
   ngOnInit(): void {
@@ -70,6 +72,8 @@ fillForm() {
       phone: this.user.phone,
       firstname: this.user.firstname,
       lastname: this.user.lastname,
+      status: this.user.status,
+      role: this.user.role
   });
 }
 
@@ -117,6 +121,8 @@ message1:string =""
     if (updatedData.password=="") {
       delete updatedData.password;
     }
+
+    console.log("Updated Data:", updatedData);
   
     this.ps.updateUser(this.user.id, updatedData).subscribe(
       (response: any) => {
@@ -133,7 +139,6 @@ message1:string =""
       },
       (error: any) => {
         console.error("Erreur API:", error);
-        alert("Une erreur s'est produite !");
       }
     );
   }

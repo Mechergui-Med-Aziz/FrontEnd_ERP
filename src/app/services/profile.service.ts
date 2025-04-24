@@ -57,4 +57,56 @@ export class ProfileService {
                 })
               );
             }
+
+        findAllUsers(): any {
+          return this.http.get(`${this.url}/user/all`, this.options).pipe(
+            map(response => {
+              //console.log('Response:', response);
+              return response;
+            }),
+            catchError(error => {
+              console.error('Error:', error);
+              return error;
+            })
+          );
+        }
+
+        updateUserStatus(id: number, user:any): any {
+          return this.http.put(`${this.url}/user/updateStatusByAdmin/${id}`,user, this.options).pipe(
+            map(response => {
+              console.log('Response:', response);
+              return response;
+            }),
+            catchError(error => {
+              console.error('Error:', error);
+              return error;
+            })
+          );
+        }
+
+        updateUserRole(id: number, user:any): any {
+          return this.http.put(`${this.url}/user/updateRoleByAdmin/${id}`,user, this.options).pipe(
+            map(response => {
+              console.log('Response:', response);
+              return response;
+            }),
+            catchError(error => {
+              console.error('Error:', error);
+              return error;
+            })
+          );
+        }
+
+        addUserAccount(user: any): any {
+          return this.http.post(`${this.url}/user/addUser`, user, this.options).pipe(
+            map(response => {
+              console.log('Response:', response);
+              return response;
+            }),
+            catchError(error => {
+              console.error('Error:', error);
+              return error;
+            })
+          );
+        }
 }

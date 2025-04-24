@@ -1,0 +1,22 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mx-auto mt-10 px-6">
+    <!-- Premier graphique : Besoins par mois -->
+    <div>
+      <h2 style="text-align: center;">Besoins Créés Par Mois</h2>
+      <canvas baseChart
+        [data]="besoinsParMoisData"
+        [options]="chartOptions"
+        [type]="'line'"> <!-- Remplacer 'bar' par 'line' pour un graphique linéaire -->
+      </canvas>
+    </div>
+  
+    <!-- Deuxième graphique : Besoins par statut -->
+    <div> 
+      <h2 style="text-align: center;">Nombre de besoins par statut</h2>
+      <canvas baseChart
+        [data]="besoinsParStatusData"
+        [options]="chartOptions"
+        [type]="'pie'">
+      </canvas>
+    </div>
+  </div>
+  

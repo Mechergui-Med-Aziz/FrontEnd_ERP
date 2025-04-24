@@ -7,6 +7,13 @@ import { ContactsService } from '../services/contacts.service';
 import { ProfileService } from '../services/profile.service';
 import { HistoriqueBesoinsService } from '../services/historique-besoins.service';
 import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+dayjs.extend(isBetween);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isBetween);
 import { AuthService } from '../services/auth.service';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -99,6 +106,9 @@ export class BesoinsComponent implements OnInit{
     }
   }
 
+  filterForm!: FormGroup;
+  allBesoins: any[] = []; // Ensemble complet des besoins chargés 
+
 
 
   ngOnInit() {
@@ -110,14 +120,22 @@ export class BesoinsComponent implements OnInit{
     this.loadBesoins();
     this.loadContacts();
     this.loadProductionManagers();
-
+    this.filterForm = this.fb.group({
+      contact: [''],
+      dateExact: [''],
+      startDate: [''],
+      endDate: ['']
+    });
   }
+
+
+
   productionManagers: any[] = [];
 
   loadProductionManagers(){
     this.profileService.findUSerByRole("Manager De Production").subscribe(
       (users: any) => {
-        this.productionManagers = users;
+        this.productionManagers = users.filter(( user: any) => user.status === 'Activé');
       },
       (error: any) => {
         console.error('Erreur lors du chargement des managers de production:', error);
@@ -128,7 +146,7 @@ export class BesoinsComponent implements OnInit{
   loadContacts() {
     this.contactsService.findAllContacts().subscribe(
       (contacts: any) => {
-        console.log('Contacts:', contacts); // Debugging line
+        //console.log('Contacts:', contacts); // Debugging line
         this.contacts = contacts;
       },
       (error: any) => {
@@ -151,33 +169,105 @@ export class BesoinsComponent implements OnInit{
 
 
     loadBesoins() {
-      this.besoins = [];
+      this.allBesoins = [];
+      this.nbBesoins = 0;
       this.columns.forEach(column => {
         this.besoinsService.findBesoinByStatus(column.status).subscribe(
           (besoins: any) => {
             // Tri décroissant par date de création
             besoins.sort((a: any, b: any) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
-    
             column.besoins = besoins;
-            
-    
             besoins.forEach((element: any) => {
-              this.besoins.push(element);
+              this.allBesoins.push(element);
+              // Chargement du contact si besoin
               if (parseInt(element.contact)) {
                 this.loadContact(element);
               }
             });
-
-            if(column.status != 'REPORTE' && column.status != 'PERDU' && column.status != 'GAGNÉ')
-            this.nbBesoins += besoins.length;
+            if (column.status !== 'REPORTE' && column.status !== 'PERDU' && column.status !== 'GAGNÉ') {
+              this.nbBesoins += besoins.length;
+            }
+            // Afficher par défaut tous les besoins
+            this.besoins = this.allBesoins;
           },
           (error: any) => {
             console.error(`Erreur lors du chargement des besoins pour le statut ${column.status}:`, error);
           }
         );
       });
-      this.besoins.sort((a: any, b: any) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
     }
+
+  selectedFilterMethod: string = '';
+  showFilterPanel: boolean = false;
+
+  toggleFilterPanel() {
+    this.showFilterPanel = !this.showFilterPanel;
+    
+    if (!this.showFilterPanel) {
+      this.selectedFilterMethod = '';
+      this.filterForm.reset();
+      this.ngOnInit();
+    }
+  }
+
+  filterBesoins(): void {
+    const { contact, dateExact, startDate, endDate } = this.filterForm.value;
+    let filtered = this.allBesoins;
+  
+    // Filtrage par nom de contact
+    if (this.selectedFilterMethod === 'contact' && contact && contact.trim() !== '') {
+      const searchLower = contact.trim().toLowerCase();
+      filtered = filtered.filter(besoin => {
+        if (besoin.contact) {
+          const firstname = (besoin.contact.firstname || '').toLowerCase();
+          const lastname = (besoin.contact.lastname || '').toLowerCase();
+          return firstname.includes(searchLower) || lastname.includes(searchLower);
+        }
+        return false;
+      });
+    }
+  
+    // Filtrage par date précise
+    if (this.selectedFilterMethod === 'dateExact' && dateExact) {
+      filtered = filtered.filter(besoin =>
+        dayjs(besoin.creationDate).format('YYYY-MM-DD') === dayjs(dateExact).format('YYYY-MM-DD')
+      );
+    }
+  
+    // Filtrage par plage de dates
+    if (this.selectedFilterMethod === 'dateRange') {
+      if (startDate && endDate) {
+        filtered = filtered.filter(besoin =>
+          dayjs(besoin.creationDate).isBetween(dayjs(startDate), dayjs(endDate), 'day', '[]')
+        );
+      } else if (startDate) {
+        filtered = filtered.filter(besoin =>
+          dayjs(besoin.creationDate).isSameOrAfter(dayjs(startDate), 'day')
+        );
+      } else if (endDate) {
+        filtered = filtered.filter(besoin =>
+          dayjs(besoin.creationDate).isSameOrBefore(dayjs(endDate), 'day')
+        );
+      }
+    }
+    this.besoins = filtered;
+  
+    // Mise à jour des colonnes du Kanban :
+    this.columns.forEach(column => {
+      column.besoins = filtered.filter(besoin => besoin.status === column.status);
+    });
+  
+    
+    this.nbBesoins = 0;
+    this.columns.forEach(column => {
+      if (column.status !== 'REPORTE' && column.status !== 'PERDU' && column.status !== 'GAGNÉ') {
+        this.nbBesoins += column.besoins.length;
+      }
+    });
+  
+    //console.log('Besoins filtrés :', filtered);
+  }
+  
     
 
   drop(event: CdkDragDrop<any[], any, any>, newStatus: string) {
@@ -210,7 +300,7 @@ export class BesoinsComponent implements OnInit{
       }
       this.besoinsService.updateBesoin(movedItem.id,movedItem).subscribe(
         (response: any) => {
-          console.log(`Besoin ${movedItem.id} mis à jour avec le statut ${newStatus}`);
+          //console.log(`Besoin ${movedItem.id} mis à jour avec le statut ${newStatus}`);
           this.ngOnInit();
 
           const movedHistoricBesoin = {
@@ -222,10 +312,10 @@ export class BesoinsComponent implements OnInit{
             actionBy: this.user.id,
           };
           
-          console.log('Historique besoin changé:', movedHistoricBesoin);
+         // console.log('Historique besoin changé:', movedHistoricBesoin);
           this.hbs.addHistoriqueBesoin(movedHistoricBesoin).subscribe(
             (response: any) => {
-              console.log('Statut d\'historique changé avec succès:', response);
+             // console.log('Statut d\'historique changé avec succès:', response);
             },
             (error: any) => {
               console.error('Erreur lors du changement du statut de l\'historique:', error);
@@ -307,8 +397,8 @@ export class BesoinsComponent implements OnInit{
     });
     if (this.actionAddForm.valid) {
       const actionData = this.actionAddForm.value;
-      console.log('actionData:',actionData);
-      console.log('selectedFiles:',this.selectedFiles);
+      //console.log('actionData:',actionData);
+      //console.log('selectedFiles:',this.selectedFiles);
       this.actionService.createActionBesoin(actionData, this.selectedFiles).subscribe(
         response => {
 
@@ -349,7 +439,7 @@ export class BesoinsComponent implements OnInit{
           besoinId: action.besoinId,
           manager: action.manager ? action.manager.id : null
         });
-        console.log(this.DetailsActionForm.value.manager);
+       // console.log(this.DetailsActionForm.value.manager);
         (error: any) => {
         console.error('Erreur lors du chargement de l\'action:', error);
       }
@@ -389,7 +479,7 @@ export class BesoinsComponent implements OnInit{
         return;
       }
     }
-    console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
+    //console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
 
     const updatedData = this.DetailsActionForm.value;
     updatedData.besoinId = this.selectedAction.besoinId;
@@ -397,7 +487,7 @@ export class BesoinsComponent implements OnInit{
     updatedData.dateAction = new Date(this.selectedAction.dateAction).toISOString();
     updatedData.manager=this.productionManagers.find(manager => manager.id == this.DetailsActionForm.value.manager)
 
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh"+updatedData?.manager)
+    //console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh"+updatedData?.manager)
 
     this.actionService.modifyActionBesoin(updatedData, this.selectedAction.id, this.selectedFiles).subscribe(
       (response: any) => {
@@ -501,15 +591,15 @@ addBesoin() {
 
   this.besoinsService.addBesoin(newBesoin).subscribe(
     (response: any) => {
-      console.log('Backend response:', response);
+      //console.log('Backend response:', response);
       this.ngOnInit();
       this.isAddModalOpen = false;
-      console.log(newBesoin.creationDate);
+      //console.log(newBesoin.creationDate);
       this.besoinsService
   .findBesoinByCreationDate(dayjs(newBesoin.creationDate).format('YYYY-MM-DD HH:mm:ss'))
   .subscribe(
     (besoin: any) => {
-      console.log('Besoin récupéré:', besoin);
+      //console.log('Besoin récupéré:', besoin);
       const newHistoricBesoin = {
         besoinId: besoin.id,
         title: besoin.title,
@@ -518,10 +608,10 @@ addBesoin() {
         status: "A_TRAITER",
         actionBy: this.user.id,
       };
-      console.log('Historique besoin:', newHistoricBesoin);
+      //console.log('Historique besoin:', newHistoricBesoin);
       this.hbs.addHistoriqueBesoin(newHistoricBesoin).subscribe(
         (response: any) => {
-          console.log('Historique ajouté avec succès:', response);
+          //console.log('Historique ajouté avec succès:', response);
         },
         (error: any) => {
           console.error('Erreur lors de l\'ajout de l\'historique:', error);
@@ -545,7 +635,7 @@ BesoinActions: any[] = [];
 loadActions(besoin: any) {
   this.actionService.findActionsByBssoinId(besoin.id).subscribe(
     (actions: any) => {
-      console.log(actions)
+      //console.log(actions)
       // Tri des actions par date de façon décroissante (la plus récente en premier)
       this.BesoinActions = actions.sort(
         (a:any, b:any) => new Date(b.dateAction).getTime() - new Date(a.dateAction).getTime()
@@ -583,7 +673,7 @@ closeDeleteModal() {
 deleteAction(id: number) {
   this.actionService.deleteAction(id).subscribe(
     (response: any) => {
-      console.log('Réponse du backend :', response);
+      //console.log('Réponse du backend :', response);
       this.isDeleteModalOpen = false;
       this.deletedAction = null;
       this.loadActions(this.selectedBesoin);
@@ -610,7 +700,7 @@ deleteAction(id: number) {
     //this.isModalOpen = true;   
   }
   openAddModal() {
-    console.log('openAddModal');
+    //console.log('openAddModal');
     this.besoinAddForm.reset();
     this.isAddModalOpen = true;
   }
@@ -632,7 +722,7 @@ loadManager(id:any){
       this.profileService.findUserById(id).subscribe(
       (user: any) => {
         this.manager= user;
-        console.log('selectedBesoin.managerResponsable:',this.manager);
+        //console.log('selectedBesoin.managerResponsable:',this.manager);
       },
       (error: any) => {
         console.error('Erreur lors du chargement du manager responsable:', error);
@@ -642,18 +732,18 @@ loadManager(id:any){
 
   saveChanges() {
     //this.loadManager(this.besoinForm.value.managerResponsable);  
-    console.log ("idddddddddddd"+this.besoinForm.value.managerResponsable);
+    //console.log ("idddddddddddd"+this.besoinForm.value.managerResponsable);
     const updatedData = this.besoinForm.value;
     //console.log('updatedData:',updatedData);
     updatedData.contact = this.selectedBesoin.contact;
     updatedData.managerResponsable=this.productionManagers.find(manager => manager.id == this.besoinForm.value.managerResponsable);
-    console.log('updatedData.managerResponsable:',updatedData.managerResponsable);
+    //console.log('updatedData.managerResponsable:',updatedData.managerResponsable);
     updatedData.creationDate = this.selectedBesoin.creationDate;
     
     if(updatedData.status=='PERDU' || updatedData.status=='GAGNÉ' || updatedData.status=='REPORTE'){
       updatedData.priority='RIEN';
     }
-    console.log('updatedData:',updatedData);
+    //console.log('updatedData:',updatedData);
     updatedData.createdBy= this.userr.id;
     
     
@@ -661,7 +751,7 @@ loadManager(id:any){
     this.besoinsService.updateBesoin(id, updatedData).subscribe(
       (response: any) => {
         
-        console.log(`Besoin ${updatedData.id} mis à jour`);
+      //  console.log(`Besoin ${updatedData.id} mis à jour`);
         this.ngOnInit();
         this.closeModal();
         const movedHistoricBesoin = {
@@ -673,11 +763,11 @@ loadManager(id:any){
           actionBy: this.user.id,
         };
         
-        console.log('Historique besoin changé:', movedHistoricBesoin);
+        //console.log('Historique besoin changé:', movedHistoricBesoin);
         if(this.selectedBesoin.status!=movedHistoricBesoin.status){
         this.hbs.addHistoriqueBesoin(movedHistoricBesoin).subscribe(
           (response: any) => {
-            console.log('Statut d\'historique changé avec succès:', response);
+          //  console.log('Statut d\'historique changé avec succès:', response);
           },
           (error: any) => {
             console.error('Erreur lors du changement du statut de l\'historique:', error);
@@ -709,16 +799,16 @@ loadManager(id:any){
   }
 
   getHistoricBesoin(besoin :any){
-    console.log('besoin:',besoin);
+    //console.log('besoin:',besoin);
     this.hbs.findHistoriqueBesoinsById(besoin.id).subscribe(
       (historique: any) => {
-        console.log('Historique:', historique);
+       // console.log('Historique:', historique);
         historique.sort((a: any, b: any) => new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime());
         this.historiqueDuBesoin = historique;
         this.historiqueDuBesoin.forEach(element => {
           this.profileService.findUserById(element.actionBy).subscribe(
             (user: any) => {
-              console.log('User:', user);
+         //     console.log('User:', user);
               element.actionBy = user.firstname + ' ' + user.lastname;
             }
           );
@@ -729,12 +819,13 @@ loadManager(id:any){
         console.error('Erreur lors du chargement de l\'historique:', error);
       }
     );
-    console.log('historiqueDuBesoin:',this.historiqueDuBesoin);
+    //console.log('historiqueDuBesoin:',this.historiqueDuBesoin);
     this.isHistoricModalOpen = true;
   }
   
   closeHistoricModal() {
     this.isHistoricModalOpen = false;
   }
+
 
 }
