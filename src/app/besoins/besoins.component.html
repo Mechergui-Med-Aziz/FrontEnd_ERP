@@ -36,6 +36,7 @@
                   <select [(ngModel)]="selectedFilterMethod"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     <option value="">-- Choisir --</option>
+                    <option value="company">Nom du société</option>
                     <option value="contact">Nom de contact</option>
                     <option value="dateExact">Date précise</option>
                     <option value="dateRange">Plage de dates</option>
@@ -43,6 +44,13 @@
                 </div>
                 <form [formGroup]="filterForm" class="mt-4">
                   <div [ngSwitch]="selectedFilterMethod">
+
+                    <div *ngSwitchCase="'company'">
+                      <label for="companyFilter" class="block text-sm font-medium text-gray-700">Nom du société</label>
+                      <input id="companyFilter" type="text" formControlName="company"
+                        placeholder="Rechercher par nom de société"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    </div>
                     <div *ngSwitchCase="'contact'">
                       <label for="contactFilter" class="block text-sm font-medium text-gray-700">Nom de Contact</label>
                       <input id="contactFilter" type="text" formControlName="contact"
@@ -167,7 +175,7 @@
                           </span>
                         </td>
                         <td class="px-3 py-2">{{ besoin.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                        <td class="px-3 py-2">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</td>
+                        <td class="px-3 py-2">{{ besoin.createdBy.firstname }} {{ besoin.createdBy.lastname }}</td>
                         <td class="px-3 py-2">
                           {{ besoin?.managerResponsable?.firstname || '-' }} {{ besoin?.managerResponsable?.lastname || '-' }}
                         </td>

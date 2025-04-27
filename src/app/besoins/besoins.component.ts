@@ -121,6 +121,7 @@ export class BesoinsComponent implements OnInit{
     this.loadContacts();
     this.loadProductionManagers();
     this.filterForm = this.fb.group({
+      company: [''],
       contact: [''],
       dateExact: [''],
       startDate: [''],
@@ -189,6 +190,17 @@ export class BesoinsComponent implements OnInit{
             }
             // Afficher par défaut tous les besoins
             this.besoins = this.allBesoins;
+            this.besoins.forEach((element: any) => {
+              if(Number(element.createdBy)){
+              this.profileService.findUserById(element.createdBy).subscribe(
+                (user: any) => {
+                  element.createdBy = user;
+                },
+                (error: any) => {
+                  console.error('Erreur lors du chargement de l\'utilisateur:', error);
+                }
+              );}
+            })
           },
           (error: any) => {
             console.error(`Erreur lors du chargement des besoins pour le statut ${column.status}:`, error);
@@ -211,14 +223,30 @@ export class BesoinsComponent implements OnInit{
   }
 
   filterBesoins(): void {
-    const { contact, dateExact, startDate, endDate } = this.filterForm.value;
+    const { company, contact, dateExact, startDate, endDate } = this.filterForm.value;
     let filtered = this.allBesoins;
+    console.log('filtered:', this.filterForm.value);
+
+    if(this.selectedFilterMethod === 'company' && company && company.trim() !== '') {
+
+      const searchLower = company.trim().toLowerCase();
+      console.log('searchLower:',searchLower);
+      filtered = filtered.filter(besoin => {
+        if (besoin.contact.company.nom) {
+          console.log('besoin.contact.company.name:',besoin.contact.company.nom);
+          console.log('searchLower:',searchLower);
+          const companyName = (besoin.contact.company.nom || '').toLowerCase();
+          return companyName.includes(searchLower);
+        }
+        return false;
+      });
+    }
   
     // Filtrage par nom de contact
     if (this.selectedFilterMethod === 'contact' && contact && contact.trim() !== '') {
       const searchLower = contact.trim().toLowerCase();
       filtered = filtered.filter(besoin => {
-        if (besoin.contact) {
+        if (besoin.company) {
           const firstname = (besoin.contact.firstname || '').toLowerCase();
           const lastname = (besoin.contact.lastname || '').toLowerCase();
           return firstname.includes(searchLower) || lastname.includes(searchLower);
@@ -298,6 +326,7 @@ export class BesoinsComponent implements OnInit{
       if(movedItem.status=='PERDU' || movedItem.status=='GAGNÉ' || movedItem.status=='REPORTE'){
         movedItem.priority='RIEN';
       }
+      movedItem.createdBy=movedItem.createdBy.id;
       this.besoinsService.updateBesoin(movedItem.id,movedItem).subscribe(
         (response: any) => {
           //console.log(`Besoin ${movedItem.id} mis à jour avec le statut ${newStatus}`);
@@ -513,7 +542,7 @@ export class BesoinsComponent implements OnInit{
   userr!:any;
   
   fillForm(besoin: any) {
-    this.ps.findUserById(besoin.createdBy).subscribe(
+    this.ps.findUserById(besoin.createdBy.id).subscribe(
       (user: any) => {
         this.userr = user;
       }
@@ -529,7 +558,7 @@ export class BesoinsComponent implements OnInit{
       creationDate: this.creationDate,
       status: besoin.status,
       contact: besoin.contact ? besoin.contact.firstname + ' ' + besoin.contact.lastname : '',
-      createdBy: this.user.firstname + ' ' + this.user.lastname,
+      createdBy: besoin.createdBy.firstname + ' ' + besoin.createdBy.lastname,
       priority: besoin.priority,
       managerResponsable: besoin.managerResponsable ? besoin.managerResponsable.id : null
     });
@@ -575,15 +604,15 @@ addBesoin() {
   const newBesoin = {
     title: formValue.title,
     description: formValue.description,
-    creationDate: new Date().toISOString(), // Utilisation d'un format ISO valide
+    creationDate: new Date().toISOString(), 
     status: "A_TRAITER",
-    contact: contactObject, // Envoyer uniquement l'ID du contact
+    contact: contactObject, 
     createdBy:this.user.id,
     priority: formValue.priority,
     managerResponsable:null
   };
 
-  if(formValue.managerResponsable!=null){
+  if(formValue.managerResponsable!=null && this.user.role=='Directeur Associé'){ 
     newBesoin.managerResponsable=this.productionManagers.find(manager => manager.id == formValue.managerResponsable);
   }
 
@@ -746,6 +775,7 @@ loadManager(id:any){
     //console.log('updatedData:',updatedData);
     updatedData.createdBy= this.userr.id;
     
+    updatedData.createdBy = this.selectedBesoin.createdBy.id;
     
     const id = Number(updatedData.id);
     this.besoinsService.updateBesoin(id, updatedData).subscribe(

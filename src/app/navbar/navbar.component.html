@@ -50,7 +50,7 @@
       <span><b>Type Actions</b></span>
     </button>
 
-    <button *ngIf=" user?.role !== 'Administrateur'"
+    <button *ngIf=" user?.role == 'Directeur Associé'"
        routerLink="/DirectorDashboard"
        routerLinkActive="bg-gray-700 text-white font-semibold"
        [routerLinkActiveOptions]="{ exact: true }"
