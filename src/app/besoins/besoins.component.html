@@ -150,13 +150,13 @@
                             </div>
                             <div>
                               <h3 class="font-semibold">{{ besoin.title }}</h3>
-                              <p class="text-sm text-gray-500">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</p>
+                              <p class="text-sm text-gray-500">{{ besoin.contact?.firstname }} {{ besoin.contact?.lastname }}</p>
                             </div>
                           </div>
             
                           <div class="flex flex-col">
                             <p class="text-sm text-gray-500">{{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
-                            <p class="text-sm text-gray-500 font-semibold">{{ besoin.contact?.company?.nom }}</p>
+                            <p class="text-sm text-gray-500 font-semibold">{{ besoin.contact?.company?.name }}</p>
                           </div>
                         </div>
             
@@ -391,7 +391,7 @@
       <div>
           <label for="contact">Contact</label>
           <select id="contact" formControlName="contact" class="w-full p-2 mt-1 border rounded">
-              <option *ngFor="let contact of contacts" [ngValue]="contact.id">{{ contact.nom }} {{ contact.prenom }}</option>
+              <option *ngFor="let contact of contacts" [ngValue]="contact.id">{{ contact.lastname }} {{ contact.firstname }}</option>
           </select>
         </div>
 
@@ -645,17 +645,17 @@
             </h2>
             <div class="mt-2">
               <label for="name">Nom Du Société</label>
-              <input id="name" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.company?.nom}}" readonly/>
+              <input id="name" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.company?.name}}" readonly/>
             </div>
 
             <div class="mt-2">
               <label for="numm">Numéro Du Société</label>
-              <input id="numm" type="number" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.company?.telephone}}" readonly/>
+              <input id="numm" type="number" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.company?.phone}}" readonly/>
             </div>
 
             <div class="mt-2">
               <label for="secteur">Secteur Du Société</label>
-              <input id="secteur" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.company?.secteur}}" readonly/>
+              <input id="secteur" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.company?.sector}}" readonly/>
             </div>
             <div class="mt-2">
               <label for="contact">Contact</label>

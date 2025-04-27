@@ -16,15 +16,17 @@
           </ul>
         </div>
       </div>
-  
-      <a class="relative group flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full" [routerLink]="['/besoins']" routerLinkActive="router-link-active">
+      <button class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full" [routerLink]="['/besoins']" >
         <img src="assets/images/logo/besoin.svg" alt="Logo" class="w-8 h-10"><span> <b>Besoins</b></span>
-      </a>
+    </button>
+  
+     
 
       <span *ngIf="user?.role != 'Manager De Production'">
-      <a class="relative group flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full" [routerLink]="['/type-actions']" routerLinkActive="router-link-active">
+      
+      <button class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full" [routerLink]="['/type-actions']" >
         <img src="assets/images/logo/besoin.svg" alt="Logo" class="w-8 h-10"><span> <b>Type Actions</b></span>
-      </a>
+    </button>
     </span>
     </nav>
  

@@ -6,12 +6,14 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContactsService } from '../../../services/contacts.service';
 import { RouterModule } from '@angular/router';
 import { CompServiceService } from '../../../services/comp-service.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
   selector: 'app-company-kanban',
   standalone: true,
-  imports: [CommonModule,DragDropModule,ReactiveFormsModule,RouterModule],
+  imports: [CommonModule,DragDropModule,ReactiveFormsModule,RouterModule,MatIconModule,MatButtonModule],
   templateUrl: './company-kanban.component.html',
   styleUrl: './company-kanban.component.css'
 })
@@ -23,6 +25,18 @@ export class CompanyKanbanComponent implements OnInit{
   
   creationDate: any;
   nbCompanies: number = 0;
+  @ViewChild('scrollContainer', { static: false }) scrollContainer!: ElementRef;
+
+  scrollKanban(direction: 'left' | 'right'): void {
+    const container = this.scrollContainer.nativeElement;
+    const scrollAmount = 300; // Ajuste la valeur selon tes besoins
+
+    if (direction === 'left') {
+      container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  }
 
   
   

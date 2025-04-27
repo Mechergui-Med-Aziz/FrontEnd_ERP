@@ -48,12 +48,28 @@ switchMode($event: MatButtonToggleChange) {
 
 }
   mode: any;
+  nbCompanies: number = 0;
   constructor(private companyService: CompServiceService, private fb: FormBuilder) { }
   ngOnInit(): void {
     this.mode="kanban";
+    this.nbCompanies = 0;
+    this.loadCompanies();
   }
  
   openFilterDialog(){
 
+  }
+  loadCompanies() {
+  
+    this.companyService.findAllCompanies().subscribe(
+      (response: any) => {
+        console.log('Response:', response); // Debugging line
+        
+        this.nbCompanies = response.length;
+        },
+      (error: any) => {
+        console.error(`Erreur lors du chargement des contact`, error);
+      }
+    );
   }
 }

@@ -25,6 +25,10 @@ import { ContactsService } from '../../../services/contacts.service';
 import { CardSyntheseComponent } from '../../societe/card-synthese/card-synthese.component';
 import { CompServiceService } from '../../../services/comp-service.service';
 import { Location } from '@angular/common';
+import { ActionCrmService } from '../../../services/action-crm.service';
+import { ProfileService } from '../../../services/profile.service';
+import dayjs from 'dayjs';
+import { TypeActionsService } from '../../../services/type-actions.service';
 
 @Component({
   selector: 'app-add-contact',
@@ -58,6 +62,7 @@ export class AddContactComponent implements OnInit{
   tel: string = "";
   social: string = "";
   contact:FormGroup;
+  actionAddForm:FormGroup;
   domainesGroup: SelectItemGroup[] = [];
   domaines: any[] = ["conception", "développement", "intégration", "déploiement", "maintenance","webdesign","webmarketing","devops","cloud","bigdata","ia"];
   
@@ -98,8 +103,24 @@ mode: any;
   
   domainesSelected: any[] = [];
   toolsSelected: any[] = [];
+  modeS: any;
+  contactActions: any[] = [];
+  isAddActionModalOpen: boolean = false;
+  
+  typeActions: any[] = [];
+  user!: any;
+  productionManagers: any[] = [];
+  selectedFiles: File[] = [];
+  isModalOpen: boolean = false;
+  message: string = '';
+  isDeleteModalOpen: boolean = false;
+  isActionDetailsModalOpen: boolean = false;
+  DetailsActionForm: FormGroup;
+  selectedAction!: any;
 
   constructor(
+      private profileService: ProfileService,
+      private actionService: ActionCrmService,
       private contactservice: ContactsService,
       private compService: CompServiceService,
       private activatedRoute: ActivatedRoute,
@@ -107,6 +128,7 @@ mode: any;
       private fb: FormBuilder,
       private router: Router,
       private location: Location,
+      private typeAction: TypeActionsService,
   ) { 
     this.contact = this.fb.group({
       civility: ['', []],
@@ -127,32 +149,47 @@ mode: any;
       city: ['', []],
       country: ['', []],
       socialMedea: ['', []],
-      technicalPerimetar: ['', []],
+      technicalPerimeter: ['', []],
       domains: ['', []],      
       tools: ['', []],
       complementaryInformations: ['', []],
       company: [null, []],
       creationDate: [{value:new Date().toLocaleDateString('fr-FR')}],
      
-      
-      
-      
-      
-      
-      
-      
-      
-      
     });
+    
+      this.actionAddForm= this.fb.group({
+        description: ['', Validators.required],
+        typeAction: ['', Validators.required],
+        dateAction: [dayjs().toISOString()],
+        createdBy: [''],
+        contactId: [],
+        manager:[''],
+      });
+      this.DetailsActionForm = this.fb.group({
+        id: [Validators.required],
+        description: [{value:''},Validators.required],
+        typeAction: [{value:''},Validators.required],
+        dateAction: ['', Validators.required],
+        createdBy:'',
+        contactId: [],
+        manager:[]
+      });
   }
 
   ngOnInit(): void {
+    this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
+      (user: any) => {
+        this.user = user;
+      });
+      
+    this.modeS="informations"
     this.loadCountries();
       this.activatedRoute.params.subscribe((params) => {
       this.idCompany = params['idCompany'];
       this.idContact = params['idContact'];
       console.log('ID de la société :', this.idCompany); // Debugging line
-      console.log('ID du contact :', this.idContact); // Debugging line
+      console.log('ID du contact hhhh:', this.idContact); // Debugging line
       
       }
     );
@@ -162,7 +199,10 @@ mode: any;
     } 
     else {
       this.mode='edit';
+      this.loadActions(this.idContact);
       this.loadContactData(this.idContact);
+      this.loadProductionManagers();
+      // Debugging line
       
     }
 
@@ -180,6 +220,7 @@ mode: any;
     this.contactservice.findContactById(id).subscribe(
       (contact: any) => {
         this.contact.patchValue(contact);
+        console.log('le contact:', contact); 
         console.log('Contact company:', contact.company); // Debugging line
         this.company = contact.company;
       },
@@ -248,4 +289,216 @@ mode: any;
   }
   getById() {}
   getDataSelect() {}
+
+  loadActions(contact: any) {
+    this.actionService.findActionsByContactId(contact).subscribe(
+      (actions: any) => {
+        console.log(actions)
+        // Tri des actions par date de façon décroissante (la plus récente en premier)
+        this.contactActions = actions.sort(
+          (a:any, b:any) => new Date(b.dateAction).getTime() - new Date(a.dateAction).getTime()
+        );
+  
+        this.contactActions.forEach(element => {
+          this.profileService.findUserById(element.createdBy).subscribe(
+            (user: any) => {
+              element.createdBy = user;
+            },
+            (error :any) => {
+              console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+            }
+          );
+        });
+      },
+      (error) => {
+        console.error('Erreur lors du chargement des actions', error);
+      }
+    );
+  }
+  selectModeS(tab: string): void {
+    this.modeS = tab;
+    
+  
+    // Si besoin, ajouter ici des actions spécifiques au changement d'onglet
+  }
+  openActionAddModal(){
+    this.loadTypeActions();
+    
+    this.isAddActionModalOpen = true;
+  }
+  closeActionAddModal(){
+    this.isAddActionModalOpen = false;
+    this.actionAddForm.reset();
+  }
+  loadTypeActions() {
+    this.typeAction.findTypeActionsByBelongTo("CRM").subscribe(
+      (typeActions: any) => {
+        this.typeActions = typeActions;
+      },
+      (error: any) => {
+        console.error('Erreur lors du chargement des typeActions:', error);
+      }
+    );
+  }
+  loadProductionManagers(){
+    this.profileService.findUSerByRole("Manager De Production").subscribe(
+      (users: any) => {
+        console.log('users managers de prod :', users);
+        this.productionManagers = users;
+      },
+      (error: any) => {
+        console.error('Erreur lors du chargement des managers de production:', error);
+      });
+  }
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.selectedFiles = Array.from(input.files);
+    }
+  }
+
+  addAction(): void {
+
+    if(this.selectedFiles.length >10) {
+      this.message = 'Vous ne pouvez pas ajouter plus de 10 fichiers.';
+      this.isModalOpen=true
+      return
+    }
+
+    for (const file of this.selectedFiles) {
+      if (file.size > 10 * 1024 * 1024) {
+        this.message = `Le fichier "${file.name}" dépasse la taille limite de 10 Mo.`;
+        this.isModalOpen = true;
+        return;
+      }
+    }
+    this.actionAddForm.patchValue({
+      contactId: this.idContact,
+      createdBy: this.user.id,
+      manager:this.productionManagers.find(manager => manager.id == this.actionAddForm.value.manager)
+    });
+    if (this.actionAddForm.valid) {
+      const actionData = this.actionAddForm.value;
+      console.log('actionData:',actionData);
+      console.log('selectedFiles:',this.selectedFiles);
+      this.actionService.createActionCrm(actionData, this.selectedFiles).subscribe(
+        response => {
+
+          this.message = 'Action enregistrée avec succès';
+          this.isModalOpen=true
+          //this.Dashboard=false;
+          this.isAddActionModalOpen = false; // Fermer la modal d'ajout d'action
+          this.ngOnInit(); // Navigate to the contact update page
+          this.modeS="actions" // Navigate back to the previous page
+          //console.log('Action enregistrée avec succès', response);
+          // Réinitialiser le formulaire et la sélection des fichiers si besoin
+          this.actionAddForm.reset();
+          this.selectedFiles = [];
+
+        },
+        error => {
+          console.error('Erreur lors de l\'enregistrement de l\'action', error);
+        }
+      );
+    }
+  }
+  deletedAction:any;
+  openDeleteModal(action: any) {
+    this.deletedAction=action;
+    this.isDeleteModalOpen = true;
+  }
+  
+  closeDeleteModal() {
+    this.isDeleteModalOpen = false;
+  }
+  deleteAction(id: number) {
+    this.actionService.deleteAction(id).subscribe(
+      (response: any) => {
+        console.log('Réponse du backend :', response);
+        this.isDeleteModalOpen = false;
+        this.deletedAction = null;
+        this.loadActions(this.idContact);
+        
+      },
+      (error: any) => {
+        console.error('Erreur lors de la suppression de l\'action :', error);
+      }
+    );
+  
+  }
+  openDetailsActionModal(action: any) {
+
+    this.selectedAction = action;
+    this.fillActionDetailsForm(action);
+    this.isActionDetailsModalOpen = true;
+    
+  }
+  
+
+
+  closeDetailsActionModal() {
+    this.isActionDetailsModalOpen = false;
+    this.DetailsActionForm.reset();
+  }
+
+  EditAction() {
+
+    if(this.selectedFiles.length >10) {
+      this.message = 'Vous ne pouvez pas ajouter plus de 10 fichiers.';
+      this.isModalOpen=true
+      return
+    }
+
+    for (const file of this.selectedFiles) {
+      if (file.size > 10 * 1024 * 1024) {
+        this.message = `Le fichier "${file.name}" dépasse la taille limite de 10 Mo.`;
+        this.isModalOpen = true;
+        return;
+      }
+    }
+    console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
+
+    const updatedData = this.DetailsActionForm.value;
+    updatedData.besoinId = this.selectedAction.besoinId;
+    updatedData.createdBy = this.selectedAction.createdBy.id;
+    updatedData.dateAction = new Date(this.selectedAction.dateAction).toISOString();
+    updatedData.manager=this.productionManagers.find(manager => manager.id == this.DetailsActionForm.value.manager)
+
+    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh"+updatedData?.manager)
+
+    this.actionService.modifyActionCrm(updatedData, this.selectedAction.id, this.selectedFiles).subscribe(
+      (response: any) => {
+        //console.log(`Action ${updatedData.id} mise à jour`);
+        this.message = 'Action modifiée avec succès';
+        this.isActionDetailsModalOpen = false;
+        this.ngOnInit(); // Recharge les actions après la modification
+        this.modeS="actions" // Navigate back to the previous page
+        //this.Dashboard=false;
+        //this.Dashboard=true;
+        
+      },
+      (error: any) => {
+        console.error(`Erreur lors de la mise à jour de l'action ${updatedData.id}`, error);
+      }
+    );
+
+  }
+  fillActionDetailsForm(action: any) {
+    this.DetailsActionForm.patchValue({
+      id: action.id,
+      description: action.description,
+      typeAction: action.typeAction,
+      dateAction: action.dateAction ? new Date(action.dateAction).toLocaleDateString('fr-FR') : '',
+      createdBy: action.createdBy.firstname + ' ' + action.createdBy.lastname,
+      contactId: action.contactId,
+      manager: action.manager ? action.manager.id : null
+    });
+    console.log(this.DetailsActionForm.value.manager);
+    (error: any) => {
+    console.error('Erreur lors du chargement de l\'action:', error);
+  }
+
 }
+}
+
+

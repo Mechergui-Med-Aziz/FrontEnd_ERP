@@ -25,11 +25,11 @@
           <tr>
             <th>Titre du contact</th>
             <th>Fonction</th>
-            <th>Service</th>
+            <th>Statut</th>
             <th>Date de Creation</th>
             <th>Créer Par</th>
             <th>Type</th>
-            <th>Statut</th>
+            <th>Service</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -47,24 +47,33 @@
               
             </td>
             <td>
-              <span class="badge badge-success rounded-pill d-inline">{{contact.service}}</span>
-            </td>
-            <td> {{ contact.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</td>
-
-            <td><p class="text-sm text-gray-500">{{ contact.manager}} </p></td>
-
-            <td><p class="text-sm text-gray-500">{{contact.type }}</p></td>
-
-            <td>
               <span 
                 [ngClass]="{
-                  'badge-danger': contact.status === 'prospect',
-                  'badge-warning': contact.status === 'Client'
+                  'badge-danger': contact.status === 'Prospect',
+                  'badge-warning': contact.status === 'Client',
+                  'badge-success': contact.status === 'Client_direct',
+                  'badge-info': contact.status === 'Fournisseur',
+                  'badge-primary': contact.status === 'Partenaire',
+                  'badge-secondary': contact.status === 'Piste',
+                  'badge-light': contact.status === 'Archivé',
+                  'badge-dark': contact.status === 'Client via intermédiaire',
+                  'badge-default': contact.status === 'Intermédiaire de facturation'
                 
                 }">
                 {{ contact.status }}
               </span>
             </td>
+            
+            <td> {{ contact.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</td>
+
+            <td><p class="text-sm text-gray-500">{{ contact.manager}} </p></td>
+
+            <td><p class="text-sm text-gray-500">{{contact.type }}</p></td>
+            <td>
+              <span class="badge badge-success rounded-pill d-inline">{{contact.service}}</span>
+            </td>
+
+            
             
               <span class="d-flex "><button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="editContact(contact)">
                 Ouvrir Fiche

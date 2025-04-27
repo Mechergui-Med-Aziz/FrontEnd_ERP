@@ -114,5 +114,17 @@ getCompById(id: number): any {
       return error;
     }));
   }
+  findAllCompanies(): any {
+    return this.http.get(`${this.apiUrl}/company/all`, this.options).pipe(
+      map(response => {
+        console.log('Response:', response); 
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error:', error);
+        return error;
+      })
+    );
+  }
 
 }

@@ -33,4 +33,5 @@ export const routes: Routes = [
     { path: 'updatecontact/:idContact', component: AddContactComponent },
     { path: 'addcontact/:idCompany', component: AddContactComponent },
     
+    
     ];

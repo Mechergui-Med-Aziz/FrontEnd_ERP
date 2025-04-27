@@ -1,7 +1,25 @@
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- (Optionnel) Inclusion de Material Icons si besoin -->
+<link
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet"
+/>
 <div class="flex flex-col w-full bg-white">
   <div class="w-full flex flex-col">
     <div
-    class="fixed top-0 left-[300px] right-0  flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent " >
+    class="fixed top-0 left-[250px] right-0  flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent " >
     <div class="flex">
       <!-- Title -->
       <div class="flex-1">
@@ -9,12 +27,12 @@
           class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate flex flex-row items-center"
         >
           <mat-icon class="icon-size-10 ml-4 relative-t-5">group </mat-icon>
-          <span class="ml-4">Sociétes</span>
+          <span class="ml-4">Sociétés ({{nbCompanies}})</span>
         </h2>
 
         <div class="flex flex-row items-center">
           <mat-button-toggle-group
-            [(ngModel)]="mode"
+          [(ngModel)]="mode"
             class="mt-1"
             name="favoriteColor"
             aria-label="Favorite Color"
@@ -67,7 +85,7 @@
               />
             </div>
             <button
-              (click)="openFilterDialog()"
+              
               class="ml-2"
               mat-icon-button
               matSuffix
@@ -77,7 +95,9 @@
 
           </div>
         </div>
+        <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;"/>
       </div>
+      
 
       <!-- Actions -->
 
@@ -88,21 +108,37 @@
        
       </div>
 
-    </div>
-      
+</div>
       <div class="px-4 w-full sm:flex-col md:flex-row flex">
         <div class="sm:w-full w-2/3 flex flex-col sm:mt-2 md:mt-0">
           <div class="py-4">
-            <app-company-list *ngIf="mode === 'list'"></app-company-list>
+            <app-company-kanban class="relative" *ngIf="mode === 'kanban'"></app-company-kanban>
+            <app-company-list class="relative" *ngIf="mode === 'list'"></app-company-list>
           </div>
-          <div>
-            <app-company-kanban *ngIf="mode === 'kanban'"></app-company-kanban>
-          </div>
+          
         </div>
       </div>
-    
+
     </div>
-    
   </div>
 </div>
+
+      
+    
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
