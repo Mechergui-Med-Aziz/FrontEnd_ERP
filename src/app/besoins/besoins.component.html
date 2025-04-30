@@ -1,151 +1,130 @@
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- (Optionnel) Inclusion de Material Icons si besoin -->
-<link
-  href="https://fonts.googleapis.com/icon?family=Material+Icons"
-  rel="stylesheet"
-/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
 <div class="flex flex-col w-full bg-white" *ngIf="Dashboard==false">
   <div class="w-full flex flex-col">
     <div
-    class="fixed top-0 left-[250px] right-0  flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent " >
-    <div class="flex">
-      <!-- Title -->
-      <div class="flex-1">
-        <h2
-          class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate flex flex-row items-center"
-        >
-          <mat-icon class="icon-size-10 ml-4 relative-t-5">group </mat-icon>
-          <span class="ml-4">Besoins ({{nbBesoins}})</span>
-        </h2>
+      class="fixed top-0 left-[250px] right-0 flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+      <div class="flex">
+        <div class="flex-1">
+          <h2
+            class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate flex flex-row items-center">
+            <mat-icon class="icon-size-10 ml-4 relative-t-5">group</mat-icon>
+            <span class="ml-4">Besoins ({{nbBesoins}})</span>
+          </h2>
+          <div class="flex flex-row items-center">
+            <mat-button-toggle-group
+              [(ngModel)]="mode"
+              class="mt-1"
+              name="favoriteColor"
+              aria-label="Favorite Color"
+              (change)="switchMode($event)">
+              <mat-button-toggle value="kanban">
+                <mat-icon fontIcon="view_kanban"></mat-icon>Kanban
+              </mat-button-toggle>
+              <mat-button-toggle value="list">
+                <mat-icon fontIcon="list"></mat-icon>List
+              </mat-button-toggle>
+            </mat-button-toggle-group>
 
-        <div class="flex flex-row items-center">
-          <mat-button-toggle-group
-          [(ngModel)]="mode"
-            class="mt-1"
-            name="favoriteColor"
-            aria-label="Favorite Color"
-            (change)="switchMode($event)"
-          >
-            <mat-button-toggle value="kanban">
-              <mat-icon
-                aria-hidden="false"
-                aria-label="Example home icon"
-                fontIcon="view_kanban"
-              >
-              </mat-icon
-              >Kanban
-            </mat-button-toggle>
-            <mat-button-toggle value="list">
-              <mat-icon
-                aria-hidden="false"
-                aria-label="Example home icon"
-                fontIcon="list"
-              >
-              </mat-icon
-              >List
-            </mat-button-toggle>
-          </mat-button-toggle-group>
+            <div class="relative flex flex-row items-center ml-2">
+              <button (click)="toggleFilterPanel()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full shadow transition duration-200">Filtrer</button>
+              <div *ngIf="showFilterPanel"
+                class="absolute top-full mt-2 left-0 w-72 bg-gray-50 p-4 rounded shadow z-50">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Sélectionnez la méthode de filtrage</label>
+                  <select [(ngModel)]="selectedFilterMethod"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <option value="">-- Choisir --</option>
+                    <option value="company">Nom du société</option>
+                    <option value="contact">Nom de contact</option>
+                    <option value="dateExact">Date précise</option>
+                    <option value="dateRange">Plage de dates</option>
+                  </select>
+                </div>
+                <form [formGroup]="filterForm" class="mt-4">
+                  <div [ngSwitch]="selectedFilterMethod">
 
-          <div class="flex flex-row items-center ml-2">
-            <label for="table-search" class="sr-only">Search</label>
-            <div class="relative mt-1">
-              <div
-                class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none"
-              >
-                <svg
-                  class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
+                    <div *ngSwitchCase="'company'">
+                      <label for="companyFilter" class="block text-sm font-medium text-gray-700">Nom du société</label>
+                      <input id="companyFilter" type="text" formControlName="company"
+                        placeholder="Rechercher par nom de société"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    </div>
+                    <div *ngSwitchCase="'contact'">
+                      <label for="contactFilter" class="block text-sm font-medium text-gray-700">Nom de Contact</label>
+                      <input id="contactFilter" type="text" formControlName="contact"
+                        placeholder="Rechercher par nom de contact"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    </div>
+                    <div *ngSwitchCase="'dateExact'">
+                      <label for="dateExact" class="block text-sm font-medium text-gray-700">Date précise</label>
+                      <input id="dateExact" type="date" formControlName="dateExact"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    </div>
+                    <div *ngSwitchCase="'dateRange'">
+                      <label for="startDate" class="block text-sm font-medium text-gray-700">Date de début</label>
+                      <input id="startDate" type="date" formControlName="startDate"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                      <label for="endDate" class="block text-sm font-medium text-gray-700 mt-2">Date de fin</label>
+                      <input id="endDate" type="date" formControlName="endDate"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    </div>
+                    <div *ngSwitchDefault>
+                      <p class="text-gray-500">Veuillez sélectionner une méthode de filtrage</p>
+                    </div>
+                  </div>
+                </form>
+                <div class="mt-4">
+                  <button type="button" (click)="filterBesoins()"
+                    class="bg-blue-600 text-white px-4 py-2 rounded">Filtrer</button>
+                </div>
               </div>
-              <input
-                type="text"
-                id="table-search"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Rechercher"
-              />
             </div>
-            <button
-              
-              class="ml-2"
-              mat-icon-button
-              matSuffix
-            >
-              <mat-icon>tune</mat-icon>
-            </button>
 
           </div>
+          <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;" />
         </div>
-        <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;"/>
-      </div>
-      
-
-      <!-- Actions -->
-
-      <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
-        <button class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg z-50" (click)="openAddModal()" [disabled]="user?.role=='Manager De Production'">
-          + Ajouter
-        </button>
-       
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+          <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full shadow transition duration-200" (click)="openAddModal()" [disabled]="user?.role=='Manager De Production'">
+            + Ajouter
+          </button>
+        </div>
       </div>
 
-    </div>
-      
       <div class="px-4 w-full sm:flex-col md:flex-row flex">
         <div class="sm:w-full w-2/3 flex flex-col sm:mt-2 md:mt-0">
-          <div class="py-4">
-            <!--<app-company-list *ngIf="mode === 'list'"></app-company-list>-->
-          </div>
+          <div class="py-4"></div>
           <div>
-
             <div class="relative" *ngIf="mode === 'kanban'">
-              <!-- Bouton gauche -->
-              <button 
-                (click)="scrollKanban('left')"
+              <button (click)="scrollKanban('left')"
                 class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
                 aria-label="Scroll Left">
-                <!-- Tu peux utiliser une icône ou du texte -->
                 <mat-icon>chevron_left</mat-icon>
               </button>
-            
-              <!-- Conteneur Kanban -->
               <div #scrollContainer class="kanban-container overflow-x-auto">
                 <div #scrollInner cdkDropListGroup class="flex space-x-4 pb-4">
-                  <div *ngFor="let column of columns" class="w-90 flex-shrink-0 bg-white p-4 rounded-lg shadow-lg h-full flex flex-col">
-                    <!-- Titre et contenu de la colonne -->
+                  <div *ngFor="let column of columns"
+                    class="w-85 flex-shrink-0 bg-white p-4 rounded-lg shadow-lg h-full flex flex-col">
                     <div class="flex-shrink-0">
                       <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 rounded-full" [ngStyle]="{'background-color': column.color}"></span>
-                        <h2 class="font-bold text-lg text-gray-700">
-                          {{ column.title }} ({{ column.besoins.length }}) <span *ngIf="column.besoins.length==0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                        </h2>
+                        <span class="w-3 h-3 mb-3 rounded-full" [ngStyle]="{'background-color': column.color}"></span>
+                        <h2 class="font-bold text-lg text-gray-700">{{ column.title }} ({{ column.besoins.length }})</h2>
                       </div>
                       <div class="h-1 w-full mt-2" [ngStyle]="{'background-color': column.color}"></div>
                     </div>
-            
-                    <!-- Liste des besoins -->
-                    <div cdkDropList [cdkDropListData]="column.besoins" 
-                         (cdkDropListDropped)="drop($event, column.status)" 
-                         class="min-h-[100px] p-2 bg-gray-100 rounded-md">
-                      <div *ngFor="let besoin of column.besoins" 
-                      cdkDrag 
-                      (cdkDragMoved)="onDragMoved($event)"
-                           class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between h-24 w-full">
-                        <!-- Barre de priorité -->
-                        <div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}" class="w-10 h-[85px] rounded-l-lg"></div>
-            
-                        <!-- Contenu principal -->
-                        <div class="p-4 w-full flex items-center justify-between" (click)="openModal(besoin)" style="margin-left: -8%;">
+                    <div cdkDropList [cdkDropListData]="column.besoins"
+                      (cdkDropListDropped)="drop($event, column.status)"
+                      class="min-h-[100px] p-2 bg-gray-100 rounded-md max-h-[60vh] overflow-y-auto">
+                      <div *ngFor="let besoin of column.besoins" cdkDrag (cdkDragMoved)="onDragMoved($event)"
+                        class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between h-24 w-full">
+                        <div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}"
+                          class="w-10 h-[85px] rounded-l-lg"></div>
+                        <div class="p-4 w-full flex items-center justify-between" (click)="openModal(besoin)"
+                          style="margin-left: -8%;">
                           <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 flex items-center justify-center rounded-full text-white font-bold"
-                                 [ngStyle]="{'background-color': besoin.color}">
+                              [ngStyle]="{'background-color': besoin.color}">
                               {{ besoin.initiales }}
                             </div>
                             <div>
@@ -153,124 +132,80 @@
                               <p class="text-sm text-gray-500">{{ besoin.contact?.firstname }} {{ besoin.contact?.lastname }}</p>
                             </div>
                           </div>
-            
                           <div class="flex flex-col">
                             <p class="text-sm text-gray-500">{{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
                             <p class="text-sm text-gray-500 font-semibold">{{ besoin.contact?.company?.name }}</p>
                           </div>
                         </div>
-            
-                        <!-- Bouton historique -->
-                        
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            
-              <!-- Bouton droit -->
-              <button 
-                (click)="scrollKanban('right')"
+              <button (click)="scrollKanban('right')"
                 class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
                 aria-label="Scroll Right">
                 <mat-icon>chevron_right</mat-icon>
               </button>
             </div>
 
-
-
-
-
-
-
-
             <div class="flex flex-col w-full bg-white" *ngIf="mode === 'list'">
               <div class="w-full flex flex-col">
-                
-                <head>
-                  <link
-                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-                    rel="stylesheet"
-                  />
-                  <!-- Google Fonts -->
-                  <link
-                    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-                    rel="stylesheet"
-                  />
-                  <!-- MDB -->
-                  <link
-                    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
-                    rel="stylesheet"
-                  />
-                </head>
-                <div class="max-h-[100vh] overflow-y-auto">
-                <table class="table align-middle mb-0 bg-white min-w-full">
-                  <thead class="bg-light">
-                    <tr>
-                      <th>Titre du Besoin</th>
-                      <th>description</th>
-                      <th>Status</th>
-                      <th>Date de Creation</th>
-                      <th>Créer Par</th>
-                      <th>Manager Responsable</th>
-                      <th>Priorité</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let besoin of besoins">
-                      <td>
-                        
-                          <div class="ms-3">
-                            <p class="fw-bold mb-1">{{ besoin.title }}</p>
-                          </div>
-                        
-                      </td>
-                      <td>
-                        <p class="fw-normal mb-1">{{ besoin.description }}</p>
-                        
-                      </td>
-                      <td>
-                        <span class="badge badge-success rounded-pill d-inline">{{besoin.status}}</span>
-                      </td>
-                      <td> {{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</td>
-
-                      <td><p class="text-sm text-gray-500">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</p></td>
-
-                      <td><p class="text-sm text-gray-500">{{ besoin?.managerResponsable?.firstname!=null ? besoin?.managerResponsable?.firstname: '-' }} {{ besoin?.managerResponsable?.lastname!=null ? besoin?.managerResponsable?.lastname:'-' }}</p></td>
-
-                      <td>
-                        <span 
-                          [ngClass]="{
-                            'badge-danger': besoin.priority === 'TRÉS_HAUTE',
-                            'badge-warning': besoin.priority === 'HAUTE',
-                            'badge-success': besoin.priority === 'BASSE',
-                            'badge-info': besoin.priority === 'MOYENNE'
-                          }">
-                          {{ besoin.priority !== 'RIEN' ? besoin.priority : '-' }}
-                        </span>
-                      </td>
-                      
-                        <span class="d-flex "><button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="openModal(besoin)">
-                          Ouvrir Fiche
-                        </button>
-                        </span>
-                        
-                      
-                      
-                    </tr>
-                  </tbody>
-                </table>
-                </div>
+                <div class="max-h-[70vh] overflow-y-auto">
+                  <table class="min-w-full divide-y divide-gray-200 bg-white">
+                    <thead class="bg-gray-100">
+                      <tr>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Titre du Besoin</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Description</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Date de Création</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Créé Par</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Manager Responsable</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Priorité</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
+                      <tr *ngFor="let besoin of besoins" class="hover:bg-gray-50">
+                        <td class="px-3 py-2 font-semibold">{{ besoin.title }}</td>
+                        <td class="px-3 py-2">{{ besoin.description }}</td>
+                        <td class="px-3 py-2">
+                          <span class="inline-block px-2 py-1 text-xs font-medium text-white bg-green-600 rounded-full">
+                            {{ besoin.status }}
+                          </span>
+                        </td>
+                        <td class="px-3 py-2">{{ besoin.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                        <td class="px-3 py-2">{{ besoin.createdBy.firstname }} {{ besoin.createdBy.lastname }}</td>
+                        <td class="px-3 py-2">
+                          {{ besoin?.managerResponsable?.firstname || '-' }} {{ besoin?.managerResponsable?.lastname || '-' }}
+                        </td>
+                        <td class="px-3 py-2">
+                          <span class="inline-block px-2 py-1 text-xs font-semibold text-white rounded-full"
+                            [ngClass]="{
+                              'bg-red-600': besoin.priority === 'TRÉS_HAUTE',
+                              'bg-orange-500': besoin.priority === 'HAUTE',
+                              'bg-yellow-300 text-black': besoin.priority === 'MOYENNE',
+                              'bg-green-600': besoin.priority === 'BASSE'
+                            }">
+                            {{ besoin.priority !== 'RIEN' ? besoin.priority : '----' }}
+                          </span>
+                        </td>
+                        <td class="px-3 py-2">
+                          <button class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded-full transition"
+                                  (click)="openModal(besoin)">
+                            Ouvrir Fiche
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  </div>
               </div>
             </div>
-            
           </div>
         </div>
       </div>
-    
     </div>
-    
   </div>
 </div>
 
@@ -391,7 +326,7 @@
       <div>
           <label for="contact">Contact</label>
           <select id="contact" formControlName="contact" class="w-full p-2 mt-1 border rounded">
-              <option *ngFor="let contact of contacts" [ngValue]="contact.id">{{ contact.lastname }} {{ contact.firstname }}</option>
+              <option *ngFor="let contact of contacts" [ngValue]="contact.id">{{ contact.firstname }} {{ contact.lastname }} ({{contact.company.nom}})</option>
           </select>
         </div>
 
@@ -404,19 +339,19 @@
             <option value="BASSE">BASSE</option>
           </select>
         </div>
-        <div>
+        <div [hidden]="user.role !== 'Directeur Associé'">
           <label for="manager">Manager Responable </label>
           <select id="manager" formControlName="managerResponsable" class="w-full p-2 mt-1 border rounded"
             [class.pointer-events-none]="user.role !== 'Directeur Associé'"
             [class.bg-gray-200]="user.role !== 'Directeur Associé'">
   
-            <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
-              {{ manager.firstname }} {{ manager.lastname }}
+            <option *ngFor="let manager of fullManagerInformations" [ngValue]="manager.manager.id">
+              {{ manager.manager.firstname }} {{ manager.manager.lastname }} ({{manager.nbrBesoins}})
             </option>
           </select>
         </div>
 
-        <div class="flex justify-end gap-4">
+        <div class="flex justify-end gap-4 mt-2">
           <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeAddModal()">Annuler</button>
           <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="addBesoin()" [disabled]="besoinAddForm.invalid">Sauvegarder</button>
         </div>
@@ -424,15 +359,37 @@
   </div>
 </div>  
 
-<div *ngIf="isModalOpen" class="aa fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"> 
-  <div class="bg-white rounded-lg w-1/3 p-6">
-    <h2 class="text-2xl font-bold mb-4 bg-white text-black">{{message}}</h2>
-    
-    <div class="flex justify-end">
-      <button type="button" class="bg-green-400 text-white px-4 py-2 rounded" (click)="closeModal()">Ok</button>
+<div *ngIf="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+  <div class="bg-white rounded-2xl w-1/3 p-8 shadow-lg border-t-4 border-green-500 animate-fade-in">
+
+    <div class="flex flex-col items-center">
+
+      <div class="text-green-500 mb-4">
+        <!-- Icône de succès -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <h2 class="text-2xl font-bold text-green-600 mb-2 text-center">
+        Succès !
+      </h2>
+
+      <p class="text-gray-700 text-center mb-6">
+        {{ message }}
+      </p>
+
+      <div class="flex justify-center">
+        <button type="button" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg" (click)="closeModal()">
+          Ok
+        </button>
+      </div>
+
     </div>
+
   </div>
 </div>
+
 
 
 
@@ -452,17 +409,6 @@
         </select>
       </div>
 
-      <div>
-        <label for="manager">Manager Responable </label>
-        <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
-          [class.pointer-events-none]="user.role == 'Manager De Production'"
-          [class.bg-gray-200]="user.role == 'Manager De Production'">
-
-          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
-            {{ manager.firstname }} {{ manager.lastname }}
-          </option>
-        </select>
-      </div>
     
       <div class="mt-4">
         <label for="files">Fichiers :</label>
@@ -524,7 +470,7 @@
             Sauvegarder
           </button>
 
-          <button *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'">
+          <button *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'|| selectedBesoin.managerResponsable==null">
             Ajouter Une Action
           </button>
 
@@ -592,8 +538,8 @@
           [class.pointer-events-none]="user.role !== 'Directeur Associé'"
           [class.bg-gray-200]="user.role !== 'Directeur Associé'">
 
-          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
-            {{ manager.firstname }} {{ manager.lastname }}
+          <option *ngFor="let manager of fullManagerInformations" [ngValue]="manager.manager.id">
+            {{ manager.manager.firstname }} {{ manager.manager.lastname }} ({{manager.nbrBesoins}})
           </option>
         </select>
       </div>
@@ -739,15 +685,40 @@
     </main>
 
     <div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div class="bg-white rounded-lg w-1/3 p-6">
-        <h2 class="text-2xl font-bold mb-4 bg-white text-black">Etes-Vous Sûr de supprimer l'action</h2>
-        
-        <div class="flex justify-end gap-4">
-          <button type="button" class="bg-green-400 text-white px-4 py-2 rounded" (click)="closeDeleteModal()">Non</button>
-          <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"(click)="deleteAction(deletedAction.id)">Oui</button>
+      <div class="bg-white rounded-2xl w-1/3 p-8 shadow-lg border-t-4 border-red-500 animate-fade-in">
+    
+        <div class="flex flex-col items-center">
+    
+          <div class="text-red-500 mb-4">
+            <!-- Icône d'alerte (warning) -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+            </svg>
+          </div>
+    
+          <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">
+            Confirmation de suppression
+          </h2>
+    
+          <p class="text-gray-600 text-center mb-6">
+            Êtes-vous sûr de vouloir supprimer cette action ?<br>
+            Cette opération est <span class="font-semibold text-red-600">définitive</span>.
+          </p>
+    
+          <div class="flex justify-center gap-4">
+            <button type="button" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-lg" (click)="closeDeleteModal()">
+              Annuler
+            </button>
+            <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg" (click)="deleteAction(deletedAction.id)">
+              Supprimer
+            </button>
+          </div>
+    
         </div>
+    
       </div>
     </div>
+    
 
     
   <!--  <div *ngIf="isHistoricModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">

@@ -13,6 +13,11 @@ import { CompanyComponent } from './CRM/societe/company/company.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ContactComponent } from './CRM/contact/contact/contact.component';
 import { AddContactComponent } from './CRM/contact/add-contact/add-contact.component';
+import { UsersAccountsComponent } from './users-accounts/users-accounts.component';
+import { usersAccountsGuard } from './guards/users-accounts.guard';
+import { besoinsGuard } from './guards/besoins.guard';
+import { DirectorDashboardComponent } from './director-dashboard/director-dashboard.component';
+import { dashboardGuard } from './guards/dashboard.guard';
 
 
 export const routes: Routes = [ 
@@ -24,7 +29,7 @@ export const routes: Routes = [
     {path:'company',component:CompanyComponent},
     {path:'addcomp',component:AddCompanyComponent},
     {path:'type-actions',component:TypeActionsComponent ,canActivate:[typeActionsGuard]},
-    {path:'besoins',component:BesoinsComponent},
+    {path:'besoins',component:BesoinsComponent,canActivate:[besoinsGuard]},
     {path:'profile',component:ProfileComponent},
     {path:'companyKanban' ,component:CompanyKanbanComponent },
     { path: 'addcomp/:id', component: AddCompanyComponent },
@@ -32,6 +37,8 @@ export const routes: Routes = [
     { path: 'addcontact', component: AddContactComponent },
     { path: 'updatecontact/:idContact', component: AddContactComponent },
     { path: 'addcontact/:idCompany', component: AddContactComponent },
+    {path:'users-accounts',component:UsersAccountsComponent,canActivate:[usersAccountsGuard]},
+    {path:'DirectorDashboard',component:DirectorDashboardComponent,canActivate:[dashboardGuard]},
     
     
     ];

@@ -19,6 +19,19 @@ export class BesoinsService {
              })
            };
 
+           findAllBesoins(): any {
+            return this.http.get(`${this.url}/besoin/all`, this.options).pipe(
+              map(response => {
+                console.log('Response:', response);
+                return response;
+              }),
+              catchError(error => {
+                console.error('Error:', error);
+                return error;
+              })
+            );
+          }
+
           findBesoinsById(id: number): any {
             return this.http.get(`${this.url}/besoin/${id}`, this.options).pipe(
               map(response => {

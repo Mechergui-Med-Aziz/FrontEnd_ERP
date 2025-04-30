@@ -1,58 +1,83 @@
 <div class="fixed h-screen w-64 bg-gray-800 text-white flex flex-col justify-between p-6 z-50">  
-    <div class="flex justify-center">
-      <img src="assets/images/logo/logo-talys.png" alt="Logo" class="w-29">
-    </div>
-  
-    
-    <nav class="flex flex-col gap-4 mt-4 z-50">
-      <div class="relative group">
-        <button class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full">
-            <img src="assets/images/logo/company.svg" alt="Logo" class="w-8 h-10"><span> <b>CRM</b></span>
-        </button>
-        <div class="absolute left-full top-0 hidden group-hover:block bg-gray-700 text-white rounded shadow-md w-40 z-50">
-          <ul>
-            <li class="p-2 hover:bg-gray-600 cursor-pointer" routerLink="/company">societe</li>
-            <li class="p-2 hover:bg-gray-600 cursor-pointer" routerLink="/contact">contact</li>
-          </ul>
-        </div>
-      </div>
-      <button class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full" [routerLink]="['/besoins']" >
-        <img src="assets/images/logo/besoin.svg" alt="Logo" class="w-8 h-10"><span> <b>Besoins</b></span>
-    </button>
-  
-     
-
-      <span *ngIf="user?.role != 'Manager De Production'">
-      
-      <button class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full" [routerLink]="['/type-actions']" >
-        <img src="assets/images/logo/besoin.svg" alt="Logo" class="w-8 h-10"><span> <b>Type Actions</b></span>
-    </button>
-    </span>
-    </nav>
  
-
-    
-  
-   
-    <div class="relative group mt-auto">
-      <button class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full">
-        <img src="assets/images/logo/profile.svg" alt="Profil" class="w-8 h-8 rounded-full">
-        <span> <b>Mon Profil</b></span>
-      </button>
-      <div class="absolute left-full bottom-0 hidden group-hover:block bg-gray-700 text-white rounded shadow-md w-60">
-        <ul>
-          
-          <li class="flex items-center gap-2 p-2 hover:bg-gray-600 cursor-pointer" [routerLink]="['/profile']" routerLinkActive="router-link-active">
-            <img src="assets/images/logo/edit.svg" alt="Edit" class="w-5 h-5">
-            <span>Modifier mes infos</span>
-          </li>
-          
-          <li class="flex items-center gap-2 p-2 hover:bg-gray-600 cursor-pointer" (click)="logout()">
-            <img src="assets/images/logo/logout.svg" alt="Logout" class="w-5 h-5">
-            <span>Se déconnecter</span>
-          </li>
-        </ul>
-      </div>
-    </div>
+  <div class="flex justify-center">
+    <img src="assets/images/logo/logo-talys.png" alt="Logo" class="w-29">
   </div>
 
+
+  <nav class="flex flex-col gap-4 mt-4 z-50">
+    
+
+    <div class="relative" *ngIf="user?.role !== 'Administrateur'">
+      <button (click)="toggleCRM()" class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full">
+        <img src="assets/images/logo/company.svg" alt="Logo" class="w-8 h-10 filter invert">
+        <span><b>CRM</b></span>
+      </button>
+
+
+      <div *ngIf="isCRMOpen" class="ml-6 mt-2 flex flex-col gap-2">
+        <button routerLink="/company" routerLinkActive="bg-gray-700" class="p-2 rounded hover:bg-gray-700 flex items-center gap-2">
+          <img src="assets/images/logo/companies.svg" alt="Logo Société" class="w-5 h-5 filter invert">
+          <span>Société</span>
+        </button>
+        <button routerLink="/contact" routerLinkActive="bg-gray-700" class="p-2 rounded hover:bg-gray-700 flex items-center gap-2">
+          <img src="assets/images/logo/contacts.svg" alt="Logo Société" class="w-5 h-5 filter invert">
+          <span>Contact</span>
+        </button>
+      </div>
+      
+    </div>
+
+
+    <button *ngIf="user?.role === 'Administrateur'" routerLink="/users-accounts" routerLinkActive="bg-gray-700 text-white font-semibold" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full">
+      <img src="assets/images/logo/managment.svg" alt="Logo" class="w-8 h-10 filter invert">
+      <span><b>Comptes d'utilisateurs</b></span>
+    </button>
+
+
+    <button *ngIf="user?.role !== 'Administrateur'" [routerLink]="'/besoins'" routerLinkActive="bg-gray-700 text-white font-semibold" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full text-left">
+  <img src="assets/images/logo/besoins.svg" alt="Logo" class="w-8 h-10 filter invert">
+  <span><b>Besoins</b></span>
+</button>
+
+
+    <button *ngIf="user?.role !== 'Manager De Production' && user?.role !== 'Administrateur'"
+       routerLink="/type-actions"
+       routerLinkActive="bg-gray-700 text-white font-semibold"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full">
+      <img src="assets/images/logo/tasks.svg" alt="Logo" class="w-8 h-10 filter invert">
+      <span><b>Type Actions</b></span>
+    </button>
+
+    <button *ngIf=" user?.role == 'Directeur Associé'"
+       routerLink="/DirectorDashboard"
+       routerLinkActive="bg-gray-700 text-white font-semibold"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="flex items-center gap-2 p-2 rounded hover:bg-gray-700 w-full">
+      <img src="assets/images/logo/dashboard.svg" alt="Logo" class="w-8 h-10 filter invert">
+      <span><b>Dashboard</b></span>
+    </button>
+  </nav>
+
+<div class="mt-auto">
+  <div class="flex flex-col gap-2 rounded p-2">
+    
+    <button [routerLink]="['/profile']"
+       routerLinkActive="bg-gray-700"
+       class="flex items-center gap-2 p-2 rounded hover:bg-gray-700">
+       <img src="assets/images/logo/profile.svg" alt="Profil" class="w-6 h-6 filter invert">
+
+      <span>{{user?.firstname}} {{user?.lastname}} <br> {{user?.role}}</span>
+    </button>
+
+ 
+    <button (click)="logout()" class="flex items-center gap-2 p-2 rounded hover:bg-gray-700">
+      <img src="assets/images/logo/logout.svg" alt="Logout" class="w-6 h-6 filter invert">
+      <span>Se déconnecter</span>
+    </button>
+    
+  </div>
+</div>
+
+</div>

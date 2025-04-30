@@ -13,13 +13,14 @@ import { CommonModule } from '@angular/common';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit{
-  user:any;
   constructor(private router:Router,private authService: AuthService,private fb: FormBuilder,private ps:ProfileService) { }
 
+  user:any;
   showPassword: boolean = false;  
   showConfirmPassword: boolean = false; 
-
   isModalOpen: boolean = false;
+  message!:string ;
+  message1:string =""
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;  
@@ -37,13 +38,15 @@ export class ProfileComponent implements OnInit{
     lastname: ['', Validators.required],
     password: [''],
     confirmPassword: [''],
-    phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],    
+    phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],   
+    status: [Validators.required],
+    role: [Validators.required], 
   });
 
   ngOnInit(): void {
     const id = localStorage.getItem('id');
     if (id) {
-      console.log("ID:", id);
+      //console.log("ID:", id);
         this.ps.findUserById(parseInt(id)).subscribe(
             (response: any) => {
                 //console.log('User Data:', response);
@@ -70,6 +73,8 @@ fillForm() {
       phone: this.user.phone,
       firstname: this.user.firstname,
       lastname: this.user.lastname,
+      status: this.user.status,
+      role: this.user.role
   });
 }
 
@@ -98,8 +103,7 @@ verifyPasswords() : boolean {
 }
 
 
-message!:string ;
-message1:string =""
+
   saveChanges() {
     const password = this.userForm.get('password')?.value;
     const confirmPassword = this.userForm.get('confirmPassword')?.value;
@@ -117,6 +121,8 @@ message1:string =""
     if (updatedData.password=="") {
       delete updatedData.password;
     }
+
+    console.log("Updated Data:", updatedData);
   
     this.ps.updateUser(this.user.id, updatedData).subscribe(
       (response: any) => {
@@ -133,7 +139,6 @@ message1:string =""
       },
       (error: any) => {
         console.error("Erreur API:", error);
-        alert("Une erreur s'est produite !");
       }
     );
   }

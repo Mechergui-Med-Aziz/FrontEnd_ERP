@@ -1,13 +1,12 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { TypeActionsService } from '../services/type-actions.service';
 
 export const typeActionsGuard: CanActivateFn = (route, state) => {
   const router=inject(Router);
-  const auth=inject(TypeActionsService);
 
-  const isAllowed=localStorage.getItem('role')!="Manager De Production";
-  if(isAllowed){
+  const isAllowed=localStorage.getItem('role')=="Commercial";
+  const isAllowed2=localStorage.getItem('role')=="Directeur Associé";
+  if(isAllowed || isAllowed2){
     return true;
 }else{
   router.navigate(['/home']);
