@@ -15,12 +15,14 @@ export class TypeActionsComponent implements OnInit {
   
   actionsCRM :{ id: number; name: string; belongTo:string }[] = [];
   actionsBesoins: { id: number; name: string; belongTo:string }[] = [];
-
   isModalOpen: boolean = false;
   isModalOpen2: boolean = false;
   isDeleteModalOpen: boolean = false;
   isAddModalOpen: boolean = false;
   message!:string ;
+  action!:any;
+  id!:number;
+  deletedAction:any;
 
   acion={
     name: 'Email',
@@ -56,8 +58,7 @@ export class TypeActionsComponent implements OnInit {
       });
 
   }
-  action!:any;
-  id!:number;
+
 
   modifyTypeAction() {
     this.type_action.findByNameAndBelongTo(this.typeActionForm.get('name')!.value!, this.typeActionForm.get('belongTo')!.value!).subscribe(
@@ -105,7 +106,6 @@ export class TypeActionsComponent implements OnInit {
 }
 
   addNewTypeAction() {
-    // Prépare l'objet à envoyer
     const actionToAdd = {
       name: this.AddTypeActionForm.get('typeActionName')?.value,
       belongTo: this.AddTypeActionForm.get('typeActionbelongTo')?.value
@@ -136,7 +136,7 @@ export class TypeActionsComponent implements OnInit {
       belongTo: action.belongTo
     });
   }
-  deletedAction:any;
+
 
   openDeleteModal(action: any) {
     this.deletedAction=action;
@@ -184,6 +184,4 @@ export class TypeActionsComponent implements OnInit {
     this.closeModal();
     this.ngOnInit();
   }
-  
-
 }

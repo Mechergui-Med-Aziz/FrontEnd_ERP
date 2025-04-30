@@ -326,7 +326,7 @@
       <div>
           <label for="contact">Contact</label>
           <select id="contact" formControlName="contact" class="w-full p-2 mt-1 border rounded">
-              <option *ngFor="let contact of contacts" [ngValue]="contact.id">{{ contact.firstname }} {{ contact.lastname }}</option>
+              <option *ngFor="let contact of contacts" [ngValue]="contact.id">{{ contact.firstname }} {{ contact.lastname }} ({{contact.company.nom}})</option>
           </select>
         </div>
 
@@ -339,14 +339,14 @@
             <option value="BASSE">BASSE</option>
           </select>
         </div>
-        <div>
+        <div [hidden]="user.role !== 'Directeur Associé'">
           <label for="manager">Manager Responable </label>
           <select id="manager" formControlName="managerResponsable" class="w-full p-2 mt-1 border rounded"
             [class.pointer-events-none]="user.role !== 'Directeur Associé'"
             [class.bg-gray-200]="user.role !== 'Directeur Associé'">
   
-            <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
-              {{ manager.firstname }} {{ manager.lastname }}
+            <option *ngFor="let manager of fullManagerInformations" [ngValue]="manager.manager.id">
+              {{ manager.manager.firstname }} {{ manager.manager.lastname }} ({{manager.nbrBesoins}})
             </option>
           </select>
         </div>
@@ -409,17 +409,6 @@
         </select>
       </div>
 
-      <div>
-        <label for="manager">Manager Responable </label>
-        <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
-          [class.pointer-events-none]="user.role == 'Manager De Production'"
-          [class.bg-gray-200]="user.role == 'Manager De Production'">
-
-          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
-            {{ manager.firstname }} {{ manager.lastname }}
-          </option>
-        </select>
-      </div>
     
       <div class="mt-4">
         <label for="files">Fichiers :</label>
@@ -481,7 +470,7 @@
             Sauvegarder
           </button>
 
-          <button *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'">
+          <button *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'|| selectedBesoin.managerResponsable==null">
             Ajouter Une Action
           </button>
 
@@ -549,8 +538,8 @@
           [class.pointer-events-none]="user.role !== 'Directeur Associé'"
           [class.bg-gray-200]="user.role !== 'Directeur Associé'">
 
-          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
-            {{ manager.firstname }} {{ manager.lastname }}
+          <option *ngFor="let manager of fullManagerInformations" [ngValue]="manager.manager.id">
+            {{ manager.manager.firstname }} {{ manager.manager.lastname }} ({{manager.nbrBesoins}})
           </option>
         </select>
       </div>

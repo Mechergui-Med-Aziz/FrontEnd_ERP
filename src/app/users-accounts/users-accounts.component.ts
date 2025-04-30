@@ -12,10 +12,21 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
   styleUrl: './users-accounts.component.css'
 })
 export class UsersAccountsComponent implements OnInit {
+  constructor(private ps:ProfileService,private fb:FormBuilder) { }
+
   usersAccounts :any[] = [];
   isUserAccountDetailsModalOpen = false;
   isUserAccountAddModalOpen = false;
-  constructor(private ps:ProfileService,private fb:FormBuilder) { }
+  RoleSuccessmessage:string = '';
+  RoleErrormessage:string = '';
+  StatusSuccessmessage:string = '';
+  StatusErrormessage:string = '';
+  globalErrorMessage:string = '';
+  globalSuccessMessage:string = '';
+  isErrorModalOpen = false;
+  isSuccessModalOpen = false;
+  selectedUser:any;
+
 
   ngOnInit(): void {
     this.ps.findAllUsers().subscribe((data:any)=>{
@@ -65,7 +76,6 @@ export class UsersAccountsComponent implements OnInit {
     role: [{value:''},Validators.required],
 });
 
-selectedUser:any;
 fillUserForm(user:any){
   this.userForm.patchValue({
       id: user.id,
@@ -99,19 +109,8 @@ fillUserForm(user:any){
   closeUserAccountModal(){
     this.isUserAccountDetailsModalOpen = false;
   }
-RoleSuccessmessage:string = '';
-RoleErrormessage:string = '';
-StatusSuccessmessage:string = '';
-StatusErrormessage:string = '';
-globalErrorMessage:string = '';
-globalSuccessMessage:string = '';
-isErrorModalOpen = false;
-isSuccessModalOpen = false;
-
-
 updateUserAccount() {
   const updatedData = { ...this.userForm.value };
-  updatedData.password = this.selectedUser.password;
 
   if (this.selectedUser.role !== updatedData.role) {
     this.ps.updateUserRole(this.selectedUser.id, updatedData).subscribe((response: any) => {
@@ -120,7 +119,6 @@ updateUserAccount() {
       } else {
         this.RoleErrormessage = "Erreur lors de la sauvegarde des modifications du rôle !";
       }
-      // Affichage immédiat du modal si un message est défini
       this.checkAndDisplayModals();
     });
   }
@@ -132,19 +130,16 @@ updateUserAccount() {
       } else {
         this.StatusErrormessage = "Erreur lors de la sauvegarde des modifications du status !";
       }
-      // Affichage immédiat du modal si un message est défini
       this.checkAndDisplayModals();
     });
   }
 }
 
 checkAndDisplayModals() {
-  // Affiche le modal d'erreur si l'un des messages d'erreur est défini
   if (this.RoleErrormessage || this.StatusErrormessage) {
     this.globalErrorMessage = "Erreur lors de la sauvegarde des modifications !";
     this.isErrorModalOpen = true;
   }
-  // Sinon, si un message de succès existe, afficher le modal de succès.
   else if (this.RoleSuccessmessage || this.StatusSuccessmessage) {
     this.globalSuccessMessage = "Modifications sauvegardées !";
     this.isSuccessModalOpen = true;
@@ -174,13 +169,4 @@ checkAndDisplayModals() {
       this.userForm.reset();
       this.ngOnInit();
     }
-    
-
-
-
-
-
-
-
-
 }

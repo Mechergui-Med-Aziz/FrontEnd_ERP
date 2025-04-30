@@ -38,11 +38,16 @@ export class LoginComponent implements OnInit{
         username: this.loginForm.value.username!,
         password: this.loginForm.value.password!
       }).subscribe(result => {
+        console.log(result);
         if (result.success) {
           this.appComponent.isLoading = true; // Activer le chargement global
           setTimeout(() => {
             this.appComponent.isLoading = false;
+            if(localStorage.getItem("role") != "Administrateur"){
             this.router.navigate(['/home'], { replaceUrl: true });
+            }else{
+              this.router.navigate(['/users-accounts'], { replaceUrl: true });
+            }
           }, 2000); // Attendre 2 secondes avant de naviguer
         } else {
           this.message = result.error || "Nom d'utilisateur ou mot de passe incorrecte !";
