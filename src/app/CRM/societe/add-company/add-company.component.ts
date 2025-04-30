@@ -20,6 +20,8 @@ import { CompServiceService } from '../../../services/comp-service.service';
 import { AuthService } from '../../../services/auth.service';
 import countries from 'world-countries';
 import { ContactsService } from '../../../services/contacts.service';
+import { ActionCrmService } from '../../../services/action-crm.service';
+import { ProfileService } from '../../../services/profile.service';
 
 
 
@@ -120,7 +122,9 @@ export class AddCompanyComponent implements OnInit {
   formData = new FormData();
   companycontacts: any;
   newContact:any;
-  
+  companyBesoins: any[] = [];
+  mode: any ; // Mode par défaut (ajout)
+  // Liste des contacts de la société
   constructor(
     private fb: FormBuilder,
     private AuthService: AuthService,
@@ -130,6 +134,8 @@ export class AddCompanyComponent implements OnInit {
    
     private compService: CompServiceService,
     private contactsService: ContactsService,
+    private actionCrmService: ActionCrmService,
+    private profileService: ProfileService,
   )
   {
     this.companyForm = this.fb.group({
@@ -168,6 +174,7 @@ export class AddCompanyComponent implements OnInit {
     });
     
   }
+  companyActions: any[] = [];
   // Modifiez votre composant AddCompanyComponent pour gérer l'édition
 
 ngOnInit(): void {
@@ -180,22 +187,77 @@ ngOnInit(): void {
       this.loadCompanyData(this.idCompany);
     }
   });
+  if (this.idCompany) {
+    this.mode='edit';
+  } else {
+    this.mode='add';
+  }
 }
 
 loadCompanyData(id: number) {
   this.compService.getCompById(id).subscribe(
     (company: any) => {
+       // Assurez-vous que contacts est un tableau
       this.companyForm.patchValue(company);
       console.log('Company data loaded:', this.companyForm.value);
-      this.companycontacts = company.contacts || []; // Assurez-vous que contacts est un tableau
+      this.companycontacts = company.contacts || [];
+       // Assurez-vous que contacts est un tableau
       console.log('Company contacts:', this.companycontacts);
+      this.companycontacts.forEach((element: { besoins: any[]; }) => {
+          element.besoins.forEach((besoin: any) => {
+            this.companyBesoins.push(besoin); // Ajoutez le besoin chargé à la liste des besoins
+          });});
+          console.log('Company besoinssssssssssssssssss:', this.companyBesoins); // Debugging line
+      
 
 
+
+      this.companycontacts.forEach((element: any) => {
+        console.log('Contact ID:', element.id); // Debugging line
+        this.actionCrmService.findActionsByContactId(element.id).subscribe(
+          (actions: any) => {
+            console.log('Contact actions loaded:', actions);
+            actions.forEach((action: any) => {
+
+             
+                this.profileService.findUserById(action.createdBy).subscribe(
+                  (user: any) => {
+                    action.createdBy = user;
+                    
+                  },
+                  (error :any) => {
+                    console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+                  }
+                );
+                this.contactsService.findContactById(action.contactId).subscribe(
+                  (contact: any) => {
+                    action.contactId = contact;
+                    this.companyActions.push(action);
+                  },
+                  (error :any) => {
+                    console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+                  }
+                );
+              
+
+              
+            }) // Ajoutez le contact chargé à la liste des contacts
+          },
+          (error: any) => {
+            console.error('Error loading contact actions:', error);
+          }
+        );
+        
+
+      });
     },
     (error: any) => {
       console.error('Error loading company data:', error);
     }
   );
+  
+  console.log('Company contacts:', this.companycontacts);
+  console.log('Company actionssssssssssssssssssssss:', this.companyActions); // Debugging line
 }
 
 saveChanges() {
@@ -243,6 +305,7 @@ saveChanges() {
       }
     );
   }
+  
 }
 
 
@@ -267,5 +330,13 @@ saveChanges() {
       name: country.name.common, 
     }));
     this.societesPaysList.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+modeS: string = 'informations'; // Onglet par défaut
+  selectModeS(tab: string): void {
+    this.modeS = tab;
+    
+  
+    // Si besoin, ajouter ici des actions spécifiques au changement d'onglet
   }
 }

@@ -488,7 +488,7 @@ addBesoin() {
     creationDate: new Date().toISOString(), // Utilisation d'un format ISO valide
     status: "A_TRAITER",
     contact: contactObject, // Envoyer uniquement l'ID du contact
-    createdBy:this.user.id,
+    createdBy:this.user.firstname + ' ' + this.user.lastname,
     priority: formValue.priority,
     managerResponsable:null
   };

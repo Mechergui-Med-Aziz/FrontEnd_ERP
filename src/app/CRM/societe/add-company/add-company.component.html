@@ -1,4 +1,90 @@
-<form class="w-full h-full" [formGroup]="companyForm" >
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+        crossorigin="anonymous"
+    />
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"
+      />
+      <!-- Google Fonts -->
+      <link
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        rel="stylesheet"
+      />
+      <!-- MDB -->
+      <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
+        rel="stylesheet"
+      />
+</head>
+<header  class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-10 h-[20%] rounded-lg">
+    <div class="flex flex-col sm:flex-row items-center justify-between">
+      <!-- Zone titre et navigation -->
+      <!-- Zone titre et navigation -->
+<div class="flex-1">
+<h1 *ngIf="mode==='add'"  class="text-3xl pt-[45px] font-extrabold tracking-tight flex items-center">
+  <span  class="material-icons  text-4xl ml-4">group</span>
+  <span class="ml-4 font-bold">Nouvelle Société</span>
+  
+</h1>
+<h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
+    <span  class="material-icons  text-4xl ml-4">group</span>
+    
+    <span  class="ml-4 font-bold">Société Dashboard</span>
+  </h1>
+<!-- Liens Synthèse et Actions alignés en bas -->
+<div *ngIf="mode==='edit'" class="flex gap-4 items-end mt-2">
+  <button
+    (click)="selectModeS('informations')"
+    [ngClass]="modeS === 'informations' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+    class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+    Synthèse
+  </button>
+  <button
+  (click)="selectModeS('contacts')"
+    [ngClass]="modeS=== 'contacts' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+    class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+    Contacts
+  </button>
+  <button
+  (click)="selectModeS('actions')"
+    [ngClass]="modeS=== 'actions' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+    class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+    Actions
+  </button>
+  <button
+  (click)="selectModeS('besoins')"
+    [ngClass]="modeS=== 'besoins' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+    class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+    Besoins
+  </button>
+</div>
+</div>
+
+      <!-- Bouton d'action -->
+      <div *ngIf="mode==='edit'" class="mt-4 sm:mt-0 pt-10">
+       
+
+        <button *ngIf="modeS=='actions'" [disabled] class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
+          Ajouter Une Action
+        </button>
+
+        <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" routerLink="/contact">
+          Retour
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <main class="pt-[100px]  w-full h-full overflow-y-auto h-full px-4 mt-8" *ngIf="modeS === 'informations'">
+    <div class="flex flex-col md:flex-row gap-4 right-100" >
+<form class="w-full pb-[10px] h-full"  [formGroup]="companyForm" >
     <div class="px-4 w-full sm:flex-col md:flex-row flex">
         <button type="submit" (click)="saveChanges()"
             class="fixed top-70 right-2 w-12 h-12 text-white p-1 rounded-full flex items-center justify-center shadow-lg ring-0 ring-gray-200"
@@ -208,4 +294,182 @@
         </div>
     </div>
 </form>
+</div>
+</main>
+<!-- Synthèse des contacts -->
+<main class="pt-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'contacts'">
+    <div class="w-full max-w-7xl">
+      <div class="flex flex-col md:flex-row gap-8">
+        <div class="w-full flex flex-col gap-8">
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Contacts
+            </h2>
+  
+            <div class="flex-1 overflow-hidden border rounded-lg">
+              <div class="overflow-y-auto max-h-[70vh]">
+                <table class="min-w-full table-auto text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>
+                        <th class="px-4 py-6">Nom</th>
+                      <th class="px-4 py-6">Civilité</th>
+                      <th class="px-4 py-6">Status</th>
+                      <th class="px-4 py-6">Créé Par</th>
+                      <th class="px-4 py-6">Société</th>
+                      <th class="px-4 py-6">Téléphone</th>
+                      
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let contact of companycontacts" class="hover:bg-gray-50 text-gray-600 text-base">
+                        <td class="px-4 py-6">{{ contact.firstname}} {{contact.lastname}}</td>
+                      <td class="px-4 py-6 font-semibold">{{ contact.civility }}</td>
+                      <td class="px-4 py-6 font-semibold">
+                        <span 
+                          [ngClass]="{
+                             'badge-danger': contact.status === 'Prospect',
+                              'badge-warning': contact.status === 'Client',
+                              'badge-success': contact.status === 'Client_direct',
+                              'badge-info': contact.status === 'Fournisseur',
+                              'badge-primary': contact.status === 'Partenaire',
+                              'badge-secondary': contact.status === 'Piste',
+                              'badge-light': contact.status === 'Archivé',
+                              'badge-dark': contact.status === 'Client via intermédiaire',
+                              'badge-default': contact.status === 'Intermédiaire de facturation'
+                          
+                          }">
+                          {{ contact.status }}
+                        </span>
+                      </td>
+                      
+                      <td class="px-4 py-6">{{contact?.createdBy}} </td>
+                        <td class="px-4 py-6">{{ this.companyForm.value.name }}</td>
+                        <td class="px-4 py-6">{{ contact.phone }}</td>
+                     
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>      
+      </div>
+    </div>
+  </main>
+
+
+
+<!-- liste des actions -->
+
+  <main class="pt-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
+    <div class="w-full max-w-7xl">
+      <div class="flex flex-col md:flex-row gap-8">
+        <div class="w-full flex flex-col gap-8">
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Actions
+            </h2>
+  
+            <div class="flex-1 overflow-hidden border rounded-lg">
+              <div class="overflow-y-auto max-h-[70vh]">
+                <table class="min-w-full table-auto text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>
+                      <th class="px-4 py-6">Type d'action</th>
+                      <th class="px-4 py-6">Contact</th>
+                      <th class="px-4 py-6">Créé Par</th>
+                      <th class="px-4 py-6">Manager Responsable</th>
+                      <th class="px-4 py-6">Fichiers</th>
+                      <th class="px-4 py-6">Date Action</th>
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let action of companyActions" class="hover:bg-gray-50 text-gray-600 text-base">
+                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
+                      <td class="px-4 py-6">{{ action.contactId.firstname }} {{ action.contactId.lastname }}</td>
+                      <td class="px-4 py-6">{{ action.createdBy.firstname }} {{ action.createdBy.lastname }}</td>
+                      <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td>
+                      <td class="px-4 py-6">
+                        <ul class="list-disc list-inside space-y-1" *ngIf="action?.attachments?.length!=0">
+                          <li *ngFor="let file of action.attachments">
+                            {{ file.fileName }}
+                          </li>
+                        </ul>
+                        <span *ngIf="action.attachments.length==0">--------</span>
+                      </td>
+                      <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                      
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>      
+      </div>
+    </div>
+  </main>
+
+
+  <main class="pt-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'besoins'">
+    <div class="w-full max-w-7xl">
+      <div class="flex flex-col md:flex-row gap-8">
+        <div class="w-full flex flex-col gap-8">
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Besoins
+            </h2>
+  
+            <div class="flex-1 overflow-hidden border rounded-lg">
+              <div class="overflow-y-auto max-h-[70vh]">
+                <table class="min-w-full table-auto text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>
+                      <th class="px-4 py-6">Titre </th>
+                      <th class="px-4 py-6">Description</th>
+                      <th class="px-4 py-6">Status</th>
+                      <th class="px-4 py-6">Manager Responsable</th>
+                      <th class="px-4 py-6">Créé Par</th>
+                      <th class="px-4 py-6">Date de creation</th>
+                      <th class="px-4 py-6">Priorité</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let besoin of companyBesoins" class="hover:bg-gray-50 text-gray-600 text-base">
+                      <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
+                      <td class="px-4 py-6">{{ besoin.description }}</td>
+                      <td class="px-4 py-6">{{ besoin.status }}</td>
+                      <td class="px-4 py-6">{{ besoin.createdBy}}</td>
+                      <td class="px-4 py-6">{{besoin?.managerResponsable?.firstname}} {{besoin?.managerResponsable?.lastname}}</td>
+                      
+                      <td class="px-4 py-6">{{ besoin.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                      <td>
+                        <span 
+                          [ngClass]="{
+                            'badge-danger': besoin.priority === 'TRÉS_HAUTE',
+                            'badge-warning': besoin.priority === 'HAUTE',
+                            'badge-success': besoin.priority === 'BASSE',
+                            'badge-info': besoin.priority === 'MOYENNE'
+                          }">
+                          {{ besoin.priority !== 'RIEN' ? besoin.priority : '-' }}
+                        </span>
+                      </td>
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>      
+      </div>
+    </div>
+  </main>
 <p-toast />

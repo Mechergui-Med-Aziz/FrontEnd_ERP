@@ -29,6 +29,7 @@ import { ActionCrmService } from '../../../services/action-crm.service';
 import { ProfileService } from '../../../services/profile.service';
 import dayjs from 'dayjs';
 import { TypeActionsService } from '../../../services/type-actions.service';
+import { BesoinsService } from '../../../services/besoins.service';
 
 @Component({
   selector: 'app-add-contact',
@@ -117,6 +118,7 @@ mode: any;
   isActionDetailsModalOpen: boolean = false;
   DetailsActionForm: FormGroup;
   selectedAction!: any;
+  contactBesoins: any[] = [];
 
   constructor(
       private profileService: ProfileService,
@@ -129,6 +131,7 @@ mode: any;
       private router: Router,
       private location: Location,
       private typeAction: TypeActionsService,
+      private besoinservice: BesoinsService,
   ) { 
     this.contact = this.fb.group({
       civility: ['', []],
@@ -136,7 +139,7 @@ mode: any;
       firstname: ['', []],
       function: [null, []],
       service: ['', []],
-      manager: ['', []],
+      createdBy: ['', []],
       type: ['', []],
       status: ['', []],
       provenance: [null, []],
@@ -182,7 +185,7 @@ mode: any;
       (user: any) => {
         this.user = user;
       });
-      
+    
     this.modeS="informations"
     this.loadCountries();
       this.activatedRoute.params.subscribe((params) => {
@@ -201,6 +204,7 @@ mode: any;
       this.mode='edit';
       this.loadActions(this.idContact);
       this.loadContactData(this.idContact);
+
       this.loadProductionManagers();
       // Debugging line
       
@@ -223,6 +227,8 @@ mode: any;
         console.log('le contact:', contact); 
         console.log('Contact company:', contact.company); // Debugging line
         this.company = contact.company;
+        this.contactBesoins = contact.besoins;
+        console.log('contact besoinssssssssssssssssssssssss:', this.contactBesoins);
       },
       (error: any) => {
         console.error('Error loading contact data:', error);
@@ -247,7 +253,9 @@ mode: any;
       );
     } else {
       let creationdate = new Date().toISOString();
-      this.contact.patchValue({ creationDate: creationdate });
+      this.contact.patchValue({ creationDate: creationdate ,
+        createdBy: this.user.firstname + ' ' + this.user.lastname,
+      });
 
       console.log('Creating new contact:', this.contact.value);
       console.log('Company ID:', this.idCompany); // Debugging line
@@ -499,6 +507,7 @@ mode: any;
   }
 
 }
+
 }
 
 
