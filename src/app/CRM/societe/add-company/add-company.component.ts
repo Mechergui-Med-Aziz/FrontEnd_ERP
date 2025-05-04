@@ -205,6 +205,19 @@ loadCompanyData(id: number) {
       console.log('Company contacts:', this.companycontacts);
       this.companycontacts.forEach((element: { besoins: any[]; }) => {
           element.besoins.forEach((besoin: any) => {
+            this.profileService.findUserById(besoin.createdBy).subscribe(
+              (user: any) => {
+                besoin.createdBy = user;
+                
+              },
+              (error :any) => {
+                console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+              }
+            );
+
+
+
+
             this.companyBesoins.push(besoin); // Ajoutez le besoin chargé à la liste des besoins
           });});
           console.log('Company besoinssssssssssssssssss:', this.companyBesoins); // Debugging line

@@ -42,16 +42,16 @@ export class CompanyKanbanComponent implements OnInit{
   
 
 
-  columns: { title: string, statut: string, color:string, companies: any[] }[] = [
-    { title: 'Prospect', statut: 'Prospect', color: "#FFA500", companies: [] },
-    { title: 'Client', statut: 'Client',color : "#000080", companies: [] },
-    { title: 'Client direct', statut: 'Client_direct',color: "#00FFFF", companies: [] },
-    { title: 'Partenaire', statut: 'Partenaire',color: "#80FF00", companies: [] },
-    { title: 'Piste', statut: 'Piste',color: "#0096AA", companies: [] },
-    { title: 'Fournisseur', statut: 'Fournisseur',color: "#FA0000", companies: [] },
-    { title: 'Archivé', statut: 'Archivé',color: "#FF80FF", companies: [] },
-    { title: 'Intermédiaire de facturation', statut: 'Intermédiaire_de_facturation',color: "#FF00FF", companies: [] },
-    { title: 'Client via intermédiaire', statut: 'Client_via_intermédiaire',color: "#FF00FF", companies: [] },
+  columns: { title: string, status: string, color:string, companies: any[] }[] = [
+    { title: 'Prospect', status: 'Prospect', color: "#FFA500", companies: [] },
+    { title: 'Client', status: 'Client',color : "#000080", companies: [] },
+    { title: 'Client direct', status: 'Client_direct',color: "#00FFFF", companies: [] },
+    { title: 'Partenaire', status: 'Partenaire',color: "#80FF00", companies: [] },
+    { title: 'Piste', status: 'Piste',color: "#0096AA", companies: [] },
+    { title: 'Fournisseur', status: 'Fournisseur',color: "#FA0000", companies: [] },
+    { title: 'Archivé', status: 'Archivé',color: "#FF80FF", companies: [] },
+    { title: 'Intermédiaire de facturation', status: 'Intermédiaire_de_facturation',color: "#FF00FF", companies: [] },
+    { title: 'Client via intermédiaire', status: 'Client_via_intermédiaire',color: "#FF00FF", companies: [] },
   ];
 
 
@@ -70,13 +70,13 @@ export class CompanyKanbanComponent implements OnInit{
 
   loadCompanies() {
     this.columns.forEach(column => {
-      this.companyService.findCompanyByStatut(column.statut).subscribe(
+      this.companyService.findCompanyByStatus(column.status).subscribe(
         (response: any) => {
           column.companies = response;
           this.nbCompanies += response.length;
           },
         (error: any) => {
-          console.error(`Erreur lors du chargement des besoins pour le statut ${column.statut}:`, error);
+          console.error(`Erreur lors du chargement des besoins pour le statut ${column.status}:`, error);
         }
       );
     });
@@ -106,30 +106,31 @@ export class CompanyKanbanComponent implements OnInit{
       console.log('Nouveau statut:', newStatus);
       this.companyService.updateCompanystatus(movedItem.id,movedItem).subscribe(
         (response: any) => {
-          console.log(`societe ${movedItem.id} mis à jour avec le statut ${newStatus}`);
+          console.log(`societe ${movedItem.id} mis à jour avec le statuttttttttttttttttttttttttttttttttttttt ${newStatus}`);
+          this.companycontacts.forEach((element: any) => {
+            console.log('Contact hahah :', element);
+            console.log('ID du contact:', element.id); // Debugging line
+            console.log('Statut du societe :', newStatus); // Debugging line
+            this.contactsService.updateContactStatut(element.id,newStatus).subscribe(
+              (response: any) => {
+                console.log(`contact ${element.lastname} mis à jour avec le statut ${newStatus}`);
+                this.ngOnInit();
+              },
+              (error: any) => {
+                console.error(`Erreur lors de la mise à jour du contact ${element.id}`, error);
+              }
+            );
+           
+      
+            
+          });
           this.ngOnInit();
         },
         (error: any) => {
           console.error(`Erreur lors de la mise à jour le la societe ${movedItem.id}`, error);
         }
       );
-      this.companycontacts.forEach((element: any) => {
-        console.log('Contact hahah :', element);
-        console.log('ID du contact:', element.id); // Debugging line
-        console.log('Statut du societe :', newStatus); // Debugging line
-        this.contactsService.updateContactStatut(element.id,newStatus).subscribe(
-          (response: any) => {
-            console.log(`contact ${element.lastname} mis à jour avec le statut ${newStatus}`);
-            this.ngOnInit();
-          },
-          (error: any) => {
-            console.error(`Erreur lors de la mise à jour du contact ${element.id}`, error);
-          }
-        );
-       
-  
-        
-      });
+      
     }
   }
 

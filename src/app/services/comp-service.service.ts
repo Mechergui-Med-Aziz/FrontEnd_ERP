@@ -50,8 +50,8 @@ export class CompServiceService {
   }
   
   
-  findCompanyByStatut(statut: any): any {
-    return this.http.get(`${this.apiUrl}/company/statut/${statut}`, this.options).pipe(
+  findCompanyByStatus(status: any): any {
+    return this.http.get(`${this.apiUrl}/company/status/${status}`, this.options).pipe(
       map(response => {
         console.log('Response:', response);
         return response;
@@ -79,7 +79,7 @@ export class CompServiceService {
     return this.http.put(`${this.apiUrl}/company/updatestatus/${id}`, company, this.options).pipe(
       
       map(response => {
-        console.log('Response updatee statuususssss:', response); 
+        console.log('Response updatee statuususssssssssssssssssssss:', response); 
         console.log('helooooooooo:');
         return response;
         

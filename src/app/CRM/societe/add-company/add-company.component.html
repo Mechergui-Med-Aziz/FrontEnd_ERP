@@ -445,8 +445,9 @@
                       <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
                       <td class="px-4 py-6">{{ besoin.description }}</td>
                       <td class="px-4 py-6">{{ besoin.status }}</td>
-                      <td class="px-4 py-6">{{ besoin.createdBy}}</td>
+                      
                       <td class="px-4 py-6">{{besoin?.managerResponsable?.firstname}} {{besoin?.managerResponsable?.lastname}}</td>
+                      <td class="px-4 py-6">{{ besoin.createdBy?.firstname}} {{ besoin.createdBy?.lastname}}</td>
                       
                       <td class="px-4 py-6">{{ besoin.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                       <td>

@@ -33,7 +33,7 @@
           <!-- Liste des besoins -->
           <div cdkDropList 
           [cdkDropListData]="column.companies" 
-          (cdkDropListDropped)="drop($event, column.statut)" 
+          (cdkDropListDropped)="drop($event, column.status)" 
                
                class="min-h-[100px] p-2 bg-gray-100 rounded-md">
             <div *ngFor="let company of column.companies" 

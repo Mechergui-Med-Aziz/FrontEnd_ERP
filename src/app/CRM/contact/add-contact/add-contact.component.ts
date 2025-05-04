@@ -143,19 +143,19 @@ mode: any;
       type: ['', []],
       status: ['', []],
       provenance: [null, []],
-      precisionValue: ['', []],
+      
       agency: ['', []],
       email: ['', []],
       phone: ['', []],
       address: ['', []],
-      postalCode: ['', []],
-      city: ['', []],
+      
+      
       country: ['', []],
-      socialMedea: ['', []],
-      technicalPerimeter: ['', []],
+      
+      
       domains: ['', []],      
       tools: ['', []],
-      complementaryInformations: ['', []],
+      
       company: [null, []],
       creationDate: [{value:new Date().toLocaleDateString('fr-FR')}],
      
@@ -254,7 +254,7 @@ mode: any;
     } else {
       let creationdate = new Date().toISOString();
       this.contact.patchValue({ creationDate: creationdate ,
-        createdBy: this.user.firstname + ' ' + this.user.lastname,
+        createdBy: this.user.id,
       });
 
       console.log('Creating new contact:', this.contact.value);

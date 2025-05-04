@@ -204,28 +204,14 @@
                                 </div>
                             </div>
         
-                            <div class="">
-                                <div class="font-bold text-sm text-gray-500">Précisez la provenance</div>
-                                <div class="input-container">
-                                    <input type="text" class="form-control" placeholder=""
-                                        formControlName="precisionValue" />
-                                </div>
-                            </div>
+                           
         
                         </div>
                     </div>
                 </app-card-synthese>
         
                 
-                <app-card-synthese [customTitle]="'Périmètre technique (nuage de mots clés)'" [customActionLabel]=""
-                    [hasIconActions]="false">
-                    <div body>
-                        <div class="input-container w-full h-30 p-2">
-                            <textarea type="text" class="input-field-commentaire" formControlName="technicalPerimeter"
-                                        placeholder="Rédigez vos commentaires"></textarea>
-                        </div>
-                    </div>
-                </app-card-synthese>
+                
                 <app-card-synthese [customTitle]="'Périmètre fonctionnel'" [customActionLabel]="" [hasIconActions]="false">
                     <div body>
                         <div class="flex flex-col px-2 marge">
@@ -352,16 +338,7 @@
                                 </div>
         
                                 <div class="grid grid-cols-3 gap-2  marge">
-                                    <div class="input-container">
-                                        <div class="font-bold text-sm text-gray-500">Code postal</div>
-                                        <input type="text" class="form-control" placeholder=""
-                                            formControlName="postalCode" />
-                                    </div>
-        
-                                    <div class="input-container  marge">
-                                        <div class="font-bold text-sm text-gray-500">Ville</div>
-                                        <input type="text" class="form-control" placeholder="" formControlName="city" />
-                                    </div>
+                                    
         
                                     <div class="flex flex-col ">
                                         <div class="font-bold text-sm text-gray-500">Pays</div>
@@ -377,12 +354,7 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <div class="input-container">
-                                        <div class="font-bold text-sm text-gray-500">Réseaux sociaux</div>
-                                        <!-- <mat-icon class="material-icons input-icon"
-                                            >link</mat-icon> -->
-                                        <input type="text" class="form-control" placeholder="" formControlName="socialMedea" />
-                                    </div>
+                                    
                                 </div>
         
         
