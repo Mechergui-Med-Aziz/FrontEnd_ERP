@@ -49,6 +49,11 @@ export class UsersAccountsComponent implements OnInit {
 
   addUserAccount() {
     const userData = this.userAddForm.value;
+    if(this.usersAccounts.find((user:any) => user.username === userData.username || user.email === userData.email)){
+      this.globalErrorMessage ="vous ne pouvez pas ajouter un utilisateur qui a le même username ou email qu'un utilisateur existant !";
+      this.isErrorModalOpen = true;
+      return;
+    }
     userData.status = 'Activé'; 
     userData.password="123"
     console.log(userData);
@@ -152,11 +157,12 @@ checkAndDisplayModals() {
 
 
     closeErrorModal() {
-      this.isUserAccountAddModalOpen = false;
+      
       this.isErrorModalOpen = false;
       this.RoleErrormessage = '';
       this.StatusErrormessage = '';
       this.globalErrorMessage = '';
+      return
     }
 
     closeSuccessModal() {

@@ -140,7 +140,8 @@ export class BesoinsComponent implements OnInit{
       contact: [''],
       dateExact: [''],
       startDate: [''],
-      endDate: ['']
+      endDate: [''],
+      managerResponsable:['']
     });
     this.loadProductionManagers();
   }
@@ -191,7 +192,7 @@ export class BesoinsComponent implements OnInit{
   
         this.productionManagers.forEach(manager => {
           const nbrBesoins = this.besoins.filter(
-            (besoin: any) => besoin.managerResponsable?.id === manager.id
+            (besoin: any) => besoin.managerResponsable?.id === manager.id && besoin.status !== 'PERDU' && besoin.status !== 'GAGNÉ' && besoin.status !== 'REPORTE'
           ).length;
           console.log()
           this.fullManagerInformations.push({
@@ -685,19 +686,38 @@ loadTypeActions() {
 }
 
 filterBesoins(): void {
-  const { company, contact, dateExact, startDate, endDate } = this.filterForm.value;
+  const { company, contact, dateExact, startDate, endDate,managerResponsable } = this.filterForm.value;
   let filtered = this.allBesoins;
   console.log('filtered:', this.filterForm.value);
 
-  if(this.selectedFilterMethod === 'company' && company && company.trim() !== '') {
+  if(this.selectedFilterMethod=="nonAffectedbesoin"){
+    filtered = filtered.filter(besoin => !besoin.managerResponsable);
+  }
 
+  if(this.selectedFilterMethod === 'managerResponsable' && managerResponsable && managerResponsable.trim() !== '') {
+    const searchLower = managerResponsable.trim().toLowerCase();
+    console.log('searchLower:',searchLower);
+    filtered = filtered.filter(besoin => {
+      if (besoin.managerResponsable) {
+        console.log('besoin.contact.company.name:',besoin.managerResponsable.firstname);
+        console.log('searchLower:',searchLower);
+        const firstname = (besoin.managerResponsable.firstname || '').toLowerCase();
+        const lastname = (besoin.managerResponsable.lastname || '').toLowerCase();
+        return firstname.includes(searchLower) || lastname.includes(searchLower);
+      }
+      return false;
+    });
+  }
+
+
+  if(this.selectedFilterMethod === 'company' && company && company.trim() !== '') {
     const searchLower = company.trim().toLowerCase();
     console.log('searchLower:',searchLower);
     filtered = filtered.filter(besoin => {
-      if (besoin.contact.company.nom) {
-        console.log('besoin.contact.company.name:',besoin.contact.company.nom);
+      if (besoin.contact.company.name) {
+        console.log('besoin.contact.company.name:',besoin.contact.company.name);
         console.log('searchLower:',searchLower);
-        const companyName = (besoin.contact.company.nom || '').toLowerCase();
+        const companyName = (besoin.contact.company.name || '').toLowerCase();
         return companyName.includes(searchLower);
       }
       return false;
@@ -707,7 +727,7 @@ filterBesoins(): void {
   if (this.selectedFilterMethod === 'contact' && contact && contact.trim() !== '') {
     const searchLower = contact.trim().toLowerCase();
     filtered = filtered.filter(besoin => {
-      if (besoin.company) {
+      if (besoin.contact) {
         const firstname = (besoin.contact.firstname || '').toLowerCase();
         const lastname = (besoin.contact.lastname || '').toLowerCase();
         return firstname.includes(searchLower) || lastname.includes(searchLower);
@@ -807,6 +827,12 @@ filterBesoins(): void {
          return '#CCCCCC'; // gris par défaut
      }
    }
+
+   getStatusColor(status: string): string {
+    const column = this.columns.find(col => col.status === status);
+    return column ? column.color : '#999999'; // couleur par défaut si non trouvé
+  }
+  
  
    getHistoricBesoin(besoin :any){
      //console.log('besoin:',besoin);
