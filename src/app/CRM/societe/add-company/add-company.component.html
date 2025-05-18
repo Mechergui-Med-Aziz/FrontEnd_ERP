@@ -1,12 +1,99 @@
-<form class="w-full h-full" [formGroup]="companyForm" >
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+        crossorigin="anonymous"
+    />
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"
+      />
+      <!-- Google Fonts -->
+      <link
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        rel="stylesheet"
+      />
+      <!-- MDB -->
+      <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
+        rel="stylesheet"
+      />
+</head>
+<header  class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-10 h-[20%] rounded-lg">
+    <div class="flex flex-col sm:flex-row items-center justify-between">
+      <!-- Zone titre et navigation -->
+      <!-- Zone titre et navigation -->
+<div class="flex-1">
+<h1 *ngIf="mode==='add'"  class="text-3xl pt-[45px] font-extrabold tracking-tight flex items-center">
+  <span  class="material-icons  text-4xl ml-4">group</span>
+  <span class="ml-4 font-bold">Nouvelle Société</span>
+  
+</h1>
+<h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
+    <span  class="material-icons  text-4xl ml-4">group</span>
+    
+    <span  class="ml-4 font-bold">Société Dashboard</span>
+  </h1>
+<!-- Liens Synthèse et Actions alignés en bas -->
+<div *ngIf="mode==='edit'" class="flex gap-4 items-end mt-2">
+  <button
+    (click)="selectModeS('informations')"
+    [ngClass]="modeS === 'informations' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+    class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+    Synthèse
+  </button>
+  <button
+  (click)="selectModeS('contacts')"
+    [ngClass]="modeS=== 'contacts' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+    class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+    Contacts
+  </button>
+  <button
+  (click)="selectModeS('actions')"
+    [ngClass]="modeS=== 'actions' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+    class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+    Actions
+  </button>
+  <button
+  (click)="selectModeS('besoins')"
+    [ngClass]="modeS=== 'besoins' ? 'border-b-4 border-green-600 text-green-600' : 'text-gray-600'"
+    class="px-4 pb-2 text-2xl font-bold focus:outline-none">
+    Besoins
+  </button>
+</div>
+</div>
+
+      <!-- Bouton d'action -->
+      <div *ngIf="mode==='edit'" class="mt-4 sm:mt-0 pt-10">
+       
+<!--
+        <button *ngIf="modeS=='actions'" [disabled] class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
+          Ajouter Une Action
+        </button>
+-->
+        <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" routerLink="/contact">
+          Retour
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <main class="pt-[100px]  w-full h-full overflow-y-auto h-full px-4 mt-8" *ngIf="modeS === 'informations'">
+    <div class="flex flex-col md:flex-row gap-4 right-100" >
+<form class="w-full pb-[10px] h-full"  [formGroup]="companyForm" >
     <div class="px-4 w-full sm:flex-col md:flex-row flex">
-        <button type="submit" (click)="saveChanges()"
+        <button type="submit" (click)="saveChanges()" data-cy="save-company-button"
             class="fixed top-70 right-2 w-12 h-12 text-white p-1 rounded-full flex items-center justify-center shadow-lg ring-0 ring-gray-200"
             [disabled]="companyForm.invalid" [ngClass]="{
                 'bg-gray-500 hover:bg-gray-600 ':companyForm.invalid,
                 'bg-green-500  hover:bg-green-600':!companyForm.invalid,
 
-            }">
+            }"
+            [hidden]="user.role == 'Manager De Production'">
             <mat-icon class="icon-size-7 text-white hover:text-white self-center">
                 save
             </mat-icon>
@@ -23,13 +110,15 @@
                             </div>
 
                             <input type="text" id="input" class="form-control" placeholder=""
-                                formControlName="nom" />
+                                formControlName="name" [readOnly]="user.role == 'Manager De Production'"  />
                         </div>
                         <div class="flex flex-col">
                             <div class="font-bold text-sm text-gray-500">
-                                Etat
+                                Etat *
+
                             </div>
-                            <mat-select class="form-control" formControlName="statut">
+                            <mat-select class="form-control" formControlName="status" [class.pointer-events-none]="user.role == 'Manager De Production'"
+                            [class.bg-gray-200]="user.role == 'Manager De Production'" id="status" type="status" data-cy="status-dropdown">
                                 <mat-option *ngFor="let option of societesStatusList" [value]="option.value">
                                     <span class="status-label">
                                        
@@ -47,13 +136,14 @@
                             </div>
 
                             <input type="number" id="input" class="form-control" placeholder="" value="0"
-                                formControlName="effectif" />
+                                formControlName="effective" [readOnly]="user.role == 'Manager De Production'"  />
                         </div>
                         <div class="">
                             <div class="flex flex-col">
-                                <span class="font-bold text-sm text-gray-500">Secteur</span>
+                                <span class="font-bold text-sm text-gray-500">Secteur *</span>
 
-                                <mat-select class="form-control" formControlName="secteur">
+                                <mat-select class="form-control" formControlName="sector" [class.pointer-events-none]="user.role == 'Manager De Production'"
+                                [class.bg-gray-200]="user.role == 'Manager De Production'" data-cy="sector-dropdown">
                                     <mat-option *ngFor="
                                             let sector of societesSecteurList
                                         " [value]="sector.value">
@@ -64,73 +154,56 @@
                                 </mat-select>
                             </div>
                         </div>
-                       
-
-                        <div class="">
-                            <label for="input" class="font-bold text-sm text-gray-500">Filiales</label>
-                            <input type="text" id="input" class="form-control" placeholder=""
-                                formControlName="filiales" />
-                        </div>
-
                         <div class="flex flex-col">
-                            <div class="font-bold text-sm text-gray-500">
-                                Provenance
-                            </div>
-                            <mat-select class="form-control" formControlName="provenance">
+                          <div class="font-bold text-sm text-gray-500">
+                              Filiales
+                          </div>
+
+                          <input type="text" id="input" class="form-control" placeholder=""
+                              formControlName="filiales"  [readOnly]="user.role == 'Manager De Production'" />
+                      </div>
+
+                      <div class="">
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-gray-500">Provenance *</span>
+
+                            <mat-select class="form-control" formControlName="provenance" [class.pointer-events-none]="user.role == 'Manager De Production'"
+                            [class.bg-gray-200]="user.role == 'Manager De Production'" data-cy="provenance-dropdown">
                                 <mat-option *ngFor="
-                                        let option of societesProvenanceList
-                                    " [value]="option.value">
+                                        let sector of societesProvenanceList
+                                    " [value]="sector.value">
                                     <span class="status-label">
-                                        {{ option.name }}
+                                        {{ sector.name }}
                                     </span>
                                 </mat-option>
                             </mat-select>
                         </div>
+                    </div>
 
-                        <div class="">
-                            <label for="input" class="font-bold text-sm text-gray-500">Précisez:</label>
-                            <input type="text" id="input" class="form-control" placeholder=""
-                                formControlName="precisiez" />
+                      <div class="flex flex-col">
+                        <div class="font-bold text-sm text-gray-500">
+                            Pécisez *
                         </div>
 
-                        <div class="">
-                            <div class="flex flex-col">
-                                <span class="font-bold text-sm text-gray-500">Responsable manager</span>
-                                <mat-select class="form-control" formControlName="responsableManager">
-                                    <mat-option *ngFor="
-                                            let option of managers
-                                        " [value]="option.value" >
-                                        <span class="status-label">
-                                            {{
-                                                option.name 
-                                                }}
-                                        </span>
-                                    </mat-option>
-                                </mat-select>
-                            </div>
-                        </div>
-                        <div class="">
-                          
+                        <input type="text" id="input" class="form-control" placeholder=""
+                            formControlName="precise" [readOnly]="user.role == 'Manager De Production'"  />
+                    </div>
                     
-                                <div class="flex flex-col">
-                                    <span class="font-bold text-sm text-gray-500">Pole</span>
-    
-                                    <mat-select class="form-control" formControlName="pole">
-                                        <mat-option *ngFor="let option of societesPoleList" [value]="option.value">
-                                            <span class="status-label">
-                                                {{ option.name }}
-                                            </span>
-                                        </mat-option>
-                                    </mat-select>
-                                </div>
-                          
-                        </div>
+                       
+
+
+                        
+
+
+                        
+                        
                         <div class="">
                             <div class="flex flex-col">
-                                <span class="font-bold text-sm text-gray-500">Agence</span>
+                                <span class="font-bold text-sm text-gray-500">Agence *</span>
 
-                                <mat-select class="form-control" formControlName="agence">
-                                    <mat-option *ngFor=" let option of agenceList" [value]="option.value">
+                                <mat-select data-cy="agency-dropdown" class="form-control" formControlName="agency" [class.pointer-events-none]="user.role == 'Manager De Production'"
+                                [class.bg-gray-200]="user.role == 'Manager De Production'">
+                                    <mat-option *ngFor=" let option of agenceList" [value]="option.value" >
                                         <span class="status-label">
                                             {{ option.name }}
                                         </span>
@@ -148,24 +221,27 @@
                 <div body>
                     <div class="flex flex-col px-2">
                         <div class="flex flex-col">
-                            <label for="input" class="font-bold text-sm text-gray-500">Téléphone</label>
-                            <input type="text" id="input" class="form-control" placeholder="" formControlName="telephone" />
+                          <label for="email" class="font-bold text-sm text-gray-500">Email *</label>
+                              <input type="email" id="email" class="form-control" placeholder="" formControlName="email" [readOnly]="user.role == 'Manager De Production'" />
 
-                            <label for="input" class="font-bold text-sm text-gray-500">Adresse</label>
-                            <input type="text" id="input" class="form-control" placeholder="" formControlName="addresse"
+                            <label for="input" class="font-bold text-sm text-gray-500">Téléphone *</label>
+                            <input type="text" id="input" class="form-control" placeholder="" formControlName="phone" [readOnly]="user.role == 'Manager De Production'" />
+
+                           <label for="input" class="font-bold text-sm text-gray-500">Adresse *</label>
+                            <input type="text" id="input" class="form-control" placeholder="" formControlName="address" [readOnly]="user.role == 'Manager De Production'" 
                                 value="" />
 
                             <div class="grid grid-cols-3 gap-2">
                                 <div class="flex flex-col">
                                     <label for="input" class="font-bold text-sm text-gray-500">Code postal</label>
                                     <input type="text" id="input" class="form-control" placeholder=""
-                                        formControlName="postalCode" />
+                                        formControlName="postalCode" [readOnly]="user.role == 'Manager De Production'"  />
                                 </div>
 
                                 <div class="flex flex-col">
                                     <label for="input" class="font-bold text-sm text-gray-500">Ville</label>
                                     <input type="text" id="input" class="form-control" placeholder=""
-                                        formControlName="ville" />
+                                        formControlName="city" [readOnly]="user.role == 'Manager De Production'"  />
 
 
                                 </div>
@@ -174,7 +250,8 @@
                                     <span class="font-bold text-sm text-gray-500">Pays</span>
 
                                     
-                                    <mat-select class="form-control" formControlName="pays">
+                                    <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="user.role == 'Manager De Production'"
+                                    [class.bg-gray-200]="user.role == 'Manager De Production'">
                                         <mat-option *ngFor="let option of societesPaysList" [value]="option.name">
                                           <span class="status-label">
                                             {{ option.name }} <!-- Displays flag + country name -->
@@ -185,12 +262,7 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-col">
-                                <label for="input" class="font-bold text-sm text-gray-500">Site web</label>
-                                <input type="text" id="input" class="form-control" placeholder=""
-                                    formControlName="siteWeb" />
-
-                            </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -204,65 +276,199 @@
                     <div class="relative">
                         <div class="input-container w-full h-30 p-2">
                             <textarea type="text" class="input-field-commentaire" formControlName="informations"
-                                placeholder="Rédigez vos commentaires"></textarea>
+                                placeholder="Rédigez vos commentaires" [readOnly]="user.role == 'Manager De Production'" ></textarea>
                         </div>
                     </div>
                 </div>
             </app-card-synthese >
 
-            <app-card-synthese [customTitle]="'Données légales'" [customActionLabel]="" [hasIconActions]="false">
-                <div body>
-                    <div class="grid grid-cols-2 gap-1 px-2">
-
-                        <div class="flex flex-col">
-                            <label for="input" class="font-bold text-sm text-gray-500">Statut juridique</label>
-                            <input type="text" id="input" class="form-control" placeholder=""
-                                formControlName="statutJuridique" />
-
-                        </div>
-
-
-                        <div class="flex flex-col">
-                            <label for="input" class="font-bold text-sm text-gray-500">TVA IC</label>
-                            <input type="text" id="input" class="form-control" placeholder="" formControlName="tva" />
-
-
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label for="input" class="font-bold text-sm text-gray-500">SIRET</label>
-                            <input type="text" id="input" class="form-control" placeholder="" formControlName="siret" />
-
-
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label for="input" class="font-bold text-sm text-gray-500">RCS</label>
-                            <input type="text" id="input" class="form-control" placeholder="" formControlName="rcs" />
-
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label for="input" class="font-bold text-sm text-gray-500">Code APE</label>
-                            <input type="text" id="input" class="form-control" placeholder=""
-                                formControlName="codeApe" />
-
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label for="input" class="font-bold text-sm text-gray-500">Numéro fournisseur</label>
-                            <input type="text" id="input" class="form-control" placeholder=""
-                                formControlName="numeroFournisseur" />
-
-                        </div>
-
-                    </div>
-                </div>
-            </app-card-synthese>
+            
 
             
 
         </div>
     </div>
 </form>
+</div>
+</main>
+<!-- Synthèse des contacts -->
+<main class="pt-[100px] pl-[60px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'contacts'">
+    <div class="w-full max-w-7xl">
+      <div class="flex flex-col md:flex-row gap-8">
+        <div class="w-full flex flex-col gap-8">
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Contacts
+            </h2>
+  
+            <div class="flex-1 overflow-hidden border rounded-lg">
+              <div class="overflow-y-auto max-h-[70vh]">
+                <table class="min-w-full table-auto text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>
+                        <th class="px-4 py-6">Nom</th>
+                      <th class="px-4 py-6">Civilité</th>
+                      <th class="px-4 py-6">Status</th>
+                      <th class="px-4 py-6">Créé Par</th>
+                      <th class="px-4 py-6">Manager</th>
+                      
+                      <th class="px-4 py-6">Société</th>
+                      <th class="px-4 py-6">Téléphone</th>
+                      
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let contact of companycontacts" class="hover:bg-gray-50 text-gray-600 text-base" routerLink="/updatecontact/{{ contact.id }}">
+                        <td class="px-4 py-6">{{ contact.firstname}} {{contact.lastname}}</td>
+                      <td class="px-4 py-6 font-semibold">{{ contact.civility }}</td>
+                      <td class="px-4 py-6 font-semibold">
+                        <span 
+                          [ngClass]="{
+                             'badge-danger': contact.status === 'Prospect',
+                              'badge-warning': contact.status === 'Client',
+                              'badge-success': contact.status === 'Client_direct',
+                              'badge-info': contact.status === 'Fournisseur',
+                              'badge-primary': contact.status === 'Partenaire',
+                              'badge-secondary': contact.status === 'Piste',
+                              'badge-light': contact.status === 'Archivé',
+                              'badge-dark': contact.status === 'Client via intermédiaire',
+                              'badge-default': contact.status === 'Intermédiaire de facturation'
+                          
+                          }">
+                          {{ contact.status }}
+                        </span>
+                      </td>
+                      
+                      <td class="px-4 py-6">{{contact?.createdBy.firstname}} {{contact?.createdBy.lastname}} </td>
+                      <td class="px-4 py-6">{{contact?.manager?.firstname}} {{contact?.manager?.lastname}}hhhhhhhhhhhhhhhh</td>
+                        <td class="px-4 py-6">{{ this.companyForm.value.name }}</td>
+                        <td class="px-4 py-6">{{ contact.phone }}</td>
+                     
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>      
+      </div>
+    </div>
+  </main>
+
+
+
+<!-- liste des actions -->
+
+  <main class="pt-[100px] pl-[100px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
+    <div class="w-full max-w-7xl">
+      <div class="flex flex-col md:flex-row gap-8">
+        <div class="w-full flex flex-col gap-8">
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Actions
+            </h2>
+  
+            <div class="flex-1 overflow-hidden border rounded-lg">
+              <div class="overflow-y-auto max-h-[70vh]">
+                <table class="min-w-full table-auto text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>
+                      <th class="px-4 py-6">Type d'action</th>
+                      <th class="px-4 py-6">Contact</th>
+                      <th class="px-4 py-6">Créé Par</th>
+                      <th class="px-4 py-6">Manager Responsable</th>
+                      <th class="px-4 py-6">Fichiers</th>
+                      <th class="px-4 py-6">Date Action</th>
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let action of companyActions" class="hover:bg-gray-50 text-gray-600 text-base">
+                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
+                      <td class="px-4 py-6">{{ action.contactId.firstname }} {{ action.contactId.lastname }}</td>
+                      <td class="px-4 py-6">{{ action.createdBy.firstname }} {{ action.createdBy.lastname }}</td>
+                      <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td>
+                      <td class="px-4 py-6">
+                        <ul class="list-disc list-inside space-y-1" *ngIf="action?.attachments?.length!=0">
+                          <li *ngFor="let file of action.attachments">
+                            {{ file.fileName }}
+                          </li>
+                        </ul>
+                        <span *ngIf="action.attachments.length==0">--------</span>
+                      </td>
+                      <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                      
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>      
+      </div>
+    </div>
+  </main>
+
+
+  <main class="pt-[100px] pl-[80px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'besoins'">
+    <div class="w-full max-w-7xl">
+      <div class="flex flex-col md:flex-row gap-8">
+        <div class="w-full flex flex-col gap-8">
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Besoins
+            </h2>
+  
+            <div class="flex-1 overflow-hidden border rounded-lg">
+              <div class="overflow-y-auto max-h-[70vh]">
+                <table class="min-w-full table-auto text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>
+                      <th class="px-4 py-6">Titre </th>
+                      <th class="px-4 py-6">Contact</th>
+                      <th class="px-4 py-6">Status</th>
+                      <th class="px-4 py-6">Manager Responsable</th>
+                      <th class="px-4 py-6">Créé Par</th>
+                      <th class="px-4 py-6">Date de creation</th>
+                      <th class="px-4 py-6">Priorité</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let besoin of companyBesoins" class="hover:bg-gray-50 text-gray-600 text-base" routerLink="/besoins/{{ besoin.id }}">
+                      <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
+                      <td class="px-4 py-6">{{ besoin.contact }}</td>
+                      <td class="px-4 py-6">{{ besoin.status }}</td>
+                      
+                      <td class="px-4 py-6">{{besoin?.managerResponsable?.firstname}} {{besoin?.managerResponsable?.lastname}}</td>
+                      <td class="px-4 py-6">{{ besoin.createdBy?.firstname}} {{ besoin.createdBy?.lastname}}</td>
+                      
+                      <td class="px-4 py-6">{{ besoin.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                      <td>
+                        <span 
+                          [ngClass]="{
+                            'badge-danger': besoin.priority === 'TRÉS_HAUTE',
+                            'badge-warning': besoin.priority === 'HAUTE',
+                            'badge-success': besoin.priority === 'BASSE',
+                            'badge-info': besoin.priority === 'MOYENNE'
+                          }">
+                          {{ besoin.priority !== 'RIEN' ? besoin.priority : '-' }}
+                        </span>
+                      </td>
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>      
+      </div>
+    </div>
+  </main>
 <p-toast />

@@ -50,8 +50,8 @@ export class CompServiceService {
   }
   
   
-  findCompanyByStatut(statut: any): any {
-    return this.http.get(`${this.apiUrl}/company/statut/${statut}`, this.options).pipe(
+  findCompanyByStatus(status: any): any {
+    return this.http.get(`${this.apiUrl}/company/status/${status}`, this.options).pipe(
       map(response => {
         console.log('Response:', response);
         return response;
@@ -75,10 +75,14 @@ export class CompServiceService {
                 }));
   }
   updateCompanystatus(id:any,company: any): any {
+    console.log('company in the service 2222222:', company);
     return this.http.put(`${this.apiUrl}/company/updatestatus/${id}`, company, this.options).pipe(
+      
       map(response => {
-        console.log('Response:', response); 
+        console.log('Response updatee statuususssssssssssssssssssss:', response); 
+        console.log('helooooooooo:');
         return response;
+        
       }),
       catchError(error => {
         console.error('Error:', error);
@@ -109,6 +113,18 @@ getCompById(id: number): any {
       console.error('Error:', error);
       return error;
     }));
+  }
+  findAllCompanies(): any {
+    return this.http.get(`${this.apiUrl}/company/all`, this.options).pipe(
+      map(response => {
+        console.log('Response:', response); 
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error:', error);
+        return error;
+      })
+    );
   }
 
 }

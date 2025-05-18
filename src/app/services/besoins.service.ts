@@ -57,6 +57,18 @@ export class BesoinsService {
               })
             );
 }
+findBesoinsByContactId(id: number): any {
+  return this.http.get(`${this.url}/besoin/contact/${id}`, this.options).pipe(
+    map(response => {
+      console.log('Response:', response); 
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error:', error);
+      return error;  // Throw error to be caught by the subscriber
+    })
+  );
+}
 
 updateBesoin(id:any,besoin: any): Observable<any> {
   return this.http.put(`${this.url}/besoin/update/${id}`, besoin, this.options).pipe(
@@ -87,7 +99,7 @@ addBesoin(besoin: any): any {
 
 
 
-              deleteBesoinById(id: number): any {
+              deleteBesoinById(id: any): any {
                 return this.http.delete(`${this.url}/besoin/delete/${id}`, this.options).pipe(
                   map(response => {
                     console.log('Response:', response);

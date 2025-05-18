@@ -327,3 +327,22 @@ color: white;              /* Couleur du texte (ou icône) */
 }
 
 
+
+/* Agrandir l'input */
+.custom-form-field {
+width: 100%;
+}
+
+.custom-form-field mat-form-field {
+width: 100%;
+}
+
+.custom-form-field input {
+font-size: 20px; /* Ajustez la taille du texte de l'input */
+height: 30px; /* Ajustez la hauteur de l'input */
+}
+.custom-icon {
+font-size: 70px !important; /* Utilisez !important pour forcer la taille */
+width: 70px !important;     /* Définir la largeur de l'icône */
+height: 70px !important;    /* Définir la hauteur de l'icône */
+}
