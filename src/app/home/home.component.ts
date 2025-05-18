@@ -11,8 +11,10 @@ import { Component, OnInit } from '@angular/core';
 export class HomeComponent implements OnInit{
   isModalOpen: boolean = true;
   username!:string;
+  role!:any;
 
   ngOnInit(): void {
+    this.role=localStorage.getItem("role");
     this.username=localStorage.getItem("username")?.toUpperCase()|| "";
     if(localStorage.getItem("msg")=="false"){
       this.isModalOpen=true;

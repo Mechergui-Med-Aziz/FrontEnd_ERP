@@ -23,6 +23,7 @@ export class TypeActionsComponent implements OnInit {
   action!:any;
   id!:number;
   deletedAction:any;
+  userRole:any
 
   acion={
     name: 'Email',
@@ -41,6 +42,8 @@ export class TypeActionsComponent implements OnInit {
   });
   
   ngOnInit(): void {
+    this.userRole=localStorage.getItem("role")!;
+
     this.type_action.findTypeActionsByBelongTo("CRM").subscribe(
       (response: any) => {
         this.actionsCRM = response;

@@ -1,5 +1,26 @@
-<div class="grid grid-cols-2 gap-4 px-6">
-    <!-- Actions des candidats -->
+
+
+<div class="flex">
+  <div class="flex-1">
+    <h2
+      class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate flex flex-row items-center">
+      <img src="assets/images/logo/action.svg" alt="file" class="w-10 h-10 ml-8" />
+      <span class="ml-4">Types d'actions </span>
+    </h2>
+    <div class="flex flex-row items-center">
+
+
+    </div>
+    <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;" />
+  </div>
+  <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+    <button data-cy="open-add-type-action" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full shadow transition duration-200" (click)="openAddModal()" [disabled]="userRole === 'Manager De Production'">
+      + Ajouter un type d'action
+    </button>
+  </div>
+</div>
+
+<div class="grid grid-cols-2 gap-4 px-6 mt-4">
     <div class="bg-gray-100 p-4 rounded-lg shadow">
       <h2 class="text-lg font-bold mb-2">Actions des CRM</h2>
       <table class="w-full border-collapse border border-gray-300">
@@ -21,7 +42,9 @@
                     <i class="fas fa-edit"></i>
                   </button>
                   
-                  <button class="bg-red-100 text-red-500 hover:bg-red-200 p-2 ml-2 rounded-full" (click)="openDeleteModal(action)" data-cy="delete-type-action">
+
+                  <button data-cy="delete-type-action" class="bg-red-100 text-red-500 hover:bg-red-200 p-2 ml-2 rounded-full" (click)="openDeleteModal(action)">
+
                     <i class="fas fa-trash"></i>
                   </button>
                   
@@ -52,7 +75,7 @@
                     <i class="fas fa-edit"></i>
                   </button>
                   
-                  <button class="bg-red-100 text-red-500 hover:bg-red-200 ml-2 p-2 rounded-full" (click)="openDeleteModal(action)">
+                  <button data-cy="delete-type-action" class="bg-red-100 text-red-500 hover:bg-red-200 ml-2 p-2 rounded-full" (click)="openDeleteModal(action)">
                     <i class="fas fa-trash"></i>
                   </button>
                   
@@ -64,6 +87,7 @@
     </div>
     
   </div>
+
   <button class=" m-6 px-2 py-2 bg-green-500 mt-2 text-white rounded" (click)="openAddModal()" data-cy="open-add-type-action">
     Ajouter un type d'action
   </button>
@@ -87,7 +111,11 @@
           </div>
           <div class="flex justify-end gap-4">
             <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeAddModal()">Annuler</button>
+
             <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded"(click)="addTypeAction()"  [disabled]="AddTypeActionForm.invalid" data-cy="confirm-add-type-action">Ajouter</button>
+
+            <button data-cy="confirm-add-type-action"  type="button" class="bg-blue-500 text-white px-4 py-2 rounded"(click)="addTypeAction()"  [disabled]="AddTypeActionForm.invalid">Ajouter</button>
+
           </div>
         </form>
       </div>
@@ -131,7 +159,6 @@
       <div class="flex flex-col items-center">
   
         <div class="text-green-500 mb-4">
-          <!-- Icône de succès (check) -->
           <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
@@ -163,7 +190,6 @@
       <div class="flex flex-col items-center">
   
         <div class="text-red-500 mb-4">
-          <!-- Icône d'avertissement (SVG) -->
           <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
           </svg>
@@ -182,7 +208,10 @@
           <button type="button" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-lg" (click)="closeDeleteModal()">
             Annuler
           </button>
-          <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg" (click)="deleteTypeAction(deletedAction.id)" data-cy="confirm-delete-type-action">
+
+
+          <button data-cy="confirm-delete-type-action" type="button" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg" (click)="deleteTypeAction(deletedAction.id)">
+
             Supprimer
           </button>
         </div>

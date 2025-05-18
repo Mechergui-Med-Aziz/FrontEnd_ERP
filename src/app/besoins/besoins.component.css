@@ -1,6 +1,5 @@
 
 
-/* S'assurer que le conteneur Kanban commence sous la navbar */
 .kanban-container {
   height: calc(100vh - [hauteur-de-votre-header]px); 
   overflow-x: auto;
@@ -20,7 +19,6 @@
 }
 
 
-/* Pour un scroll personnalisé (optionnel) */
 .overflow-x-auto {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e0 #f1f1f1;
@@ -61,11 +59,11 @@
   
 
 .scrollbar-hide {
-  -ms-overflow-style: none; /* IE & Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 .relative.w-full {
-  padding-top: 60px; /* Ajuste cette valeur selon la hauteur de la navbar */
+  padding-top: 60px; 
 }
   
 

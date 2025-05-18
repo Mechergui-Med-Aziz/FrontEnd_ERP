@@ -19,6 +19,7 @@ export class ProfileComponent implements OnInit{
   showPassword: boolean = false;  
   showConfirmPassword: boolean = false; 
   isModalOpen: boolean = false;
+  isErrorModalOpen: boolean = false;
   message!:string ;
   message1:string =""
 
@@ -102,16 +103,42 @@ verifyPasswords() : boolean {
   return false;
 }
 
+ msg!:any
+
+checkPasswords(password: string, confirmPassword: string): string {
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[v+\-*$#@!])[A-Za-z\dv+\-*$#@!]{8,}$/;
+
+
+  if (!password) {
+    return this.msg='Veuillez entrer un mot de passe !';
+  }
+
+  if (!confirmPassword) {
+    return this.msg='Veuillez confirmer le mot de passe !';
+  }
+
+  if (!passwordPattern.test(password)) {
+    return this.msg='Le mot de passe doit contenir au moins 1 majuscule, 1 minuscule, 1 chiffre, 1 symbole parmi ceci +-*$#@! et 8 caractères minimum.';
+  }
+
+  if (password !== confirmPassword) {
+    return this.msg='Les mots de passe ne correspondent pas !';
+  }
+
+  return this.msg='Les mots de passe correspondent !';
+}
 
 
   saveChanges() {
     const password = this.userForm.get('password')?.value;
     const confirmPassword = this.userForm.get('confirmPassword')?.value;
    // console.log(password, confirmPassword);
+
+   var text=this.checkPasswords(password, confirmPassword)
   
-    if ((password!=""&& confirmPassword=="") || (confirmPassword!="" && password=="")|| password !== confirmPassword) {
-      this.message="Les mots de passe ne correspondent pas !";
-      this.isModalOpen = true;
+    if (text!='Les mots de passe correspondent !'){
+      this.message=text;
+      this.isErrorModalOpen = true;
       return;}
   
     let updatedData = { ...this.userForm.value };
@@ -145,11 +172,13 @@ verifyPasswords() : boolean {
 
   closeModal() {
     this.isModalOpen = false;
-    if(this.message=="Modifications sauvegardées !"){
-    this.router.navigate(['/home']);
-    }else{
-      return;
+    if(this.user.role=="Administrateur"){
+      this.router.navigate(['/users-accounts']);
     }
+    this.router.navigate(['/home']);
   }
-  
+  closeErrorModal() {
+    this.isErrorModalOpen = false;
+    return
+  }
   }

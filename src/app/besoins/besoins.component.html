@@ -9,7 +9,7 @@
         <div class="flex-1">
           <h2
             class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate flex flex-row items-center">
-            <mat-icon class="icon-size-10 ml-4 relative-t-5">group</mat-icon>
+            <img src="assets/images/logo/target.svg" alt="file" class="w-10 h-10">
             <span class="ml-4">Besoins ({{nbBesoins}})</span>
           </h2>
           <div class="flex flex-row items-center">
@@ -36,38 +36,47 @@
                   <select [(ngModel)]="selectedFilterMethod"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     <option value="">-- Choisir --</option>
+                    <option value="managerResponsable">Nom du manager responsable</option>
                     <option value="company">Nom du société</option>
                     <option value="contact">Nom de contact</option>
                     <option value="dateExact">Date précise</option>
                     <option value="dateRange">Plage de dates</option>
+                    <option value="nonAffectedbesoin" [hidden]="user.role!='Directeur Associé'">Besoin non affceté</option>
                   </select>
                 </div>
                 <form [formGroup]="filterForm" class="mt-4">
                   <div [ngSwitch]="selectedFilterMethod">
 
+                    <div *ngSwitchCase="'managerResponsable'">
+                      <label for="companyFilter" class="block text-sm font-medium text-gray-700">Nom du manager responsable</label>
+                      <input id="companyFilter" type="text" formControlName="managerResponsable"
+                        placeholder="Rechercher par nom du manager responsable" (input)="filterBesoins()"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    </div>
+
                     <div *ngSwitchCase="'company'">
                       <label for="companyFilter" class="block text-sm font-medium text-gray-700">Nom du société</label>
                       <input id="companyFilter" type="text" formControlName="company"
-                        placeholder="Rechercher par nom de société"
+                        placeholder="Rechercher par nom de société" (input)="filterBesoins()"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                     </div>
                     <div *ngSwitchCase="'contact'">
                       <label for="contactFilter" class="block text-sm font-medium text-gray-700">Nom de Contact</label>
                       <input id="contactFilter" type="text" formControlName="contact"
-                        placeholder="Rechercher par nom de contact"
+                        placeholder="Rechercher par nom de contact" (input)="filterBesoins()"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                     </div>
                     <div *ngSwitchCase="'dateExact'">
                       <label for="dateExact" class="block text-sm font-medium text-gray-700">Date précise</label>
-                      <input id="dateExact" type="date" formControlName="dateExact"
+                      <input id="dateExact" type="date" formControlName="dateExact" (change)="filterBesoins()"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                     </div>
                     <div *ngSwitchCase="'dateRange'">
                       <label for="startDate" class="block text-sm font-medium text-gray-700">Date de début</label>
-                      <input id="startDate" type="date" formControlName="startDate"
+                      <input id="startDate" type="date" formControlName="startDate" (change)="filterBesoins()"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                       <label for="endDate" class="block text-sm font-medium text-gray-700 mt-2">Date de fin</label>
-                      <input id="endDate" type="date" formControlName="endDate"
+                      <input id="endDate" type="date" formControlName="endDate" (change)="filterBesoins()"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                     </div>
                     <div *ngSwitchDefault>
@@ -86,7 +95,7 @@
           <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;" />
         </div>
         <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
-          <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full shadow transition duration-200" (click)="openAddModal()" [disabled]="user?.role=='Manager De Production'">
+          <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full shadow transition duration-200" data-cy="open-add-besoin" (click)="openAddModal()" [disabled]="user?.role=='Manager De Production'">
             + Ajouter
           </button>
         </div>
@@ -120,7 +129,7 @@
                         class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between h-24 w-full">
                         <div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}"
                           class="w-10 h-[85px] rounded-l-lg"></div>
-                        <div class="p-4 w-full flex items-center justify-between" (click)="openModal(besoin)"
+                        <div class="p-4 w-full flex items-center justify-between" data-cy="edit-besoin"  (click)="openModal(besoin)"
                           style="margin-left: -8%;">
                           <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 flex items-center justify-center rounded-full text-white font-bold"
@@ -134,6 +143,7 @@
                           </div>
                           <div class="flex flex-col">
                             <p class="text-sm text-gray-500">{{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
+
                             <p class="text-sm text-gray-500 font-semibold">{{ besoin.contact?.company?.name }}</p>
                           </div>
                         </div>
@@ -151,9 +161,10 @@
 
             <div class="flex flex-col w-full bg-white" *ngIf="mode === 'list'">
               <div class="w-full flex flex-col">
-                <div class="max-h-[70vh] overflow-y-auto">
+                <!-- En-tête du tableau (fixe) -->
+                <div class="overflow-x-auto">
                   <table class="min-w-full divide-y divide-gray-200 bg-white">
-                    <thead class="bg-gray-100">
+                    <thead class="bg-gray-100 sticky top-0 z-10">
                       <tr>
                         <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Titre du Besoin</th>
                         <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Description</th>
@@ -165,12 +176,18 @@
                         <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Action</th>
                       </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
+                  </table>
+                </div>
+                <div class="overflow-x-auto max-h-[60vh] overflow-y-auto">
+                  <table class="min-w-full divide-y divide-gray-100 bg-white text-sm text-gray-700">
+                    <tbody>
                       <tr *ngFor="let besoin of besoins" class="hover:bg-gray-50">
                         <td class="px-3 py-2 font-semibold">{{ besoin.title }}</td>
                         <td class="px-3 py-2">{{ besoin.description }}</td>
                         <td class="px-3 py-2">
-                          <span class="inline-block px-2 py-1 text-xs font-medium text-white bg-green-600 rounded-full">
+                          <span 
+                            class="inline-block px-2 py-1 text-xs font-medium text-white rounded-full"
+                            [ngStyle]="{ 'background-color': getStatusColor(besoin.status) }">
                             {{ besoin.status }}
                           </span>
                         </td>
@@ -191,7 +208,7 @@
                           </span>
                         </td>
                         <td class="px-3 py-2">
-                          <button class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded-full transition"
+                          <button data-cy="edit-besoin" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded-full transition"
                                   (click)="openModal(besoin)">
                             Ouvrir Fiche
                           </button>
@@ -199,8 +216,9 @@
                       </tr>
                     </tbody>
                   </table>
-                  </div>
+                </div>
               </div>
+              
             </div>
           </div>
         </div>
@@ -208,106 +226,6 @@
     </div>
   </div>
 </div>
-
-<!--<div *ngIf="isHistoricModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-  <div class="bg-white p-4 rounded-lg w-2/3 max-h-[80vh] flex flex-col">
-    <h2 class="text-xl font-bold text-center">Historique du Besoin</h2>
-    <br />
-
-    
-    <div class="flex-1 overflow-hidden border rounded">
-      <div class="overflow-y-auto max-h-[50vh]">
-        <table class="table-auto w-full text-left border-collapse">
-          <thead class="sticky top-0 bg-gray-200 z-10">
-            <tr>
-              <th class="px-4 py-2">Titre du besoin</th>
-              <th class="px-4 py-2">Description de l'historique</th>
-              <th class="px-4 py-2">Status</th>
-              <th class="px-4 py-2">Date De Création/Changement</th>
-              <th class="px-4 py-2">Faites Par</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let besoin of historiqueDuBesoin" class="hover:bg-gray-100">
-              <td class="px-4 py-2">{{ besoin.title }}</td>
-              <td class="px-4 py-2">{{ besoin.description }}</td>
-              <td class="px-4 py-2">{{ besoin.status }}</td>
-              <td class="px-4 py-2">{{ besoin.actionDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-              <td class="px-4 py-2">{{ besoin.actionBy }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  >
-    <div class="flex justify-end gap-4 mt-4 border-t pt-4">
-      <button type="button" class="bg-blue-400 text-white px-4 py-2 rounded" (click)="closeHistoricModal()">OK</button>
-    </div>
-  </div>
-</div>
-
-
-
-
-<div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-  <div class="bg-white p-4 rounded-lg w-1/3">
-    <h2 class="text-xl font-bold">Détails du Besoin</h2>
-    <form [formGroup]="besoinForm">
-      <br>
-      <div hidden>
-          <label for="id">Titre</label>
-          <input id="id"  formControlName="id" class="w-full p-2 mt-1 border rounded" />
-        </div>
-      <div>
-        <label for="title">Titre</label>
-        <input id="title" type="text" formControlName="title" class="w-full p-2 mt-1 border rounded" />
-      </div>
-      <div>
-        <label for="description">Description</label>
-        <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded"></textarea>
-      </div>
-      <div>
-          <label for="creationDate">Date De Création</label>
-          <input id="creationDate" formControlName="creationDate" class="w-full p-2 mt-1 border rounded" readonly/>
-        </div>
-      <div>
-        <label for="status">Statut</label>
-        <select id="status" formControlName="status" class="w-full p-2 mt-1 border rounded">
-          <option value="A_TRAITER">À TRAITER</option>
-          <option value="ABANDONNÉ">ABANDONNÉ</option>
-          <option value="OK_PREQUALIFIE">OK PRÉ-QUALIFIÉ</option>
-          <option value="EN_COURS">EN COURS</option>
-          <option value="GAGNÉ">GAGNÉ</option>
-          <option value="PERDU">PERDU</option>
-          <option value="REPORTE">REPORTÉ</option>
-        </select>
-      </div>
-      <div>
-        <label for="priority">Priorité</label>
-        <select id="priority" formControlName="priority" class="w-full p-2 mt-1 border rounded">
-          <option value="TRÉS_HAUTE">TRÉS_HAUTE</option>
-          <option value="HAUTE">HAUTE</option>
-          <option value="MOYENNE">MOYENNE</option>
-          <option value="BASSE">BASSE</option>
-        </select>
-      </div>
-      <div>
-        <label for="contact">Contact</label>
-        <input id="contact" formControlName="contact" class="w-full p-2 mt-1 border rounded" readonly />
-      </div>
-
-      <div>
-        <label for="createdBy">Créer Par :</label>
-        <input id="createdBy" formControlName="createdBy" class="w-full p-2 mt-1 border rounded" readonly />
-      </div>
-        <div class="flex justify-end gap-4">
-          <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeModal()">Annuler</button>
-          <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="saveChanges()" [disabled]="besoinForm.invalid">Sauvegarder</button>
-        </div>
-    </form>
-  </div>
-</div>-->
 
 
 <div *ngIf="isAddModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
@@ -353,7 +271,7 @@
 
         <div class="flex justify-end gap-4 mt-2">
           <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeAddModal()">Annuler</button>
-          <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="addBesoin()" [disabled]="besoinAddForm.invalid">Sauvegarder</button>
+          <button type="button" data-cy="confirm-add-besoin"  class="bg-blue-500 text-white px-4 py-2 rounded" (click)="addBesoin()" [disabled]="besoinAddForm.invalid">Sauvegarder</button>
         </div>
     </form>
   </div>
@@ -365,7 +283,6 @@
     <div class="flex flex-col items-center">
 
       <div class="text-green-500 mb-4">
-        <!-- Icône de succès -->
         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
@@ -419,7 +336,7 @@
       </div>
 
       <div class="flex justify-end gap-4 mt-4">
-      <button type="submit" [disabled]="actionAddForm.invalid" class="bg-blue-500 text-white px-4 py-2 rounded">Enregistrer</button>
+      <button type="submit" [disabled]="actionAddForm.invalid" data-cy="confirm-add-action" class="bg-blue-500 text-white px-4 py-2 rounded">Enregistrer</button>
       <button type="button" (click)="closeActionAddModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Annuler</button>
       </div>
     </form>
@@ -432,22 +349,15 @@
 
 
 <div class="h-screen overflow-hidden bg-gray-100" *ngIf="Dashboard==true">
-  <!-- Conteneur principal en flex column -->
   
-
-  <!-- Contenu principal décalé pour tenir compte de la sidebar -->
   <div class="ml-[4%] flex flex-col h-full">
-    <!-- Header fixe en haut de la zone de contenu, avec un décalage à gauche -->
     <header class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-10 h-[20%] rounded-lg">
       <div class="flex flex-col sm:flex-row items-center justify-between">
-        <!-- Zone titre et navigation -->
-        <!-- Zone titre et navigation -->
 <div class="flex-1">
   <h1 class="text-3xl font-extrabold tracking-tight flex items-center">
-    <span class="material-icons text-4xl ml-4">group</span>
-    <span class="ml-4 font-bold">Besoin Dashboard</span>
+    <img src="assets/images/logo/file.svg" alt="file" class="w-10 h-10">
+    <span class="ml-4 font-bold">Fiche du besoin</span>
   </h1>
-  <!-- Liens Synthèse et Actions alignés en bas -->
   <div class="flex gap-4 items-end mt-2">
     <button
       (click)="selectTab('synthese')"
@@ -464,13 +374,12 @@
   </div>
 </div>
 
-        <!-- Bouton d'action -->
         <div class="mt-4 sm:mt-0 pt-10">
-          <button *ngIf="selectedTab=='synthese'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow "(click)="saveChanges()" [disabled]="besoinForm.invalid || user.role == 'Manager De Production'">
+          <button data-cy="confirm-save-changes"  *ngIf="selectedTab=='synthese'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow "(click)="saveChanges()" [disabled]="besoinForm.invalid || user.role == 'Manager De Production'">
             Sauvegarder
           </button>
 
-          <button *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'|| selectedBesoin.managerResponsable==null">
+          <button data-cy="open-add-action" *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'|| selectedBesoin.managerResponsable==null">
             Ajouter Une Action
           </button>
 
@@ -481,12 +390,10 @@
       </div>
     </header>
 
-    <!-- Main content scrollable -->
     <main class="pt-[100px] overflow-y-auto h-full px-4 mt-8" *ngIf="selectedTab === 'synthese'">
       <div class="flex flex-col md:flex-row gap-4 right-100">
-        <!-- Colonne de gauche (2/3 de largeur) -->
         <div class="md:w-2/3 flex flex-col gap-4">
-          <!-- Container 1 : Détails du Besoin -->
+          
           <div class="bg-white p-4 rounded-lg shadow">
             <h2 class="text-xl font-bold text-center mb-4">
               Détails du Besoin
@@ -556,7 +463,6 @@
               
             </form>
           </div>
-          <!-- Container 2 : Historique du Besoin -->
           <div class="bg-white p-4 rounded-lg shadow max-h-[100vh] overflow-y-auto">
             <h2 class="text-xl font-bold text-center mb-4">
               Historique du Besoin
@@ -583,7 +489,6 @@
             </table>
           </div>
         </div>
-        <!-- Colonne de droite (1/3 de largeur) -->
         <div class="md:w-1/3">
           <div class="bg-white p-4 rounded-lg shadow">
             <h2 class="text-xl font-bold text-center mb-4">
@@ -690,7 +595,6 @@
         <div class="flex flex-col items-center">
     
           <div class="text-red-500 mb-4">
-            <!-- Icône d'alerte (warning) -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
             </svg>
@@ -718,46 +622,6 @@
     
       </div>
     </div>
-    
-
-    
-  <!--  <div *ngIf="isHistoricModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div class="bg-white p-4 rounded-lg w-2/3 max-h-[80vh] flex flex-col">
-        <h2 class="text-xl font-bold text-center">Historique du Besoin</h2>
-        <br />
-    
-        
-        <div class="flex-1 overflow-hidden border rounded">
-          <div class="overflow-y-auto max-h-[50vh]">
-            <table class="table-auto w-full text-left border-collapse">
-              <thead class="sticky top-0 bg-gray-200 z-10">
-                <tr>
-                  <th class="px-4 py-2">Titre du besoin</th>
-                  <th class="px-4 py-2">Description de l'historique</th>
-                  <th class="px-4 py-2">Status</th>
-                  <th class="px-4 py-2">Date De Création/Changement</th>
-                  <th class="px-4 py-2">Faites Par</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let besoin of historiqueDuBesoin" class="hover:bg-gray-100">
-                  <td class="px-4 py-2">{{ besoin.title }}</td>
-                  <td class="px-4 py-2">{{ besoin.description }}</td>
-                  <td class="px-4 py-2">{{ besoin.status }}</td>
-                  <td class="px-4 py-2">{{ besoin.actionDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                  <td class="px-4 py-2">{{ besoin.actionBy }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-    
-      >
-        <div class="flex justify-end gap-4 mt-4 border-t pt-4">
-          <button type="button" class="bg-blue-400 text-white px-4 py-2 rounded" (click)="closeHistoricModal()">OK</button>
-        </div>
-      </div>
-    </div>-->
     
     
     
@@ -791,8 +655,8 @@
           <div class="mb-4">
             <label for="manager">Manager Responsable</label>
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
-          [class.pointer-events-none]="user.role == 'Manager De Production'"
-          [class.bg-gray-200]="user.role == 'Manager De Production'">
+          [class.pointer-events-none]="user.role == 'Manager De Production' || user.role == 'Commercial'"
+          [class.bg-gray-200]="user.role == 'Manager De Production' || user.role == 'Commercial'">
 
           <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
             {{ manager.firstname }} {{ manager.lastname }}
@@ -801,12 +665,11 @@
 
       </div>
     
-          <!-- Section affichant les fichiers existants sous forme de liens cliquables -->
+       
           <div class="mb-4">
             <label class="block">Fichiers déjà joints :</label>
             <ul class="list-disc list-inside space-y-1">
               <li *ngFor="let file of selectedAction.attachments">
-                <!-- Ici, on concatène la base URL du serveur avec le chemin du fichier. Adaptez l’URL selon votre configuration -->
                 <a [attr.download]="file.fileName" [href]="'http://localhost:8080/api/action-besoin/files/' + file.filePath.replace('uploads\\', '')" target="_blank" class="text-blue-500 hover:underline">
                     {{ file.fileName }}
                   </a>
@@ -817,7 +680,6 @@
             </span>
           </div>
     
-          <!-- Section pour joindre de nouveaux fichiers -->
           <div class="mb-4">
             <label for="files" class="block">Joindre de nouveaux fichiers :</label>
             <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="user.role=='Manager De Production'">
