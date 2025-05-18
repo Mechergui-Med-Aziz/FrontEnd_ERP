@@ -134,27 +134,29 @@ mode: any;
       private besoinservice: BesoinsService,
   ) { 
     this.contact = this.fb.group({
-      civility: ['', []],
-      lastname: ['', []],
-      firstname: ['', []],
+      civility: ['', [Validators.required]],
+      lastname: ['', [Validators.required]],
+      firstname: ['', [Validators.required]],
       function: [null, []],
-      service: ['', []],
+      service: ['', [Validators.required]],
       createdBy: ['', []],
-      type: ['', []],
+      type: ['', [Validators.required]],
       status: ['', []],
-      provenance: [null, []],
+      provenance: [null, [Validators.required]],
       
-      agency: ['', []],
-      email: ['', []],
-      phone: ['', []],
-      address: ['', []],
+      agency: ['', [Validators.required]],
+      email: ['', [Validators.required]],
+      phone: ['', [Validators.required]],
+      address: ['', [Validators.required]],
+      postalCode: ['', []],
+      city: ['', []],
       
       
       country: ['', []],
       
       
-      domains: ['', []],      
-      tools: ['', []],
+      domains: ['', [Validators.required]],      
+      tools: ['', [Validators.required]],
       
       company: [null, []],
       creationDate: [{value:new Date().toLocaleDateString('fr-FR')}],
@@ -380,11 +382,19 @@ mode: any;
         return;
       }
     }
+    if(this.user.role == 'Manager De Production'){
+      this.actionAddForm.patchValue({
+      contactId: this.idContact,
+      createdBy: this.user.id,
+      manager:this.user,
+    });
+    }else{
     this.actionAddForm.patchValue({
       contactId: this.idContact,
       createdBy: this.user.id,
       manager:this.productionManagers.find(manager => manager.id == this.actionAddForm.value.manager)
     });
+    }
     if (this.actionAddForm.valid) {
       const actionData = this.actionAddForm.value;
       console.log('actionData:',actionData);

@@ -50,6 +50,20 @@ export class AddCompanyComponent implements OnInit {
     { value: 'Client via intermédiaire', name: 'Client via intermédiaire', color: 'brown' },
 
   ];
+  societesProvenanceList: any[] = [
+    { value: 'Prospection', name: 'Prospection' },
+    { value: 'Apporteur', name: 'Apporteur' },
+    { value: 'Client', name: 'Client' },
+    { value: 'Collégue', name: 'Collégue' },
+    { value: 'Réseau', name: 'Réseau' },
+    { value: 'Salon', name: 'Salon' },
+    { value: "Appel d'offre", name: "Appel d'offre" },
+    { value: 'Appel entrant', name: 'Appel entrant' },
+    { value: 'Google', name: 'Google' },
+    { value: 'Hitechpros', name: 'Hitechpros' },
+    { value: 'Linkedin&RS', name: 'Linkedin&RS' },
+    { value: 'Turnover', name: 'Turnover' },
+  ];
   societesAgenceList: any[] = [];
 
 
@@ -139,28 +153,35 @@ export class AddCompanyComponent implements OnInit {
   )
   {
     this.companyForm = this.fb.group({
-      name: ['', []],
-      status: [, []],
+      name: ['', [Validators.required]],
+      status: ['', [Validators.required]],
       effective: [1, [Validators.pattern('^[0-9]+$')]],
-      sector: [null, []],
+      sector: [null, [Validators.required]],
+      provenance : [null, [Validators.required]],
+      precise : ['', [Validators.required]],
+      filiales : [null, []],
+      email : ['', [Validators.email, Validators.required]],
       
       
-      pole: [null, []],
-      agency: ['', []],
-      phone: ['', [Validators.pattern('^[0-9]*$')]],
-      address: ['', []],
+     
+      agency: ['', [Validators.required]],
+      phone: ['', [Validators.pattern('^[0-9]*$'),Validators.required]],
+      address: ['', [Validators.required]],
       postalCode: ['', []],
       city: ['', []],
       country: ['', []],
       
       informations: ['', []],
-      legalStatus: ['', []],
+    
       
-      siret: ['', []],      
+         
      
-      apeCode: ['', []],
+     
+      creationDate: [{value:new Date().toLocaleDateString('fr-FR')}],
+      createdBy: ['', []],
       
      
+      
       
       
       
@@ -176,8 +197,13 @@ export class AddCompanyComponent implements OnInit {
   }
   companyActions: any[] = [];
   // Modifiez votre composant AddCompanyComponent pour gérer l'édition
-
+user: any ;
 ngOnInit(): void {
+  this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
+    (user: any) => {
+      this.user = user;
+    });
+  
   this.loadCountries();
   
   // Récupérer l'ID de l'URL si on est en mode édition
@@ -203,30 +229,47 @@ loadCompanyData(id: number) {
       this.companycontacts = company.contacts || [];
        // Assurez-vous que contacts est un tableau
       console.log('Company contacts:', this.companycontacts);
-      this.companycontacts.forEach((element: { besoins: any[]; }) => {
+      this.companycontacts.forEach((element: {
+        lastname: string;
+        firstname: string;besoins: any[]; 
+}) => {
           element.besoins.forEach((besoin: any) => {
             this.profileService.findUserById(besoin.createdBy).subscribe(
               (user: any) => {
                 besoin.createdBy = user;
+                
                 
               },
               (error :any) => {
                 console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
               }
             );
+            besoin.contact=element.firstname + ' ' + element.lastname; // Ajoutez le nom du contact au besoin
 
 
 
 
             this.companyBesoins.push(besoin); // Ajoutez le besoin chargé à la liste des besoins
           });});
-          console.log('Company besoinssssssssssssssssss:', this.companyBesoins); // Debugging line
+          console.log('Company besoinsssssssssssssssssssssssssss:', this.companyBesoins); // Debugging line
       
 
 
 
       this.companycontacts.forEach((element: any) => {
         console.log('Contact ID:', element.id); // Debugging line
+
+        this.profileService.findUserById(element.createdBy).subscribe(
+          (user: any) => {
+            element.createdBy = user;
+            
+          },
+          (error :any) => {
+            console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+          }
+
+          
+        );
         this.actionCrmService.findActionsByContactId(element.id).subscribe(
           (actions: any) => {
             console.log('Contact actions loaded:', actions);
@@ -241,7 +284,10 @@ loadCompanyData(id: number) {
                   (error :any) => {
                     console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
                   }
+
+                  
                 );
+                
                 this.contactsService.findContactById(action.contactId).subscribe(
                   (contact: any) => {
                     action.contactId = contact;
@@ -307,7 +353,12 @@ saveChanges() {
     });
     } 
     else {
+      
     // Mode création
+    let creationdate = new Date().toISOString();
+      this.companyForm.patchValue({ creationDate: creationdate ,
+        createdBy: this.user.id,
+      });
     this.compService.createComp(this.companyForm.value).subscribe(
       (response: any) => {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société créée avec succès' });
@@ -320,21 +371,6 @@ saveChanges() {
   }
   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   loadCountries() {
     // Format countries for dropdown (example: use common name + flag)

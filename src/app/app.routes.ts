@@ -18,6 +18,8 @@ import { usersAccountsGuard } from './guards/users-accounts.guard';
 import { besoinsGuard } from './guards/besoins.guard';
 import { DirectorDashboardComponent } from './director-dashboard/director-dashboard.component';
 import { dashboardGuard } from './guards/dashboard.guard';
+import { companyGuard } from './guards/company.guard';
+import { contactGuard } from './guards/contact.guard';
 
 
 export const routes: Routes = [ 
@@ -27,7 +29,7 @@ export const routes: Routes = [
     { path:'reset-password', component:ResetPasswordComponent},
     {path:'companyList',component:CompanyListComponent},
     {path:'company',component:CompanyComponent},
-    {path:'addcomp',component:AddCompanyComponent},
+    {path:'addcomp',component:AddCompanyComponent, canActivate:[companyGuard]},
     {path:'type-actions',component:TypeActionsComponent ,canActivate:[typeActionsGuard]},
     {path:'besoins',component:BesoinsComponent,canActivate:[besoinsGuard]},
     {path:'profile',component:ProfileComponent},
@@ -36,7 +38,7 @@ export const routes: Routes = [
     { path: 'contact', component: ContactComponent },
     { path: 'addcontact', component: AddContactComponent },
     { path: 'updatecontact/:idContact', component: AddContactComponent },
-    { path: 'addcontact/:idCompany', component: AddContactComponent },
+    { path: 'addcontact/:idCompany', component: AddContactComponent ,canActivate:[contactGuard] },
     {path:'users-accounts',component:UsersAccountsComponent,canActivate:[usersAccountsGuard]},
     {path:'DirectorDashboard',component:DirectorDashboardComponent,canActivate:[dashboardGuard]},
     

@@ -178,3 +178,105 @@ input:hover {
   color: #778ca2;
 
 }
+
+/* Style pour PrimeNG MultiSelect */
+:host ::ng-deep .p-multiselect {
+  width: 100%;
+  height: 35px;
+  border: 1px solid #778ca2;
+  border-radius: 2px;
+  font-size: 12px;
+
+  
+  transition: all 0.3s ease;
+}
+
+:host ::ng-deep .p-multiselect:hover {
+  border-color: #4597b6;
+  outline: 1px solid #4597b6;
+  background-color: bl;
+}
+
+:host ::ng-deep .p-multiselect:focus, 
+:host ::ng-deep .p-multiselect.p-focus {
+  border-color: #FFC107;
+  outline: 1px solid #FFC107;
+}
+
+:host ::ng-deep .p-multiselect-label {
+  padding: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  font-size: 12px !important;
+  color: #333 !important;
+  height: 100%;
+  
+}
+
+:host ::ng-deep .p-multiselect-trigger {
+  width: 2rem !important;
+  color: #778ca2 !important;
+  
+}
+
+:host ::ng-deep .p-multiselect-token {
+  background: #e8f4f8 !important;
+  color: #333 !important;
+  border: 1px solid #4597b6 !important;
+  margin-right: 0.2rem !important;
+  padding: 2px 6px !important;
+  border-radius: 3px !important;
+  
+}
+
+:host ::ng-deep .p-multiselect-token-icon {
+  margin-left: 0.3rem !important;
+  color: #4597b6 !important;
+}
+
+:host ::ng-deep .p-multiselect-items {
+  font-size: 12px !important;
+  background-color: #ffffff !important;
+  
+}
+
+:host ::ng-deep .p-multiselect-item {
+  padding: 0.5rem 0.75rem !important;
+  color: #333 !important;
+  background-color: #ffffff !important;
+  
+}
+
+:host ::ng-deep .p-multiselect-item:hover {
+  background-color: #e8f4f8 !important;
+  color: #4597b6 !important;
+}
+
+:host ::ng-deep .p-multiselect-item.p-highlight {
+  background-color: #4597b6 !important;
+  color: white !important;
+}
+
+/* Style pour les chips du multiselect */
+:host ::ng-deep .p-multiselect-chip .p-multiselect-token {
+  background: #e8f4f8 !important;
+  border: 1px solid #4597b6 !important;
+  color: #333 !important;
+  padding: 2px 6px !important;
+}
+
+:host ::ng-deep .p-multiselect-empty-message {
+  padding: 0.75rem 1.25rem !important;
+  color: #6c757d !important;
+  font-style: italic !important;
+  background-color: blue;
+}
+
+/* Forcer le fond blanc pour la liste des items dans le p-multiSelect */
+:host ::ng-deep .p-multiselect-panel {
+  background-color: #ffffff !important;
+}
+
+:host ::ng-deep .p-multiselect-items-wrapper {
+  background-color: #ffffff !important;
+}
