@@ -138,11 +138,12 @@
                             </div>
                             <div>
                               <h3 class="font-semibold">{{ besoin.title }}</h3>
-                              <p class="text-sm text-gray-500">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</p>
+                              <p class="text-sm text-gray-500">{{ besoin.contact?.firstname }} {{ besoin.contact?.lastname }}</p>
                             </div>
                           </div>
                           <div class="flex flex-col">
-                            <p class="text-sm text-gray-500">{{ besoin.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</p>
+                            <p class="text-sm text-gray-500">{{ besoin.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
+
                             <p class="text-sm text-gray-500 font-semibold">{{ besoin.contact?.company?.name }}</p>
                           </div>
                         </div>

@@ -20,6 +20,8 @@ import { CompServiceService } from '../../../services/comp-service.service';
 import { AuthService } from '../../../services/auth.service';
 import countries from 'world-countries';
 import { ContactsService } from '../../../services/contacts.service';
+import { ActionCrmService } from '../../../services/action-crm.service';
+import { ProfileService } from '../../../services/profile.service';
 
 
 
@@ -47,6 +49,20 @@ export class AddCompanyComponent implements OnInit {
     { value: 'Intermédiaire de facturation', name: 'Intermédiaire de facturation', color: 'pink'},
     { value: 'Client via intermédiaire', name: 'Client via intermédiaire', color: 'brown' },
 
+  ];
+  societesProvenanceList: any[] = [
+    { value: 'Prospection', name: 'Prospection' },
+    { value: 'Apporteur', name: 'Apporteur' },
+    { value: 'Client', name: 'Client' },
+    { value: 'Collégue', name: 'Collégue' },
+    { value: 'Réseau', name: 'Réseau' },
+    { value: 'Salon', name: 'Salon' },
+    { value: "Appel d'offre", name: "Appel d'offre" },
+    { value: 'Appel entrant', name: 'Appel entrant' },
+    { value: 'Google', name: 'Google' },
+    { value: 'Hitechpros', name: 'Hitechpros' },
+    { value: 'Linkedin&RS', name: 'Linkedin&RS' },
+    { value: 'Turnover', name: 'Turnover' },
   ];
   societesAgenceList: any[] = [];
 
@@ -107,20 +123,7 @@ export class AddCompanyComponent implements OnInit {
     { value: 'BU Expertise Tunisie', name: 'BU-Expertise-Tunisie' },
     
   ]
-  societesProvenanceList:any [] = [
-    { value: 'Prospection', name: 'Prospection' },
-    { value: 'Apporteur', name: 'Apporteur' },
-    { value: 'client', name: 'Client' },
-    { value: 'Collègue', name: 'Collègue' },
-    { value: 'Réseau', name: 'Réseau' },
-    { value: 'Salon', name: 'Salon' },
-    { value: 'Appel d\'offre', name: 'Appel d\'offre' },
-    { value: 'Appel entrant', name: 'Appel entrant' },
-    { value: 'Google', name: 'Google' },
-    { value: 'Hitechpros', name: 'Hitechpros' },
-    { value: 'linkedin', name: 'Linkedin' },
-    { value: 'Turnover', name: 'Turnover' },
-  ];
+  
 
   idCompany: number = 0;
   companyForm: FormGroup;
@@ -133,7 +136,9 @@ export class AddCompanyComponent implements OnInit {
   formData = new FormData();
   companycontacts: any;
   newContact:any;
-  
+  companyBesoins: any[] = [];
+  mode: any ; // Mode par défaut (ajout)
+  // Liste des contacts de la société
   constructor(
     private fb: FormBuilder,
     private AuthService: AuthService,
@@ -143,33 +148,40 @@ export class AddCompanyComponent implements OnInit {
    
     private compService: CompServiceService,
     private contactsService: ContactsService,
+    private actionCrmService: ActionCrmService,
+    private profileService: ProfileService,
   )
   {
     this.companyForm = this.fb.group({
-      nom: ['', [Validators.required]],
-      statut: [, [Validators.required]],
-      effectif: [1, [Validators.required,Validators.pattern('^[0-9]+$')]],
-      secteur: [null, [Validators.required]],
-      filiales: ['', []],
-      provenance: [, [Validators.required]],
-      precisiez: ['', []],
-      responsableManager: ['', [Validators.required]],
-      pole: [null, [Validators.required]],
-      agence: ['', [Validators.required]],
-      telephone: ['', [Validators.required , Validators.pattern('^[0-9]*$')]],
-      addresse: ['', []],
-      postalCode: ['', []],
-      ville: ['', []],
-      pays: ['', [Validators.required]],
-      siteWeb: ['', []],
-      informations: ['', []],
-      statutJuridique: ['', []],
-      tva: ['', []],
-      siret: ['', []],      
-      rcs: ['', []],
-      codeApe: ['', []],
-      numeroFournisseur: ['', []],
+      name: ['', [Validators.required]],
+      status: ['', [Validators.required]],
+      effective: [1, [Validators.pattern('^[0-9]+$')]],
+      sector: [null, [Validators.required]],
+      provenance : [null, [Validators.required]],
+      precise : ['', [Validators.required]],
+      filiales : [null, []],
+      email : ['', [Validators.email, Validators.required]],
+      
+      
      
+      agency: ['', [Validators.required]],
+      phone: ['', [Validators.pattern('^[0-9]*$'),Validators.required]],
+      address: ['', [Validators.required]],
+      postalCode: ['', []],
+      city: ['', []],
+      country: ['', []],
+      
+      informations: ['', []],
+    
+      
+         
+     
+     
+      creationDate: [{value:new Date().toLocaleDateString('fr-FR')}],
+      createdBy: ['', []],
+      
+     
+      
       
       
       
@@ -183,9 +195,15 @@ export class AddCompanyComponent implements OnInit {
     });
     
   }
+  companyActions: any[] = [];
   // Modifiez votre composant AddCompanyComponent pour gérer l'édition
-
+user: any ;
 ngOnInit(): void {
+  this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
+    (user: any) => {
+      this.user = user;
+    });
+  
   this.loadCountries();
   
   // Récupérer l'ID de l'URL si on est en mode édition
@@ -195,22 +213,110 @@ ngOnInit(): void {
       this.loadCompanyData(this.idCompany);
     }
   });
+  if (this.idCompany) {
+    this.mode='edit';
+  } else {
+    this.mode='add';
+  }
 }
 
 loadCompanyData(id: number) {
   this.compService.getCompById(id).subscribe(
     (company: any) => {
+       // Assurez-vous que contacts est un tableau
       this.companyForm.patchValue(company);
       console.log('Company data loaded:', this.companyForm.value);
-      this.companycontacts = company.contacts || []; // Assurez-vous que contacts est un tableau
+      this.companycontacts = company.contacts || [];
+       // Assurez-vous que contacts est un tableau
       console.log('Company contacts:', this.companycontacts);
+      this.companycontacts.forEach((element: {
+        lastname: string;
+        firstname: string;besoins: any[]; 
+}) => {
+          element.besoins.forEach((besoin: any) => {
+            this.profileService.findUserById(besoin.createdBy).subscribe(
+              (user: any) => {
+                besoin.createdBy = user;
+                
+                
+              },
+              (error :any) => {
+                console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+              }
+            );
+            besoin.contact=element.firstname + ' ' + element.lastname; // Ajoutez le nom du contact au besoin
 
 
+
+
+            this.companyBesoins.push(besoin); // Ajoutez le besoin chargé à la liste des besoins
+          });});
+          console.log('Company besoinsssssssssssssssssssssssssss:', this.companyBesoins); // Debugging line
+      
+
+
+
+      this.companycontacts.forEach((element: any) => {
+        console.log('Contact ID:', element.id); // Debugging line
+
+        this.profileService.findUserById(element.createdBy).subscribe(
+          (user: any) => {
+            element.createdBy = user;
+            
+          },
+          (error :any) => {
+            console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+          }
+
+          
+        );
+        this.actionCrmService.findActionsByContactId(element.id).subscribe(
+          (actions: any) => {
+            console.log('Contact actions loaded:', actions);
+            actions.forEach((action: any) => {
+
+             
+                this.profileService.findUserById(action.createdBy).subscribe(
+                  (user: any) => {
+                    action.createdBy = user;
+                    
+                  },
+                  (error :any) => {
+                    console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+                  }
+
+                  
+                );
+                
+                this.contactsService.findContactById(action.contactId).subscribe(
+                  (contact: any) => {
+                    action.contactId = contact;
+                    this.companyActions.push(action);
+                  },
+                  (error :any) => {
+                    console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
+                  }
+                );
+              
+
+              
+            }) // Ajoutez le contact chargé à la liste des contacts
+          },
+          (error: any) => {
+            console.error('Error loading contact actions:', error);
+          }
+        );
+        
+
+      });
     },
     (error: any) => {
       console.error('Error loading company data:', error);
     }
   );
+  
+  console.log('Company contacts:', this.companycontacts);
+  console.log('Company actionssssssssssssssssssssss:', this.companyActions); // Debugging line
 }
 
 saveChanges() {
@@ -231,10 +337,10 @@ saveChanges() {
     this.companycontacts.forEach((element: any) => {
       console.log('Contact hahah :', element);
       console.log('ID du contact:', element.id); // Debugging line
-      console.log('Statut du societe:', this.companyForm.value.statut); // Debugging line
-      this.contactsService.updateContactStatut(element.id,this.companyForm.value.statut).subscribe(
+      console.log('Statut du societe:', this.companyForm.value.status); // Debugging line
+      this.contactsService.updateContactStatut(element.id,this.companyForm.value.status).subscribe(
         (response: any) => {
-          console.log(`contact ${element.nom} mis à jour avec le statut ${this.companyForm.value.statut}`);
+          console.log(`contact ${element.name} mis à jour avec le statut ${this.companyForm.value.status}`);
           this.ngOnInit();
         },
         (error: any) => {
@@ -247,7 +353,12 @@ saveChanges() {
     });
     } 
     else {
+      
     // Mode création
+    let creationdate = new Date().toISOString();
+      this.companyForm.patchValue({ creationDate: creationdate ,
+        createdBy: this.user.id,
+      });
     this.compService.createComp(this.companyForm.value).subscribe(
       (response: any) => {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société créée avec succès' });
@@ -258,22 +369,8 @@ saveChanges() {
       }
     );
   }
+  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   loadCountries() {
     // Format countries for dropdown (example: use common name + flag)
@@ -282,5 +379,13 @@ saveChanges() {
       name: country.name.common, 
     }));
     this.societesPaysList.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+modeS: string = 'informations'; // Onglet par défaut
+  selectModeS(tab: string): void {
+    this.modeS = tab;
+    
+  
+    // Si besoin, ajouter ici des actions spécifiques au changement d'onglet
   }
 }
