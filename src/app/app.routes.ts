@@ -32,6 +32,7 @@ export const routes: Routes = [
     {path:'addcomp',component:AddCompanyComponent, canActivate:[companyGuard]},
     {path:'type-actions',component:TypeActionsComponent ,canActivate:[typeActionsGuard]},
     {path:'besoins',component:BesoinsComponent,canActivate:[besoinsGuard]},
+    {path:'besoins/:modeA',component:BesoinsComponent,canActivate:[besoinsGuard]},
     {path:'profile',component:ProfileComponent},
     {path:'companyKanban' ,component:CompanyKanbanComponent },
     { path: 'addcomp/:id', component: AddCompanyComponent },

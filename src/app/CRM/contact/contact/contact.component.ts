@@ -121,7 +121,9 @@ export class ContactComponent implements OnInit {
   }
  
   // Removed duplicate implementation of openFilterDialog
-  drop(event: CdkDragDrop<any[]>) {}
+  drop(event: CdkDragDrop<any[]>) {
+    
+  }
   
 openAddModal() {
   console.log('openAddModal');
@@ -373,6 +375,11 @@ editContact(contact: any) {
       this.filterForm.reset();
       this.ngOnInit();
     }
+  }
+  
+  onDragMoved(event: any): void {
+    // Cette méthode gère les mises à jour de l'interface utilisateur pendant l'opération de glisser-déposer
+    // Elle peut être utilisée pour faire défiler le conteneur lors du glissement près des bords
   }
   
 }

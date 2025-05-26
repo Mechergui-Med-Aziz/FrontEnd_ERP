@@ -1,5 +1,5 @@
 import { Component , ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragMove, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -71,8 +71,22 @@ switchMode($event: MatButtonToggleChange) {
       }
     }
   
-    
-    
+    // Properties for scroll behavior
+    private scrollThreshold = 50; // Distance from edge to trigger scroll
+    private scrollStep = 15; // Scroll amount per event
+
+    onDragMoved(event: CdkDragMove<any>): void {
+      const container = this.scrollContainer.nativeElement;
+      const containerRect = container.getBoundingClientRect();
+      const pointerX = event.pointerPosition.x;
+
+      if (pointerX < containerRect.left + this.scrollThreshold) {
+        container.scrollLeft -= this.scrollStep;
+      }
+      else if (pointerX > containerRect.right - this.scrollThreshold) {
+        container.scrollLeft += this.scrollStep;
+      }
+    }
   
   
     columns: { title: string, status: string, color:string, companies: any[] }[] = [
@@ -83,8 +97,8 @@ switchMode($event: MatButtonToggleChange) {
       { title: 'Piste', status: 'Piste',color: "#0096AA", companies: [] },
       { title: 'Fournisseur', status: 'Fournisseur',color: "#FA0000", companies: [] },
       { title: 'Archivé', status: 'Archivé',color: "#FF80FF", companies: [] },
-      { title: 'Intermédiaire de facturation', status: 'Intermédiaire_de_facturation',color: "#FF00FF", companies: [] },
-      { title: 'Client via intermédiaire', status: 'Client_via_intermédiaire',color: "#FF00FF", companies: [] },
+      { title: 'Intermédiaire de facturation', status: 'Intermédiaire de facturation',color: "#FF00FF", companies: [] },
+      { title: 'Client via intermédiaire', status: 'Client via intermédiaire',color: "#FF00FF", companies: [] },
     ];
   
   constructor(private companyService: CompServiceService, private fb: FormBuilder,

@@ -20,7 +20,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ActionService } from '../services/action.service';
 import { TypeActionsService } from '../services/type-actions.service';
-import { Route, Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 
 
@@ -32,7 +33,9 @@ import { Route, Router } from '@angular/router';
   styleUrl: './besoins.component.css'
 })
 export class BesoinsComponent implements OnInit{
-  constructor(private typeAction:TypeActionsService,private actionService: ActionService,private AuthSer:AuthService,private hbs:HistoriqueBesoinsService,private ps:ProfileService,private contactsService: ContactsService ,private besoinsService:BesoinsService,private fb: FormBuilder,private profileService : ProfileService) { }
+  route: any;
+  
+  constructor(private typeAction:TypeActionsService,private location: Location,private router: Router ,private activatedRoute: ActivatedRoute,private actionService: ActionService,private AuthSer:AuthService,private hbs:HistoriqueBesoinsService,private ps:ProfileService,private contactsService: ContactsService ,private besoinsService:BesoinsService,private fb: FormBuilder,private profileService : ProfileService) { }
  
   selectedBesoin!: any;
   isModalOpen: boolean = false;
@@ -66,6 +69,7 @@ export class BesoinsComponent implements OnInit{
   BesoinActions: any[] = [];
   deletedAction:any;
   manager:  any;
+  r:any;
 
   fullManagerInformations:{manager:any,nbrBesoins:number}[] = [];
 
@@ -124,9 +128,17 @@ export class BesoinsComponent implements OnInit{
     manager:[]
   });
 
- 
-  
+ compF:any;
+  comp:any;
+  besoinFromCompany:any;
   ngOnInit() {
+   
+    this.activatedRoute.queryParams.subscribe(params => {
+  this.r = params['c'];
+  this.comp = params['id'];
+  
+});
+
     this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
       (user: any) => {
         this.user = user;
@@ -144,7 +156,44 @@ export class BesoinsComponent implements OnInit{
       managerResponsable:['']
     });
     this.loadProductionManagers();
+     if(this.r =='company'){
+      
+      this.openAddModal()
+    }
+  
+
+    this.activatedRoute.queryParams.subscribe(params => {
+    this.besoinIdFromCompany = params['besoinId']; 
+    this.compF = params['companyId'];
+    console.log('besoinFromCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY:', this.besoinIdFromCompany);
+    });
+this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
+  (besoin: any) => {
+    
+    this.besoinFromCompany = besoin;
+    console.log('BesoinFromCompanyYYYYYYYYYYY:', this.besoinFromCompany);
+      this.ps.findUserById(besoin.createdBy).subscribe(
+        (user: any) => {
+          console.log('besoinn  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', besoin);
+          this.besoinFromCompany.createdBy = user;
+          console.log('Besoin avec utilisateurDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', this.besoinFromCompany);
+          this.openModal(this.besoinFromCompany);
+        },
+        (error: any) => {
+    console.error('Erreur lors de la récupération du besoin:', error);
+  });
+
+      
+     
+   
+  },
+  (error: any) => {
+    console.error('Erreur lors de la récupération du besoin:', error);
   }
+);
+
+  }
+  besoinIdFromCompany: any;
 
   loadBesoins() {
     this.allBesoins = [];
@@ -211,8 +260,14 @@ export class BesoinsComponent implements OnInit{
   loadContacts() {
     this.contactsService.findAllContacts().subscribe(
       (contacts: any) => {
-        //console.log('Contacts:', contacts); // Debugging line
-        this.contacts = contacts;
+        console.log('ContactsRRRRRRRRRRRRRRRRR:', contacts); // Debugging line
+        console.log('this.compRRRRRRRR:', this.comp); // Debugging line
+       if(this.comp){
+        this.contacts=contacts.filter((contact: any) => contact.company.id == this.comp);
+        console.log('Filtered contactsRRRRRRRR:', this.contacts); // Debugging line
+       }else{
+        this.contacts = contacts;}
+
       },
       (error: any) => {
         console.error('Erreur lors du chargement des contacts:', error);
@@ -372,6 +427,9 @@ export class BesoinsComponent implements OnInit{
           console.error('erreur lors de l\'ajout de besoin:', error);
         }
       );
+      if (this.r =='company') {
+        this.location.back();
+      }
     }
 
     saveChanges() {
@@ -424,13 +482,19 @@ export class BesoinsComponent implements OnInit{
           console.error(`Erreur lors de la mise à jour du besoin ${updatedData.id}`, error);
         }
       );
-      this.closeDashboard();
+          if (this.besoinIdFromCompany) 
+        {  
+        this.location.back();
+        }
+        this.closeDashboard();
     }
 
 
     fillForm(besoin: any) {
       this.ps.findUserById(besoin.createdBy.id).subscribe(
+
         (user: any) => {
+          console.log('User DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', user);
           this.userr = user;
         }
       );
@@ -458,10 +522,13 @@ export class BesoinsComponent implements OnInit{
     closeAddModal() {
       this.isAddModalOpen = false;
       this.besoinAddForm.reset();
+      if ( this.r =='company') {
+         this.location.back();
+      }
     }
 
     openModal(besoin: any) {
-
+      console.log('Besoin ouvertTTTTTTTTTTT:', besoin);
       this.fillForm(besoin);
       this.Dashboard=true;
       this.getHistoricBesoin(besoin);

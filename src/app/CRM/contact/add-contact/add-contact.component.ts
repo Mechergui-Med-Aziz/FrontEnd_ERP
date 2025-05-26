@@ -47,6 +47,7 @@ export class AddContactComponent implements OnInit{
   managers: any[] = ["ilyes","aziz","khaled"];
   typesDomaines: any[] = [];
   company: any;
+  companyStatus: any;
   filteredCompany: any[] | undefined;
   societesPaysList: any[] = [];
   
@@ -119,6 +120,7 @@ mode: any;
   DetailsActionForm: FormGroup;
   selectedAction!: any;
   contactBesoins: any[] = [];
+  userRole: any;
 
   constructor(
       private profileService: ProfileService,
@@ -186,6 +188,7 @@ mode: any;
     this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
       (user: any) => {
         this.user = user;
+        this.userRole = user.role;
       });
     
     this.modeS="informations"
@@ -218,6 +221,7 @@ mode: any;
     this.compService.getCompById(id).subscribe(
       (company: any) => {
         this.company = company;
+        this.companyStatus = company.status;
        
         });
 
@@ -266,7 +270,7 @@ mode: any;
       this.contactservice.createContact(this.contact.value).subscribe(
         (response: any) => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact créé avec succès' });
-          this.router.navigate(['/contact']);
+           this.location.back(); 
         },
         (error: any) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la création' });
@@ -517,7 +521,10 @@ mode: any;
   }
 
 }
+retourner() {
+  this.location.back(); // Navigate back to the previous page
 
 }
 
 
+}

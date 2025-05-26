@@ -1,177 +1,153 @@
-.container {
+.kanban-container {
+  height: calc(100vh - 180px); 
+  overflow-x: auto;
+  overflow-y: auto;
   display: flex;
-  flex-direction: column;
-  height: 70vh !important;
-  max-width: 500px !important;
-
-  .board {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-
-    min-width: 0;
-    min-height: 0;
-
-    .board-wrapper {
-      display: flex;
-      flex-grow: 1;
-      overflow-x: auto;
-
-      .board-columns {
-        display: flex;
-        flex-grow: 1;
-
-        .board-column {
-          display: flex;
-          flex-direction: column;
-          flex-grow: 1;
-          flex-basis: 0;
-          margin: 1rem;
-          padding: 0 1rem 1rem;
-          min-height: 18.75rem;
-          min-width: 25rem;
-          height: fit-content;
-          border-radius: 4px;
-          background-color: #f8fafb;
-
-          &:not(first-child) {
-            margin-left: 0;
-          }
-
-          .column-header {
-            background-color: #f8fafb;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            align-items: center;
-            padding: 1rem 0 0.5rem;
-            position: -webkit-sticky;
-            position: sticky;
-            top: 0;
-            border-bottom: solid 3px var(--border-color);
-            margin-bottom: 0.5rem;
-
-            .column-badge {
-              width: 0.5rem;
-              height: 0.5rem;
-              margin-right: 0.75rem;
-              border-radius: 50%;
-            }
-
-            .column-title {
-              text-transform: uppercase;
-              font-size: 0.9rem;
-              font-weight: 400;
-            }
-
-            .column-type {
-              font-size: 0.9rem;
-              margin-left: 0.5rem;
-            }
-          }
-
-
-        }
-      }
-    }
-  }
-
-  .tasks-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    gap: 8px;
-    padding: 0.25rem 0.25rem 0;
-  }
+  gap: 10px;
+  padding: 5px;  
 }
 
-.task {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
-
-  padding: 0.5rem;
-  cursor: move;
-
-  font-size: 1rem;
-  color: rgba(0, 0, 0, 0.87);
-  background: white;
-
-  border-radius: 8px;
-  border-bottom: solid 1px #ccc;
-
-  &:hover {
-    background-color: #fafafa;
-
-    .task-created-on {
-      visibility: visible;
-    }
-  }
-
-  .task-created-on {
-    visibility: hidden;
-  }
-
-  .task-header {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: 100%;
-
-    .task-title {
-      text-transform: capitalize;
-      font-size: 1rem;
-      font-weight: 400;
-      width: 95%;
-    }
-
-    .task-version {
-      font-size: 1rem;
-      font-weight: 200;
-      width: 5%;
-    }
-  }
-
-  .task-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-
-    span.task-versions {
-      font-size: small !important;
-      font-weight: 300 !important;
-    }
-
-    .task-content {
-      display: flex;
-      justify-content: flex-end;
-
-      .content-accountable {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        padding: 6px 12px;
-
-        border-radius: 50%;
-        color: #fff;
-        background-color: rgb(228, 44, 44);
-
-        font-weight: 700;
-        font-size: 16px;
-        text-transform: uppercase;
-      }
-    }
-  }
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f1f1f1;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 4px;
+}
+
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f1f1f1;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 4px;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+/* Badge styles for list view */
+.badge-danger {
+  background-color: #FFA500;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-warning {
+  background-color: #000080;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-success {
+  background-color: #00FFFF;
+  color: black;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-info {
+  background-color: #FA0000;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-primary {
+  background-color: #80FF00;
+  color: black;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-secondary {
+  background-color: #0096AA;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-light {
+  background-color: #FF80FF;
+  color: black;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-dark {
+  background-color: #FF00FF;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-default {
+  background-color: #FF00FF;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+/* Drag and drop styles */
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .cdk-drag-placeholder {
@@ -182,167 +158,55 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.tasks-container.cdk-drop-list-dragging .task:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+/* Table styles for list view */
+.table-scroll-container {
+  height: 70vh;
+  overflow-y: auto;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
 }
 
-@mixin symbol() {
-  height: 25px;
-  width: 25px;
-  font-size: 1rem;
-  font-style: normal;
-  text-align: center !important;
+.table-scroll-container table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 0;
 }
 
-.no-assignee {
-  @include symbol();
-  color: #fff;
-  background-color: #ccc;
+.table-scroll-container thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #f8f9fa;
 }
 
-.priority-symbol {
-  margin-right: 0.5rem;
-  font-weight: bolder;
-  @include symbol();
+.table-scroll-container th {
+  padding: 12px 15px;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: bold;
+  text-align: left;
+  color: #495057;
+  background-color: #f8f9fa;
 }
 
-.p-input-icon-left {
-  font-size: 0.75rem;
-  line-height: 0.75rem;
-  margin: 0.5rem 0.5rem 0.25rem;
-  border: 1px solid #ced4da;
-  appearance: none;
-  border-radius: 6px;
+.table-scroll-container tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
 }
 
-.board-filters {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
+.table-scroll-container td {
+  padding: 12px 15px;
+  vertical-align: middle;
+  border-bottom: 1px solid #dee2e6;
 }
 
-.selected-no-assignee {
-  border: solid 3px #00b4d8;
-  font-size: 1rem;
+/* For fixed header */
+.table-scroll-container thead tr th {
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
-.no-assignee-selection {
-  width: 30px;
-  height: 30px;
-}
-
-.padding-divider {
-  padding: 0.5rem 0;
-}
-
-
-/* In your component's style file */
-:host ::ng-deep .pi-exclamation-triangle {
-  color: #ffd300; /* Set the color to red or any other color you prefer */
-}
-
-
-
-
-.candidate {
-  .profile{
-      width: 50px;
-      height: 50px;
-      float: left;
-
-      .mat-icon{
-          width: 100%;
-          height: 100%;
-          color: #b4b9c4;
-      }
-  }
-
-  .personal-details{
-      width: calc(100% - 50px);
-      padding: 0 0 0 10px;
-      float: left;
-
-      .title{
-          white-space: nowrap;
-          color:gray;
-      }
-  }
-
-  .rh-details{
-      .exp-duration{
-          font-size: 0.75rem;
-          color: gray;
-
-          .mat-icon{
-              position: relative;
-              top: 4px;
-              font-size: 2px;
-              min-width: 2px;
-              min-height: 2px;
-          }
-      }
-  }
-
-}
-/* Change the background color of the paginator */
-.mat-mdc-paginator-container {
-background-color: #f8fafb; /* Replace with your desired color */
-}
-
-.floating-button {
-position: fixed; /* Rend le bouton flottant */
-bottom: 20px;    /* Distance du bas de la page */
-left: 20px;      /* Distance du côté gauche de la page */
-border-radius: 50%; /* Arrondit le bouton */
-width: 56px;        /* Ajuste la taille du bouton */
-height: 56px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ajoute une ombre pour l'effet flottant */
-background-color: #3f51b5; /* Couleur de fond du bouton */
-color: white;              /* Couleur de l'icône */
-display: flex;
-align-items: center;
-justify-content: center;
-z-index: 1000; /* Assure que le bouton est au-dessus des autres éléments */
-}
-
-.floating-button-right {
-position: fixed; /* Rend le bouton flottant */
-bottom: 20px;    /* Distance du bas de la page */
-right: 30px;      /* Distance du côté gauche de la page */
-border-radius: 50%; /* Arrondit le bouton */
-width: 56px;        /* Ajuste la taille du bouton */
-height: 56px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ajoute une ombre pour l'effet flottant */
-background-color: #3f51b5; /* Couleur de fond du bouton */
-color: white;              /* Couleur de l'icône */
-display: flex;
-align-items: center;
-justify-content: center;
-z-index: 1000; /* Assure que le bouton est au-dessus des autres éléments */
-}
-.mat-raised-button {
-background-color: #3f51b5; /* Couleur de fond */
-color: white;              /* Couleur du texte (ou icône) */
-}
-
-
-
-/* Agrandir l'input */
-.custom-form-field {
-width: 100%;
-}
-
-.custom-form-field mat-form-field {
-width: 100%;
-}
-
-.custom-form-field input {
-font-size: 20px; /* Ajustez la taille du texte de l'input */
-height: 30px; /* Ajustez la hauteur de l'input */
-}
-.custom-icon {
-font-size: 70px !important; /* Utilisez !important pour forcer la taille */
-width: 70px !important;     /* Définir la largeur de l'icône */
-height: 70px !important;    /* Définir la hauteur de l'icône */
+/* Ensure all elements display properly */
+.table-scroll-container tbody tr td {
+  white-space: nowrap;
 }

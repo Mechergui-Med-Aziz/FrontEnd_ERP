@@ -21,7 +21,7 @@ describe('Gestion des CRM (E2E)', () => {
       cy.get('[data-cy="add-company-button"]').click();
   
       // Remplit le formulaire
-      cy.get('input[formControlName="name"]').type('company E2E2');
+      cy.get('input[formControlName="name"]').type('company E2E4');
      
     
       cy.get('input[formControlName="precise"]').type('E2E');

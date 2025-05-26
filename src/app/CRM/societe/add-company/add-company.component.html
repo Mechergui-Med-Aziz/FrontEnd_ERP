@@ -23,7 +23,7 @@
         rel="stylesheet"
       />
 </head>
-<header  class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-10 h-[20%] rounded-lg">
+<header class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-50 rounded-lg">
     <div class="flex flex-col sm:flex-row items-center justify-between">
       <!-- Zone titre et navigation -->
       <!-- Zone titre et navigation -->
@@ -70,19 +70,22 @@
       <!-- Bouton d'action -->
       <div *ngIf="mode==='edit'" class="mt-4 sm:mt-0 pt-10">
        
-<!--
-        <button *ngIf="modeS=='actions'" [disabled] class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
-          Ajouter Une Action
+
+        <button *ngIf="modeS=='contacts'"  routerLink="/addcontact/{{this.idCompany}}" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
+          Ajouter
         </button>
--->
+        <button *ngIf="modeS=='besoins'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="gotobesoin()" >
+          Ajouter Un besoin
+        </button>
+
+
         <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" routerLink="/contact">
           Retour
         </button>
       </div>
-    </div>
-  </header>
+    </div>  </header>
   
-  <main class="pt-[100px]  w-full h-full overflow-y-auto h-full px-4 mt-8" *ngIf="modeS === 'informations'">
+  <main class="pt-[160px] w-full h-full overflow-y-auto px-4 mt-8" *ngIf="modeS === 'informations'">
     <div class="flex flex-col md:flex-row gap-4 right-100" >
 <form class="w-full pb-[10px] h-full"  [formGroup]="companyForm" >
     <div class="px-4 w-full sm:flex-col md:flex-row flex">
@@ -292,7 +295,7 @@
 </div>
 </main>
 <!-- Synthèse des contacts -->
-<main class="pt-[100px] pl-[60px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'contacts'">
+<main class="pt-[160px] pl-[60px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'contacts'">
     <div class="w-full max-w-7xl">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="w-full flex flex-col gap-8">
@@ -362,14 +365,18 @@
 
 <!-- liste des actions -->
 
-  <main class="pt-[100px] pl-[100px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
+  <main class="pt-[160px] pl-[100px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
     <div class="w-full max-w-7xl">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="w-full flex flex-col gap-8">
           <div class="bg-white p-8 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
-              Liste Des Actions
+            <div class="flex "><h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Actions Contact
             </h2>
+            <button  class="bg-green-600 h-[50%] ml-[65%] text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" >
+          Ajouter
+        </button></div>
+
   
             <div class="flex-1 overflow-hidden border rounded-lg">
               <div class="overflow-y-auto max-h-[70vh]">
@@ -382,6 +389,7 @@
                       <th class="px-4 py-6">Manager Responsable</th>
                       <th class="px-4 py-6">Fichiers</th>
                       <th class="px-4 py-6">Date Action</th>
+                      <th class="px-4 py-6">Actions</th>
                      
                     </tr>
                   </thead>
@@ -400,7 +408,16 @@
                         <span *ngIf="action.attachments.length==0">--------</span>
                       </td>
                       <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                      
+                        <td>
+                        <div class="flex space-x-2">
+                          <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action, 'contact')"> 
+                            Edit
+                          </button>
+                          <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action, 'contact')">
+                            Supprimer
+                          </button>
+                        </div>
+                      </td>
                       
                       
                     </tr>
@@ -409,13 +426,73 @@
               </div>
             </div>
           </div>
+
+
+
+            <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <div class="flex "><h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Actions Besoins
+            </h2>
+            <button  class="bg-green-600 h-[50%] ml-[65%] text-white px-6 py-3 rounded-full shadow" (click)="gotobesoin()" >
+          Ajouter
+        </button></div>
+  
+            <div class="flex-1 overflow-hidden border rounded-lg">
+              <div class="overflow-y-auto max-h-[70vh]">
+                <table class="min-w-full table-auto text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>
+                      <th class="px-4 py-6">Type d'action</th>
+                      <th class="px-4 py-6">Besoin</th>
+                      <th class="px-4 py-6">Créé Par</th>
+                      <th class="px-4 py-6">Manager Responsable</th>
+                      <th class="px-4 py-6">Fichiers</th>
+                      <th class="px-4 py-6">Date Action</th>
+                      <th class="px-4 py-6">Actions</th>
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let action of BesoinActions" class="hover:bg-gray-50 text-gray-600 text-base">
+                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
+                      <td class="px-4 py-6">{{ action.besoinId }}</td>
+                      <td class="px-4 py-6">{{ action.createdBy.firstname }} {{ action.createdBy.lastname }}</td>
+                      <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td>
+                      <td class="px-4 py-6">
+                        <ul class="list-disc list-inside space-y-1" *ngIf="action?.attachments?.length!=0">
+                          <li *ngFor="let file of action.attachments">
+                            {{ file.fileName }}
+                          </li>
+                        </ul>
+                        <span *ngIf="action.attachments.length==0">--------</span>
+                      </td>
+                      <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                     <td>
+                        <div class="flex space-x-2">
+                          <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action, 'besoin')">
+                            Edit
+                          </button>
+                          <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action, 'besoin')">
+                            Supprimer
+                          </button>
+                        </div>
+                      </td>
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
         </div>      
       </div>
     </div>
   </main>
 
 
-  <main class="pt-[100px] pl-[80px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'besoins'">
+  <main class="pt-[160px] pl-[80px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'besoins'">
     <div class="w-full max-w-7xl">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="w-full flex flex-col gap-8">
@@ -439,7 +516,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let besoin of companyBesoins" class="hover:bg-gray-50 text-gray-600 text-base" routerLink="/besoins/{{ besoin.id }}">
+                    <tr *ngFor="let besoin of companyBesoins" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotobesoinUpdate(besoin.id)" >
                       <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
                       <td class="px-4 py-6">{{ besoin.contact }}</td>
                       <td class="px-4 py-6">{{ besoin.status }}</td>
@@ -470,5 +547,229 @@
         </div>      
       </div>
     </div>
+
+
+    
   </main>
+  <div *ngIf="isAddActionModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
+    <div class="bg-white p-4 rounded-lg w-1/3">
+      <h2 class="text-xl font-bold">Ajout d'une Action contact</h2>
+      <form [formGroup]="actionAddForm" (ngSubmit)="addAction()">
+        <div>
+          <label for="description">Description :</label>
+          <input type="text" id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description">
+        </div>
+  
+        <div class="mt-4">
+          <label for="type">Contact</label>
+          <select id="type" formControlName="contactId" class="w-full p-2 mt-1 border rounded">
+              <option *ngFor="let contact of companycontacts" [ngValue]="contact.id">{{ contact.firstname}} {{ contact.lastname }}</option>
+          </select>
+        </div>
+        <div class="mt-4">
+          <label for="type">Type d'Action</label>
+          <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
+              <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name}}</option>
+          </select>
+        </div>
+  
+        <div [hidden]="this.userRole== 'Manager De Production'">
+          <label for="manager">Manager Responable </label>
+          <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded" 
+            [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+            [class.bg-gray-200]="this.userRole== 'Manager De Production'"
+            >
+  
+            <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
+              {{ manager.firstname }} {{ manager.lastname }}
+            </option>
+          </select>
+        </div>
+      
+        <div class="mt-4">
+          <label for="files">Fichiers :</label>
+          <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded">
+          <span class="text-sm text-gray-700">
+            Max : 10 fichiers de 10Mo max
+          </span>
+        </div>
+  
+        <div class="flex justify-end gap-4 mt-4">
+        <button type="submit"  class="bg-blue-500 text-white px-4 py-2 rounded">Enregistrer</button>
+        <button type="button" (click)="closeActionAddModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Annuler</button>
+        </div>
+      </form>
+      
+    </div>
+  </div>
+
+
+  <div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg w-1/3 p-6">
+      <h2 class="text-2xl font-bold mb-4 bg-white text-black">Etes-Vous Sûr de supprimer l'action</h2>
+      
+      <div class="flex justify-end gap-4">
+        <button type="button" class="bg-green-400 text-white px-4 py-2 rounded" (click)="closeDeleteModal()">Non</button>
+        <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"(click)="deleteAction(deletedAction.id)">Oui</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal de details d'action  -->
+  <div *ngIf="isActionDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+      <div class="bg-white p-6 rounded-lg w-1/3">
+        <h2 class="text-xl font-bold mb-4">Détails d'Action Besoin</h2>
+        <div class="max-h-[85vh] overflow-y-auto">
+        <form [formGroup]="DetailsActionForm">
+          <div hidden>
+            <label for="id">ID</label>
+            <input id="id" formControlName="id" class="w-full p-2 mt-1 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label for="type">Type</label>
+            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'" />
+          </div>
+          <div class="mb-4">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'"></textarea>
+          </div>
+          <div class="mb-4">
+            <label for="creationDate">Date De Création</label>
+            <input id="creationDate" formControlName="dateAction" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+          <div class="mb-4">
+            <label for="createdBy">Créé Par</label>
+            <input id="createdBy" formControlName="createdBy" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+
+          <div class="mb-4">
+            <label for="manager">Manager Responsable</label>
+          <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
+          [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+          [class.bg-gray-200]="this.userRole== 'Manager De Production'">
+
+          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
+            {{ manager.firstname }} {{ manager.lastname }}
+          </option>
+        </select>
+
+      </div>
+      
+    
+          <!-- Section affichant les fichiers existants sous forme de liens cliquables -->
+          <div class="mb-4">
+            <label class="block">Fichiers déjà joints :</label>
+            <ul class="list-disc list-inside space-y-1">
+              <li *ngFor="let file of selectedAction.attachments">
+                <!-- Ici, on concatène la base URL du serveur avec le chemin du fichier. Adaptez l’URL selon votre configuration -->
+                <a [attr.download]="file.fileName" [href]="'http://localhost:8080/api/action-besoin/files/' + file.filePath.replace('uploads\\', '')" target="_blank" class="text-blue-500 hover:underline">
+                    {{ file.fileName }}
+                  </a>
+              </li>
+            </ul>
+            <span class="text-sm text-gray-700">
+              Téléchargez les fichiers avant de joindre de nouveaux fichiers si besoin.
+            </span>
+          </div>
+    
+          <!-- Section pour joindre de nouveaux fichiers -->
+          <div class="mb-4">
+            <label for="files" class="block">Joindre de nouveaux fichiers :</label>
+            <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'">
+            <span class="text-sm text-gray-700">
+              NB : La jointure de fichiers supprimera les anciens fichiers. Si vous souhaitez les conserver, veuillez les télécharger.
+            </span>
+          </div>
+    
+          <div class="flex justify-end gap-4 mt-4">
+            <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeDetailsActionModal()">Annuler</button>
+            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="EditAction()" [disabled]=" this.userRole=='Manager De Production'">
+              Sauvegarder
+            </button>
+          </div>
+        </form>
+      </div>
+      </div>
+
+
+    </div>
+  <div *ngIf="isActionCrmDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+      <div class="bg-white p-6 rounded-lg w-1/3">
+        <h2 class="text-xl font-bold mb-4">Détails d'Action Contact</h2>
+        <div class="max-h-[85vh] overflow-y-auto">
+        <form [formGroup]="DetailsActionCrmForm">
+          <div hidden>
+            <label for="id">ID</label>
+            <input id="id" formControlName="id" class="w-full p-2 mt-1 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label for="type">Type</label>
+            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'" />
+          </div>
+          <div class="mb-4">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'"></textarea>
+          </div>
+          <div class="mb-4">
+            <label for="creationDate">Date De Création</label>
+            <input id="creationDate" formControlName="dateAction" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+          <div class="mb-4">
+            <label for="createdBy">Créé Par</label>
+            <input id="createdBy" formControlName="createdBy" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+
+          <div class="mb-4">
+            <label for="manager">Manager Responsable</label>
+          <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
+          [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+          [class.bg-gray-200]="this.userRole== 'Manager De Production'">
+
+          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
+            {{ manager.firstname }} {{ manager.lastname }}
+          </option>
+        </select>
+
+      </div>
+      
+    
+          <!-- Section affichant les fichiers existants sous forme de liens cliquables -->
+          <div class="mb-4">
+            <label class="block">Fichiers déjà joints :</label>
+            <ul class="list-disc list-inside space-y-1">
+              <li *ngFor="let file of selectedAction.attachments">
+                <!-- Ici, on concatène la base URL du serveur avec le chemin du fichier. Adaptez l’URL selon votre configuration -->
+                <a [attr.download]="file.fileName" [href]="'http://localhost:8080/api/action-crm/files/' + file.filePath.replace('uploads\\', '')" target="_blank" class="text-blue-500 hover:underline">
+                    {{ file.fileName }}
+                  </a>
+              </li>
+            </ul>
+            <span class="text-sm text-gray-700">
+              Téléchargez les fichiers avant de joindre de nouveaux fichiers si besoin.
+            </span>
+          </div>
+    
+          <!-- Section pour joindre de nouveaux fichiers -->
+          <div class="mb-4">
+            <label for="files" class="block">Joindre de nouveaux fichiers :</label>
+            <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'">
+            <span class="text-sm text-gray-700">
+              NB : La jointure de fichiers supprimera les anciens fichiers. Si vous souhaitez les conserver, veuillez les télécharger.
+            </span>
+          </div>
+    
+          <div class="flex justify-end gap-4 mt-4">
+            <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeDetailsActionModal()">Annuler</button>
+            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="EditAction()" [disabled]=" this.userRole=='Manager De Production'">
+              Sauvegarder
+            </button>
+          </div>
+        </form>
+      </div>
+      </div>
+
+
+
+
+
 <p-toast />

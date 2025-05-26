@@ -20,10 +20,9 @@
   <!-- MDB -->
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
-    rel="stylesheet"
-  />
+    rel="stylesheet"  />
 </head>
-<header  class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-10 h-[20%] rounded-lg">
+<header class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-50 rounded-lg">
     <div class="flex flex-col sm:flex-row items-center justify-between">
       <!-- Zone titre et navigation -->
       <!-- Zone titre et navigation -->
@@ -32,7 +31,9 @@
   <span  class="material-icons  text-4xl ml-4">group</span>
   <span class="ml-4 font-bold">Nouveau Contact</span>
   
+  
 </h1>
+ 
 <h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
     <span  class="material-icons  text-4xl ml-4">group</span>
     
@@ -58,6 +59,7 @@
     class="px-4 pb-2 text-2xl font-bold focus:outline-none">
     Besoins
   </button>
+       
 </div>
 </div>
 
@@ -68,15 +70,23 @@
         <button *ngIf="modeS=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()">
           Ajouter Une Action
         </button>
-
+        
         <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" routerLink="/contact">
           Retour
         </button>
       </div>
-    </div>
+       <div *ngIf="mode==='add'" class="mt-4 sm:mt-0 pt-10">
+       
+
+        
+
+        <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" (click)="retourner()">
+          Retour
+        </button>
+      </div>    </div>
   </header>
 
-  <main class="pt-[100px] pb-[100px] overflow-y-auto w-full h-full px-4 mt-8" *ngIf="modeS === 'informations'">
+  <main class="mt-[15%] pb-[10%] ml-[1%] w-[100%] h-[100%] px-4 " *ngIf="modeS === 'informations'">
     <div class="flex flex-col md:flex-row gap-4 right-100" >
         <form class="px-4 w-full sm:flex-col md:flex-row flex " [formGroup]="contact" >
 
@@ -173,7 +183,7 @@
                                 <div class="flex flex-col">
                                     <div class="font-bold text-sm text-gray-500">Etat</div>
                                   
-                                    <input type="text" class="form-control"  [(ngModel)]="this.company.status" formControlName="status" readonly/>
+                                    <input type="text" class="form-control"  [value]="this.companyStatus" formControlName="status" readonly/>
                                 </div>
                             </div>
         
@@ -347,8 +357,8 @@
                                   <span class="font-bold text-sm text-gray-500">Pays</span>
 
                                   
-                                  <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="user.role == 'Manager De Production'"
-                                  [class.bg-gray-200]="user.role == 'Manager De Production'">
+                                  <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+                                  [class.bg-gray-200]="this.userRole == 'Manager De Production'">
                                       <mat-option *ngFor="let option of societesPaysList" [value]="option.name">
                                         <span class="status-label">
                                           {{ option.name }} <!-- Displays flag + country name -->
@@ -368,9 +378,8 @@
             </div>
         </form>
     </div>
-  </main>
-  <!-- liste des action -->
-  <main class="pt-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
+  </main>  <!-- liste des action -->
+  <main class="pt-[160px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
     <div class="w-full max-w-7xl">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="w-full flex flex-col gap-8">
@@ -408,7 +417,7 @@
                         <span *ngIf="action.attachments.length==0">--------</span>
                       </td>
                       <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                      <td>
+                      <td>F
                         <div class="flex space-x-2">
                           <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action)">
                             Edit
@@ -432,7 +441,7 @@
   </main>
 
 <!-- parties besoins  -->
-<main class="pt-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'besoins'">
+<main class="pt-[160px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'besoins'">
   <div class="w-full max-w-7xl">
     <div class="flex flex-col md:flex-row gap-8">
       <div class="w-full flex flex-col gap-8">
@@ -513,11 +522,11 @@
           </select>
         </div>
   
-        <div [hidden]="user.role == 'Manager De Production'">
+        <div [hidden]="this.userRole== 'Manager De Production'">
           <label for="manager">Manager Responable </label>
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded" 
-            [class.pointer-events-none]="user.role == 'Manager De Production'"
-            [class.bg-gray-200]="user.role == 'Manager De Production'"
+            [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+            [class.bg-gray-200]="this.userRole== 'Manager De Production'"
             >
   
             <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
@@ -567,11 +576,11 @@
           </div>
           <div class="mb-4">
             <label for="type">Type</label>
-            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="user.role=='Manager De Production'" />
+            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'" />
           </div>
           <div class="mb-4">
             <label for="description">Description</label>
-            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="user.role=='Manager De Production'"></textarea>
+            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'"></textarea>
           </div>
           <div class="mb-4">
             <label for="creationDate">Date De Création</label>
@@ -585,8 +594,8 @@
           <div class="mb-4">
             <label for="manager">Manager Responsable</label>
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
-          [class.pointer-events-none]="user.role == 'Manager De Production'"
-          [class.bg-gray-200]="user.role == 'Manager De Production'">
+          [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+          [class.bg-gray-200]="this.userRole== 'Manager De Production'">
 
           <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
             {{ manager.firstname }} {{ manager.lastname }}
@@ -614,7 +623,7 @@
           <!-- Section pour joindre de nouveaux fichiers -->
           <div class="mb-4">
             <label for="files" class="block">Joindre de nouveaux fichiers :</label>
-            <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="user.role=='Manager De Production'">
+            <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'">
             <span class="text-sm text-gray-700">
               NB : La jointure de fichiers supprimera les anciens fichiers. Si vous souhaitez les conserver, veuillez les télécharger.
             </span>
@@ -622,7 +631,7 @@
     
           <div class="flex justify-end gap-4 mt-4">
             <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeDetailsActionModal()">Annuler</button>
-            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="EditAction()" [disabled]="DetailsActionForm.invalid || user.role=='Manager De Production'">
+            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="EditAction()" [disabled]="DetailsActionForm.invalid || this.userRole=='Manager De Production'">
               Sauvegarder
             </button>
           </div>
