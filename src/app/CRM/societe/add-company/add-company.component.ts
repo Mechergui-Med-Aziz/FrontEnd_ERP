@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewInit } from '@angular/core';
 
 
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { ResponsiveScalingDirective } from '../../../directives/responsive-scaling.directive';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule, FormsModule, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -38,7 +39,7 @@ import { TypeActionsService } from '../../../services/type-actions.service';
   styleUrl: './add-company.component.css',
   providers: [MessageService]
 })
-export class AddCompanyComponent implements OnInit {
+export class AddCompanyComponent implements OnInit, AfterViewInit {
   
   selectControl = new FormControl(1);
   societesStatusList: any[] = [
@@ -259,22 +260,32 @@ ngOnInit(): void {
   // Récupérer l'ID de l'URL si on est en mode édition
   this.activatedRoute.params.subscribe(params => {
     if (params['id']) {
+      console.log("AHAHHAHAHAHHAHHAHHAHAHAHHAAHAHAHHAHAHAHAHHAHHAAHAHAHHAHA",params['id']);
       this.idCompany = params['id'];
       console.log("idCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYUUUUUUUUUUUUUUUUU",this.idCompany);
       this.loadCompanyData(this.idCompany);
+      console.log("COMPANY DATAAAAAAAAAAAAAAAAAAAAAAAAAA",this.companyForm.value);
     }
   });
   if (this.idCompany) {
     this.mode='edit';
   } else {
     this.mode='add';
-  }
-  this.activatedRoute.queryParams.subscribe(params => {
+  }  this.activatedRoute.queryParams.subscribe(params => {
     if (params['modeS'] == 'besoin') {
       this.modeS = 'besoins';
-      
-      
-    }})
+    }
+  });
+}
+
+ngAfterViewInit(): void {
+  // Refresh the data if modeS was updated
+  if (this.modeS == 'besoins') {
+    // Small timeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.ngOnInit();
+    }, 0);
+  }
 }
  closeDetailsActionModal() {
     this.isActionDetailsModalOpen = false;
@@ -642,6 +653,7 @@ saveChanges() {
 
 modeS: string = 'informations'; // Onglet par défaut
   selectModeS(tab: string): void {
+
     this.modeS = tab;
 
     

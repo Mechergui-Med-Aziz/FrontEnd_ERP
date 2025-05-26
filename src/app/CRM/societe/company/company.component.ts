@@ -26,7 +26,7 @@ import { ToastModule } from 'primeng/toast';
 import { CompServiceService } from '../../../services/comp-service.service';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { CompanyKanbanComponent } from "../company-kanban/company-kanban.component";
-import { CompanyListComponent } from "../company-list/company-list.component";
+
 import { ContactsService } from '../../../services/contacts.service';
 import { Router, RouterModule } from '@angular/router';
 import dayjs from 'dayjs';
@@ -39,7 +39,7 @@ import dayjs from 'dayjs';
     MatTooltip,RouterModule,
     MatFormFieldModule, MatIcon,
     MatInputModule,
-    ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatLabel, MatButtonModule, CompanyKanbanComponent, CompanyListComponent],
+    ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatLabel, MatButtonModule, CompanyKanbanComponent],
    
    
   templateUrl: './company.component.html',
@@ -75,11 +75,11 @@ switchMode($event: MatButtonToggleChange) {
     private scrollThreshold = 50; // Distance from edge to trigger scroll
     private scrollStep = 15; // Scroll amount per event
 
-    onDragMoved(event: CdkDragMove<any>): void {
+   onDragMoved(event: CdkDragMove<any>): void {
       const container = this.scrollContainer.nativeElement;
       const containerRect = container.getBoundingClientRect();
       const pointerX = event.pointerPosition.x;
-
+  
       if (pointerX < containerRect.left + this.scrollThreshold) {
         container.scrollLeft -= this.scrollStep;
       }

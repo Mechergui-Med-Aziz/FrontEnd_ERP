@@ -25,6 +25,7 @@ import { Location } from '@angular/common';
 
 
 
+
 @Component({
   selector: 'app-besoins',
   standalone: true,
@@ -35,7 +36,7 @@ import { Location } from '@angular/common';
 export class BesoinsComponent implements OnInit{
   route: any;
   
-  constructor(private typeAction:TypeActionsService,private location: Location,private router: Router ,private activatedRoute: ActivatedRoute,private actionService: ActionService,private AuthSer:AuthService,private hbs:HistoriqueBesoinsService,private ps:ProfileService,private contactsService: ContactsService ,private besoinsService:BesoinsService,private fb: FormBuilder,private profileService : ProfileService) { }
+  constructor(private typeAction:TypeActionsService,  private location: Location,private router: Router ,private activatedRoute: ActivatedRoute,private actionService: ActionService,private AuthSer:AuthService,private hbs:HistoriqueBesoinsService,private ps:ProfileService,private contactsService: ContactsService ,private besoinsService:BesoinsService,private fb: FormBuilder,private profileService : ProfileService) { }
  
   selectedBesoin!: any;
   isModalOpen: boolean = false;
@@ -451,6 +452,7 @@ this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
       updatedData.createdBy = this.selectedBesoin.createdBy.id;
       
       const id = Number(updatedData.id);
+      
       this.besoinsService.updateBesoin(id, updatedData).subscribe(
         (response: any) => {
           
@@ -465,28 +467,37 @@ this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
             status: updatedData.status,
             actionBy: this.user.id,
           };
-          
-          //console.log('Historique besoin changé:', movedHistoricBesoin);
+            //console.log('Historique besoin changé:', movedHistoricBesoin);
           if(this.selectedBesoin.status!=movedHistoricBesoin.status){
-          this.hbs.addHistoriqueBesoin(movedHistoricBesoin).subscribe(
-            (response: any) => {
-            //  console.log('Statut d\'historique changé avec succès:', response);
-            },
-            (error: any) => {
-              console.error('Erreur lors du changement du statut de l\'historique:', error);
+            // Wait for both update and history operations to complete before navigating
+            this.hbs.addHistoriqueBesoin(movedHistoricBesoin).subscribe(
+              (historyResponse: any) => {
+                //console.log('Statut d\'historique changé avec succès:', historyResponse);
+                // Only navigate after history is updated
+                if (this.besoinIdFromCompany) {  
+                  this.router.navigate(['/addcomp/'+this.compF], { queryParams: { modeS: 'besoin' } });
+                }
+                this.closeDashboard();
+              },
+              (error: any) => {
+                console.error('Erreur lors du changement du statut de l\'historique:', error);
+                this.closeDashboard();
+              }
+            );
+          } else {
+            // If no history update needed, navigate immediately after besoin update
+            if (this.besoinIdFromCompany) {  
+              this.router.navigate(['/addcomp/'+this.compF], { queryParams: { modeS: 'besoin' } });
             }
-          )};
+            this.closeDashboard();
+          }
           
         },
         (error: any) => {
           console.error(`Erreur lors de la mise à jour du besoin ${updatedData.id}`, error);
         }
       );
-          if (this.besoinIdFromCompany) 
-        {  
-        this.location.back();
-        }
-        this.closeDashboard();
+          
     }
 
 
