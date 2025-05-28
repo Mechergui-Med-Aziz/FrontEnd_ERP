@@ -132,11 +132,13 @@ export class BesoinsComponent implements OnInit{
  compF:any;
   comp:any;
   besoinFromCompany:any;
+  cont:any;
   ngOnInit() {
    
     this.activatedRoute.queryParams.subscribe(params => {
   this.r = params['c'];
   this.comp = params['id'];
+  this.cont = params['idC'];
   
 });
 
@@ -144,35 +146,22 @@ export class BesoinsComponent implements OnInit{
       (user: any) => {
         this.user = user;
       })
-    this.nbBesoins = 0;
-    this.loadBesoins();
-    this.loadContacts();
-    this.loadProductionManagers();
-    this.filterForm = this.fb.group({
-      company: [''],
-      contact: [''],
-      dateExact: [''],
-      startDate: [''],
-      endDate: [''],
-      managerResponsable:['']
-    });
-    this.loadProductionManagers();
-     if(this.r =='company'){
-      
-      this.openAddModal()
-    }
-  
-
-    this.activatedRoute.queryParams.subscribe(params => {
+//take besoin from add company or addcontact component
+this.activatedRoute.queryParams.subscribe(params => {
     this.besoinIdFromCompany = params['besoinId']; 
+    this.besoinIdFromContact = params['besoinIdContact']
     this.compF = params['companyId'];
+    this.contF =params['contactId'];
     console.log('besoinFromCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY:', this.besoinIdFromCompany);
+    console.log('besoinFromCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY:', this.besoinIdFromContact);
     });
-this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
+    if (this.besoinIdFromCompany) {
+      
+      this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
   (besoin: any) => {
     
     this.besoinFromCompany = besoin;
-    console.log('BesoinFromCompanyYYYYYYYYYYY:', this.besoinFromCompany);
+    console.log('BesoinFromCompanyYYYYYYYYYYY11111111111:', this.besoinFromCompany);
       this.ps.findUserById(besoin.createdBy).subscribe(
         (user: any) => {
           console.log('besoinn  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', besoin);
@@ -191,10 +180,64 @@ this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
   (error: any) => {
     console.error('Erreur lors de la récupération du besoin:', error);
   }
+);}else if (this.besoinIdFromContact) {
+  this.besoinsService.findBesoinsById(this.besoinIdFromContact).subscribe(
+  (besoin: any) => {
+    
+    this.besoinFromContact = besoin;
+    console.log('BesoinFromContactttTTTTTTTTTYYYYYYYYYYY:', this.besoinFromContact);
+      this.ps.findUserById(besoin.createdBy).subscribe(
+        (user: any) => {
+          console.log('besoinn  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', besoin);
+          this.besoinFromContact.createdBy = user;
+          console.log('Besoin avec utilisateurDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', this.besoinFromContact);
+          this.openModal(this.besoinFromContact);
+        },
+        (error: any) => {
+    console.error('Erreur lors de la récupération du besoin:', error);
+  });
+
+      
+     
+   
+  },
+  (error: any) => {
+    console.error('Erreur lors de la récupération du besoin:', error);
+  }
 );
+}
+
+
+
+
+
+
+    this.nbBesoins = 0;
+    this.loadBesoins();
+    this.loadContacts();
+    this.loadProductionManagers();
+    this.filterForm = this.fb.group({
+      company: [''],
+      contact: [''],
+      dateExact: [''],
+      startDate: [''],
+      endDate: [''],
+      managerResponsable:['']
+    });
+    this.loadProductionManagers();
+     if(this.r =='company'|| this.r=='contact'){
+      
+      this.openAddModal()
+    }
+  
+
+    
 
   }
   besoinIdFromCompany: any;
+  besoinIdFromContact: any;
+  contF:any;
+  besoinFromContact: any;
 
   loadBesoins() {
     this.allBesoins = [];
@@ -363,8 +406,16 @@ this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
 
 
     addBesoin() {
-      const formValue = this.besoinAddForm.value;
-    
+      console.log('contttacctt ', this.cont);
+    if(this.r=='contact'){
+      this.besoinAddForm.patchValue({
+        contact:this.cont,
+
+      });
+    }
+
+    const formValue = this.besoinAddForm.value;
+    console.log('formValueEEEEEEEE:', formValue);
       const contactId = formValue.contact;
       const contactObject = this.contacts.find(contact => contact.id == contactId);
     
@@ -428,7 +479,7 @@ this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
           console.error('erreur lors de l\'ajout de besoin:', error);
         }
       );
-      if (this.r =='company') {
+      if (this.r =='company'||this.r=='contact') {
         this.location.back();
       }
     }
@@ -476,6 +527,8 @@ this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
                 // Only navigate after history is updated
                 if (this.besoinIdFromCompany) {  
                   this.router.navigate(['/addcomp/'+this.compF], { queryParams: { modeS: 'besoin' } });
+                }else if (this.besoinIdFromContact) {
+                  this.router.navigate(['/updatecontact/'+this.contF], { queryParams: { modeS: 'besoin' } });
                 }
                 this.closeDashboard();
               },
@@ -488,6 +541,9 @@ this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
             // If no history update needed, navigate immediately after besoin update
             if (this.besoinIdFromCompany) {  
               this.router.navigate(['/addcomp/'+this.compF], { queryParams: { modeS: 'besoin' } });
+            }
+            else if (this.besoinIdFromContact) {
+              this.router.navigate(['/updatecontact/'+this.contF], { queryParams: { modeS: 'besoin' } });
             }
             this.closeDashboard();
           }
@@ -533,7 +589,7 @@ this.besoinsService.findBesoinsById(this.besoinIdFromCompany).subscribe(
     closeAddModal() {
       this.isAddModalOpen = false;
       this.besoinAddForm.reset();
-      if ( this.r =='company') {
+      if ( this.r =='company'||this.r=='contact') {
          this.location.back();
       }
     }

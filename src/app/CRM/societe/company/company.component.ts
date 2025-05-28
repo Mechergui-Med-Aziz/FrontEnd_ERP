@@ -25,7 +25,7 @@ import { MatTableModule } from '@angular/material/table';
 import { ToastModule } from 'primeng/toast';
 import { CompServiceService } from '../../../services/comp-service.service';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
-import { CompanyKanbanComponent } from "../company-kanban/company-kanban.component";
+
 
 import { ContactsService } from '../../../services/contacts.service';
 import { Router, RouterModule } from '@angular/router';
@@ -39,7 +39,7 @@ import dayjs from 'dayjs';
     MatTooltip,RouterModule,
     MatFormFieldModule, MatIcon,
     MatInputModule,
-    ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatLabel, MatButtonModule, CompanyKanbanComponent],
+    ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatLabel, MatButtonModule],
    
    
   templateUrl: './company.component.html',
@@ -90,15 +90,15 @@ switchMode($event: MatButtonToggleChange) {
   
   
     columns: { title: string, status: string, color:string, companies: any[] }[] = [
-      { title: 'Prospect', status: 'Prospect', color: "#FFA500", companies: [] },
-      { title: 'Client', status: 'Client',color : "#000080", companies: [] },
-      { title: 'Client direct', status: 'Client_direct',color: "#00FFFF", companies: [] },
-      { title: 'Partenaire', status: 'Partenaire',color: "#80FF00", companies: [] },
-      { title: 'Piste', status: 'Piste',color: "#0096AA", companies: [] },
-      { title: 'Fournisseur', status: 'Fournisseur',color: "#FA0000", companies: [] },
-      { title: 'Archivé', status: 'Archivé',color: "#FF80FF", companies: [] },
-      { title: 'Intermédiaire de facturation', status: 'Intermédiaire de facturation',color: "#FF00FF", companies: [] },
-      { title: 'Client via intermédiaire', status: 'Client via intermédiaire',color: "#FF00FF", companies: [] },
+      { title: 'Prospect', status: 'Prospect',                                        color: "#FFA500", companies: [] },
+      { title: 'Client', status: 'Client',                                            color : "#000080", companies: [] },
+      { title: 'Client direct', status: 'Client_direct',                              color: "#00FFFF", companies: [] },
+      { title: 'Partenaire', status: 'Partenaire',                                    color: "#80FF00", companies: [] },
+      { title: 'Piste', status: 'Piste',                                              color: "#0096AA", companies: [] },
+      { title: 'Fournisseur', status: 'Fournisseur',                                  color: "#FA0000", companies: [] },
+      { title: 'Archivé', status: 'Archivé',                                          color: "#FF80FF", companies: [] },
+      { title: 'Intermédiaire de facturation', status: 'Intermédiaire de facturation',color: "brown", companies: [] },
+      { title: 'Client via intermédiaire', status: 'Client via intermédiaire',        color: "gray", companies: [] },
     ];
   
   constructor(private companyService: CompServiceService, private fb: FormBuilder,

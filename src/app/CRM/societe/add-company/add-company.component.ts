@@ -26,6 +26,7 @@ import { ProfileService } from '../../../services/profile.service';
 import { ActionService } from '../../../services/action.service';
 import dayjs from 'dayjs';
 import { TypeActionsService } from '../../../services/type-actions.service';
+import { BesoinsService } from '../../../services/besoins.service';
 
 
 
@@ -42,16 +43,16 @@ import { TypeActionsService } from '../../../services/type-actions.service';
 export class AddCompanyComponent implements OnInit, AfterViewInit {
   
   selectControl = new FormControl(1);
-  societesStatusList: any[] = [
-    { value: 'Prospect', name: 'Prospect', color: 'green' },
-    { value: 'Client', name: 'Client', color: 'red' },
-    { value: 'Client_direct', name: 'Client direct', color: 'blue' },
-    { value: 'Partenaire', name: 'Partenaire', color: 'orange' },
-    { value: 'Piste', name: 'Piste', color: 'purple' },
-    { value: 'Fournisseur', name: 'Fournisseur', color: 'yellow' },
-    { value: 'Archivé', name: 'Archivé', color: 'grey' },
-    { value: 'Intermédiaire de facturation', name: 'Intermédiaire de facturation', color: 'pink'},
-    { value: 'Client via intermédiaire', name: 'Client via intermédiaire', color: 'brown' },
+  societesStatusList: any[] = [ 
+    { value: 'Prospect', name: 'Prospect',                                         color: "#FFA500"    },
+    { value: 'Client', name: 'Client',                                             color : "#000080"       },
+    { value: 'Client_direct', name: 'Client direct',                               color: "#00FFFF"       },
+    { value: 'Partenaire', name: 'Partenaire',                                     color: "#80FF00"      },
+    { value: 'Piste', name: 'Piste',                                               color: "#0096AA"     },
+    { value: 'Fournisseur', name: 'Fournisseur',                                   color: "#FA0000"       },
+    { value: 'Archivé', name: 'Archivé',                                           color: "#FF80FF"    },
+    { value: 'Intermédiaire de facturation', name: 'Intermédiaire de facturation', color: "brown"     },
+    { value: 'Client via intermédiaire', name: 'Client via intermédiaire',         color: "gray"     },
 
   ];
   societesProvenanceList: any[] = [
@@ -158,6 +159,7 @@ export class AddCompanyComponent implements OnInit, AfterViewInit {
     private actionCrmService: ActionCrmService,
     private profileService: ProfileService,
     private typeAction: TypeActionsService,
+    private besoinsService: BesoinsService,
     
    
   )
@@ -211,6 +213,14 @@ export class AddCompanyComponent implements OnInit, AfterViewInit {
             contactId: [],
             manager:[''],
           });
+          this.actionBesoinAddForm= this.fb.group({
+            description: ['', Validators.required],
+            typeAction: ['', Validators.required],
+            dateAction: [dayjs().toISOString()],
+            createdBy: [''],
+            besoinId: [],
+            manager:[''],
+          });
               this.DetailsActionForm = this.fb.group({
         id: [Validators.required],
         description: [{value:''},Validators.required],
@@ -231,6 +241,8 @@ export class AddCompanyComponent implements OnInit, AfterViewInit {
       });
     
   }
+  isAddActionBesoinModalOpen:boolean = false;
+  actionBesoinAddForm: FormGroup;
   companyActions: any[] = [];
   isActionDetailsModalOpen: boolean = false;
   isActionCrmDetailsModalOpen: boolean = false;
@@ -242,7 +254,7 @@ isAddActionModalOpen = false;
  actionAddForm: FormGroup;
 userRole:any;
 modeAction: string = ''; // Mode par défaut pour l'ajout d'action
-
+userId: any;
 
 ngOnInit(): void {
   this.BesoinActions= [];
@@ -252,6 +264,7 @@ ngOnInit(): void {
     (user: any) => {
       this.user = user;
       this.userRole=user.role;
+      this.userId = user.id;
     });
   
   this.loadCountries();
@@ -486,7 +499,7 @@ loadCompanyData(id: number) {
                   this.profileService.findUserById(action.createdBy).subscribe(
                     (user: any) => {
                       action.createdBy = user;
-                      this.BesoinActions.push(action);
+                      
                       
                     },
                     (error :any) => {
@@ -494,7 +507,19 @@ loadCompanyData(id: number) {
                     }
 
                     
-                  );});
+                  );
+                  this.besoinsService.findBesoinsById(action.besoinId).subscribe(
+                    (besoinDetails: any) => {
+                      action.besoinId = besoinDetails;
+
+                      this.BesoinActions.push(action);
+                    },(error :any) => {
+                      console.error('Erreur lors de la récupération de l’utilisateur pour l’action besoin ', error);
+                    }
+
+                  );
+                
+                });
                 
                 
                 
@@ -690,6 +715,16 @@ modeS: string = 'informations'; // Onglet par défaut
     this.isAddActionModalOpen = false;
     this.actionAddForm.reset();
   }
+  openActionBesoinAddModal(){
+    this.loadTypeActions();
+    
+    this.isAddActionBesoinModalOpen = true;
+  }
+  closeActionBesoinAddModal(){
+    this.isAddActionBesoinModalOpen = false;
+    this.actionBesoinAddForm.reset();
+  }
+
   loadTypeActions() {
     this.typeAction.findTypeActionsByBelongTo("CRM").subscribe(
       (typeActions: any) => {
@@ -722,6 +757,68 @@ modeS: string = 'informations'; // Onglet par défaut
   isModalOpen = false;
   message = '';
 
+  addActionBesoin( ): void {
+console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
+    if(this.selectedFiles.length >10) {
+      this.message = 'Vous ne pouvez pas ajouter plus de 10 fichiers.';
+      this.isModalOpen=true
+      return
+    }
+
+    for (const file of this.selectedFiles) {
+      if (file.size > 10 * 1024 * 1024) {
+        this.message = `Le fichier "${file.name}" dépasse la taille limite de 10 Mo.`;
+        this.isModalOpen = true;
+        return;
+      }
+    }
+    if(this.user.role == 'Manager De Production'){
+      this.actionBesoinAddForm.patchValue({
+      
+      createdBy: this.userId,
+      manager:this.user,
+    });
+    }else{
+    this.actionBesoinAddForm.patchValue({
+      
+      createdBy: this.userId,
+      
+    });
+    }
+    if (this.actionBesoinAddForm.valid) {
+      const actionData = this.actionBesoinAddForm.value;
+      console.log('actionData:',actionData);
+      console.log('selectedFiles:',this.selectedFiles);
+      this.actionService.createActionBesoin(actionData, this.selectedFiles).subscribe(
+        response => {
+
+          this.message = 'Action enregistrée avec succès';
+          this.isModalOpen=true
+          //this.Dashboard=false;
+          this.isAddActionBesoinModalOpen = false; // Fermer la modal d'ajout d'action
+          this.ngOnInit(); // Navigate to the contact update page
+          this.modeS="actions" // Navigate back to the previous page
+          //console.log('Action enregistrée avec succès', response);
+          // Réinitialiser le formulaire et la sélection des fichiers si besoin
+          this.actionBesoinAddForm.reset();
+          this.selectedFiles = [];
+
+        },
+        error => {
+          console.error('Erreur lors de l\'enregistrement de l\'action', error);
+        }
+      );
+    }
+  }
+
+ closeModal() {
+      this.isModalOpen = false;
+      if(this.message=='Action enregistrée avec succès')
+      this.closeActionAddModal();
+    this.closeActionBesoinAddModal();
+      this.closeDetailsActionModal();
+          
+    }
   addAction( ): void {
 
     if(this.selectedFiles.length >10) {
@@ -737,6 +834,7 @@ modeS: string = 'informations'; // Onglet par défaut
         return;
       }
     }
+    console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
     if(this.user.role == 'Manager De Production'){
       this.actionAddForm.patchValue({
       
@@ -747,8 +845,7 @@ modeS: string = 'informations'; // Onglet par défaut
     this.actionAddForm.patchValue({
       
       createdBy: this.user.id,
-      manager:this.productionManagers.find(manager => manager.id == this.actionAddForm.value.manager)
-    });
+       });
     }
     if (this.actionAddForm.valid) {
       const actionData = this.actionAddForm.value;

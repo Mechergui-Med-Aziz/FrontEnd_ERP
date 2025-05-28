@@ -25,8 +25,7 @@ import { MatTableModule } from '@angular/material/table';
 import { ToastModule } from 'primeng/toast';
 
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ContactListComponent } from '../contact-list/contact-list.component';
-import { ContactKanbanComponent } from '../contact-kanban/contact-kanban.component';
+
 
 import { ContactsService } from '../../../services/contacts.service';
 
@@ -101,8 +100,8 @@ export class ContactComponent implements OnInit {
       { title: 'Piste', statut: 'Piste',color: "#0096AA", contacts: [] },
       { title: 'Fournisseur', statut: 'Fournisseur',color: "#FA0000", contacts: [] },
       { title: 'Archivé', statut: 'Archivé',color: "#FF80FF", contacts: [] },
-      { title: 'Intermédiaire de facturation', statut: 'Intermédiaire_de_facturation',color: "#FF00FF", contacts: [] },
-      { title: 'Client via intermédiaire', statut: 'Client_via_intermédiaire',color: "#FF00FF", contacts: [] },
+      { title: 'Intermédiaire de facturation', statut: 'Intermédiaire_de_facturation',color: "brown", contacts: [] },
+      { title: 'Client via intermédiaire', statut: 'Client_via_intermédiaire',color: "gray", contacts: [] },
     ];
   ngOnInit(): void {
     this.mode="kanban";
@@ -112,6 +111,7 @@ export class ContactComponent implements OnInit {
     this.loadContacts();
     this.listPaginate();
     this.filterForm = this.fb.group({
+      
       company: [''],
       contact: [''],
       dateExact: [''],
@@ -308,7 +308,8 @@ editContact(contact: any) {
 
 
   filterContacts(): void {
-    const { company,  dateExact, startDate, endDate } = this.filterForm.value;
+    
+    const { contact ,company,  dateExact, startDate, endDate } = this.filterForm.value;
     let filtered = this.liste;
     console.log('filtered:', this.filterForm.value);
   
@@ -322,6 +323,20 @@ editContact(contact: any) {
           console.log('searchLower:',searchLower);
           const companyName = (contact.company.name || '').toLowerCase();
           return companyName.includes(searchLower);
+        }
+        return false;
+      });
+    }
+    if(this.selectedFilterMethod === 'contact' && contact && contact.trim() !== '') {
+  
+      const searchLower = contact.trim().toLowerCase();
+      console.log('searchLower:',searchLower);
+      filtered = filtered.filter(contact => {
+        if (contact.firstnamename+contact.lastname) {
+          console.log('contact.name:',contact.firstname);
+          console.log('searchLower:',searchLower);
+          const contactName = (contact.firstname+contact.lastname || '').toLowerCase();
+          return contactName.includes(searchLower);
         }
         return false;
       });

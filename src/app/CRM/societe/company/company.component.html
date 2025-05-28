@@ -135,7 +135,7 @@
                               [ngStyle]="{'background-color': company.color}">
                               {{ company.initiales }}
                             </div>
-                            <div>
+                            <div class="pr-[50px]">
                               <h3 class="font-semibold">{{ company.name }}</h3>
                               <p class="text-sm text-gray-500">{{ company.sector}}</p>
                             </div>
@@ -160,62 +160,55 @@
 
             <div class="flex flex-col w-full bg-white" *ngIf="mode === 'list'">
               <div class="w-full flex flex-col">
-                <!-- En-tête du tableau (fixe) -->
+                <!-- Table avec en-tête fixe - Structure optimisée -->
                 <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200 bg-white">
-                    <thead class="bg-gray-100 sticky top-0 z-10">
-                      <tr>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Titre de societe</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Secteur</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Creation Date</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Pays</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Telephone</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Email</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Action</th>
-                     
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
-                <div class="overflow-x-auto max-h-[60vh] overflow-y-auto">
-                  <table class="min-w-full divide-y divide-gray-100 bg-white text-sm text-gray-700">
-                    <tbody>
-                      <tr *ngFor="let company of liste " class="hover:bg-gray-50">
-                        <td class="px-3 py-2 font-semibold">{{ company.name }}</td>
-                        <td class="px-3 py-2">{{ company.sector }}</td>
-                        <td class="px-3 py-2">
-                          <span 
-                            class="inline-block px-2 py-1 text-xs font-medium text-white rounded-full"
-                       ><mat-icon    style="font-size: 12px; width: 12px; height: 15px;"  [ngClass]="{
-                  'badge-danger': company.status === 'Prospect',
-                  'badge-warning': company.status === 'Client',
-                  'badge-success': company.status === 'Client_direct',
-                  'badge-info': company.status === 'Fournisseur',
-                  'badge-primary': company.status === 'Partenaire',
-                  'badge-secondary': company.status === 'Piste',
-                  'badge-light': company.status === 'Archivé',
-                  'badge-dark': company.status === 'Client via intermédiaire',
-                  'badge-default': company.status === 'Intermédiaire de facturation'
-                }">dot</mat-icon>
-                            
-                          </span>
-                          {{ company.status }}
-                        </td>
-                        <td class="px-3 py-2">{{ company.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                        <td class="px-3 py-2">{{ company.country }}</td>
-                        <td class="px-3 py-2">
-                          {{company.phone }}
-                        </td>
-                        <td class="px-3 py-2">{{ company.email }}</td>
-                        <td class="px-3 py-2">
-                          <button routerLink="/addcomp/{{ company.id }}" data-cy="edit-besoin" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded-full transition" >
-                            Ouvrir Fiche
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div class="overflow-y-auto max-h-[60vh]">
+                    <table class="min-w-full divide-y divide-gray-200 bg-white">
+                      <thead class="bg-gray-100 sticky top-0 z-10">
+                        <tr>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[15%]">Titre de societe</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[12%]">Secteur</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[15%]">Status</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[18%]">Creation Date</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Pays</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Telephone</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Email</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody class="text-sm text-gray-700">
+                        <tr *ngFor="let company of liste" class="hover:bg-gray-50">
+                          <td class="px-4 py-3 font-semibold">{{ company.name }}</td>
+                          <td class="px-4 py-3">{{ company.sector }}</td>
+                          <td class="px-4 py-3">
+                            <span class="inline-flex items-center">
+                              <mat-icon style="font-size: 12px; width: 12px; height: 15px;" [ngClass]="{
+                                'badge-danger': company.status === 'Prospect',
+                                'badge-warning': company.status === 'Client',
+                                'badge-success': company.status === 'Client_direct',
+                                'badge-info': company.status === 'Fournisseur',
+                                'badge-primary': company.status === 'Partenaire',
+                                'badge-secondary': company.status === 'Piste',
+                                'badge-light': company.status === 'Archivé',
+                                'badge-dark': company.status === 'Client via intermédiaire',
+                                'badge-default': company.status === 'Intermédiaire de facturation'
+                              }">dot</mat-icon>
+                              <span class="ml-1">{{ company.status }}</span>
+                            </span>
+                          </td>
+                          <td class="px-4 py-3">{{ company.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                          <td class="px-4 py-3">{{ company.country }}</td>
+                          <td class="px-4 py-3">{{ company.phone }}</td>
+                          <td class="px-4 py-3">{{ company.email }}</td>
+                          <td class="px-4 py-3">
+                            <button routerLink="/addcomp/{{ company.id }}" data-cy="edit-besoin" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded-full transition">
+                              Ouvrir Fiche
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
               

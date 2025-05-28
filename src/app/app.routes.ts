@@ -8,7 +8,7 @@ import { AddCompanyComponent } from './CRM/societe/add-company/add-company.compo
 import { typeActionsGuard } from './guards/type-actions.guard';
 import { BesoinsComponent } from './besoins/besoins.component';
 
-import { CompanyKanbanComponent } from './CRM/societe/company-kanban/company-kanban.component';
+
 import { CompanyComponent } from './CRM/societe/company/company.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ContactComponent } from './CRM/contact/contact/contact.component';
@@ -34,7 +34,7 @@ export const routes: Routes = [
     {path:'besoins',component:BesoinsComponent,canActivate:[besoinsGuard]},
     {path:'besoins/:modeA',component:BesoinsComponent,canActivate:[besoinsGuard]},
     {path:'profile',component:ProfileComponent},
-    {path:'companyKanban' ,component:CompanyKanbanComponent },
+   
     { path: 'addcomp/:id', component: AddCompanyComponent },
     { path: 'contact', component: ContactComponent },
     { path: 'addcontact', component: AddContactComponent },

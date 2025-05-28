@@ -1,75 +1,14 @@
-/* filepath: c:\Users\ilyes\OneDrive\Bureau\New folder (2)\front-end\FrontEnd_ERP\src\app\CRM\contact\contact\contact.component.css */
+
+
 .kanban-container {
-  height: calc(100vh - 150px); 
-  width: 100%;
+  height: calc(100vh - [hauteur-de-votre-header]px); 
   overflow-x: auto;
-  overflow-y: auto;
+  overflow-y:auto;
   display: flex;
-  gap: 16px;
-  padding: 8px;
-  margin-top: 10px;
+  gap: 10px;
+  padding: 5px;  
+  
 }
-
-/* Style pour les colonnes du kanban */
-.kanban-column {
-  min-width: 280px;
-  width: 300px;
-  flex-shrink: 0;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  max-height: 100%;
-}
-
-/* Style pour le header des colonnes */
-.column-header {
-  padding: 12px;
-  border-bottom: solid 1px #e0e0e0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Style pour le contenu scrollable des colonnes */
-.column-content {
-  overflow-y: auto;
-  flex-grow: 1;
-  padding: 8px;
-}
-
-/* Style pour les cartes de contact */
-.contact-card {
-  background-color: white;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-  padding: 12px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.contact-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16);
-}
-
-/* Style pour les badges */
-.badge {
-  display: inline-block;
-  padding: 0.25em 0.6em;
-  font-size: 75%;
-  font-weight: 700;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
-  border-radius: 10rem;
-  color: white;
-}
-
-/* Animation fade-in */
 @keyframes fade-in {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
@@ -79,82 +18,163 @@
   animation: fade-in 0.3s ease-out;
 }
 
-/* Style pour les scrollbars */
+
 .overflow-x-auto {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e0 #f1f1f1;
-}
 
-.overflow-x-auto::-webkit-scrollbar {
-  height: 8px;
-}
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
 
-.overflow-x-auto::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
 
-.overflow-x-auto::-webkit-scrollbar-thumb {
-  background-color: #cbd5e0;
-  border-radius: 4px;
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 4px;
+  }
 }
 
 .overflow-y-auto {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e0 #f1f1f1;
 }
-
-.overflow-y-auto::-webkit-scrollbar {
-  width: 6px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb {
-  background-color: #cbd5e0;
-  border-radius: 4px;
-}
-
-/* Style pour les boutons de défilement */
-.scroll-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background-color: rgba(75, 85, 99, 0.9);
-  color: white;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.scroll-button:hover {
-  background-color: rgba(55, 65, 81, 1);
-}
-
-.scroll-left {
-  left: 10px;
-}
-
-.scroll-right {
-  right: 10px;
-}
-
-/* Style responsive pour les différents écrans */
-@media (max-width: 768px) {
-  .kanban-container {
-    height: calc(100vh - 200px);
+  &::-webkit-scrollbar {
+    width: 6px;
   }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 4px;
+  }
+
   
-  .kanban-column {
-    min-width: 260px;
-  }
+
+.scrollbar-hide {
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+.relative.w-full {
+  padding-top: 60px; 
+}
+  
+
+
+
+
+
+
+.main-layout {
+  display: flex;
+  gap: 20px; /* espace entre gauche et droite */
+  padding: 20px;
+}
+
+.left-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* espace entre les 2 containers à gauche */
+  flex: 1; /* prend de l'espace */
+}
+
+.right-side {
+  flex: 1; /* prend aussi de l'espace */
+}
+
+.container1, .container2, .container3 {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+
+/* Badge styles for list view */
+.badge-danger {
+  background-color: #FFA500;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-warning {
+  background-color: #000080;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-success {
+  background-color: #00FFFF;
+  color: black;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-info {
+  background-color: #FA0000;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-primary {
+  background-color: #80FF00;
+  color: black;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-secondary {
+  background-color: #0096AA;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-light {
+  background-color: #FF80FF;
+  color: black;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-dark {
+  background-color: #FF00FF;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+.badge-default {
+  background-color: #FF00FF;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
 }

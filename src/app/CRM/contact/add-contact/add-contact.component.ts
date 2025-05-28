@@ -86,15 +86,15 @@ export class AddContactComponent implements OnInit{
     { name: "Autre", value: "Autre" }
   ];
   listeEtat: any[] = [
-    { value: 'Prospect', name: 'Prospect', color: 'green' },
-    { value: 'Client', name: 'Client', color: 'red' },
-    { value: 'Client_direct', name: 'Client direct', color: 'blue' },
-    { value: 'Partenaire', name: 'Partenaire', color: 'orange' },
-    { value: 'Piste', name: 'Piste', color: 'purple' },
-    { value: 'Fournisseur', name: 'Fournisseur', color: 'yellow' },
-    { value: 'Archivé', name: 'Archivé', color: 'grey' },
-    { value: 'Intermédiaire de facturation', name: 'Intermédiaire de facturation', color: 'pink'},
-    { value: 'Client via intermédiaire', name: 'Client via intermédiaire', color: 'brown' },
+    { value: 'Prospect', name: 'Prospect',                                        color: "#FFA500" },
+    { value: 'Client', name: 'Client',                                            color : "#000080"},
+    { value: 'Client_direct', name: 'Client direct',                              color: "#00FFFF" },
+    { value: 'Partenaire', name: 'Partenaire',                                    color: "#80FF00" },
+    { value: 'Piste', name: 'Piste',                                              color: "#0096AA" },
+    { value: 'Fournisseur', name: 'Fournisseur',                                  color: "#FA0000" },
+    { value: 'Archivé', name: 'Archivé',                                          color: "#FF80FF" },
+    { value: 'Intermédiaire de facturation', name: 'Intermédiaire de facturation',color: "bronw" },
+    { value: 'Client via intermédiaire', name: 'Client via intermédiaire',        color: "gray"   },
     ]
     ;
   
@@ -214,9 +214,27 @@ mode: any;
       // Debugging line
       
     }
+     this.activatedRoute.queryParams.subscribe(params => {
+    if (params['modeS'] == 'besoin') {
+      this.modeS = 'besoins';
+    }
+  });
 
       
   }
+
+
+   gotobesoin(){
+    this.router.navigate(['/besoins'], { 
+  queryParams: { 
+    c: 'contact',
+    idC: this.idContact,
+  }
+  
+});
+  }
+
+
   loadCompanyData(id: number) {
     this.compService.getCompById(id).subscribe(
       (company: any) => {
@@ -525,6 +543,15 @@ retourner() {
   this.location.back(); // Navigate back to the previous page
 
 }
-
+ gotobesoinUpdate(besoin: any) {
+    this.router.navigate(['/besoins'], {
+  queryParams: {
+    besoinIdContact: besoin,
+    contactId: this.idContact,
+  }
+  
+  });
+  console.log('Navigating to besoin update with params::::::::::::::::::', besoin);
+}
 
 }
