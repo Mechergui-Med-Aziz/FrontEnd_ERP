@@ -471,6 +471,7 @@ loadCompanyData(id: number) {
       this.companyName = company.name;
       this.companyStatus=company.status; // Stocker le nom de la société pour l'afficher dans le titre
       console.log('Company data loaded:', this.companyForm.value);
+      console.log("aaaaaaaaaaaa"+company)
       this.companycontacts = company.contacts || [];
        // Assurez-vous que contacts est un tableau
       console.log('Company contacts:', this.companycontacts);
