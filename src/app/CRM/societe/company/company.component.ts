@@ -92,7 +92,7 @@ switchMode($event: MatButtonToggleChange) {
     columns: { title: string, status: string, color:string, companies: any[] }[] = [
       { title: 'Prospect', status: 'Prospect',                                        color: "#FFA500", companies: [] },
       { title: 'Client', status: 'Client',                                            color : "#000080", companies: [] },
-      { title: 'Client direct', status: 'Client_direct',                              color: "#00FFFF", companies: [] },
+      { title: 'Client direct', status: 'Client direct',                              color: "#00FFFF", companies: [] },
       { title: 'Partenaire', status: 'Partenaire',                                    color: "#80FF00", companies: [] },
       { title: 'Piste', status: 'Piste',                                              color: "#0096AA", companies: [] },
       { title: 'Fournisseur', status: 'Fournisseur',                                  color: "#FA0000", companies: [] },
@@ -100,12 +100,33 @@ switchMode($event: MatButtonToggleChange) {
       { title: 'Intermédiaire de facturation', status: 'Intermédiaire de facturation',color: "brown", companies: [] },
       { title: 'Client via intermédiaire', status: 'Client via intermédiaire',        color: "gray", companies: [] },
     ];
+    companyForm!: FormGroup;
   
   constructor(private companyService: CompServiceService, private fb: FormBuilder,
     private contactsService: ContactsService, 
    private messageService: MessageService,
           private router: Router,
-          private dialog: MatDialog, ) { }
+          private dialog: MatDialog, ) {
+             this.companyForm = this.fb.group({
+                  name: ['', []],
+                  status: ['', []],
+                  effective: [1, []],
+                  sector: [null, []],
+                  provenance : [null, []],
+                  precise : ['', []],
+                  filiales : [null, []],
+                  email : ['', []],
+                  agency: ['', []],
+                  phone: ['', []],
+                  address: ['', []],
+                  postalCode: ['', []],
+                  city: ['', []],
+                  country: ['', []],
+                  informations: ['', []],
+                  creationDate: ['', []],
+                  createdBy: ['', []],
+                });
+           }
   
   ngOnInit(): void {
     this.mode="kanban";
@@ -170,33 +191,36 @@ switchMode($event: MatButtonToggleChange) {
         event.previousIndex,
         event.currentIndex
       );
+      this.companyForm.patchValue({
+        name: movedItem.name,
+        status: newStatus,
+        effective: movedItem.effective,
+        sector: movedItem.sector,
+        provenance: movedItem.provenance,
+        precise: movedItem.precise,
+        filiales: movedItem.filiales,
+        email: movedItem.email,
+        agency: movedItem.agency,
+        phone: movedItem.phone,
+        address: movedItem.address,
+        postalCode: movedItem.postalCode,
+        city: movedItem.city,
+        country: movedItem.country,
+        informations: movedItem.informations,
+        creationDate: movedItem.creationDate,
+        createdBy: movedItem.createdBy
+      });
+  
+      
       
   
-      movedItem.status = newStatus;
-      this.companycontacts = movedItem.contacts;
-  
-      console.log('societe déplacé:', movedItem);
+      console.log('societe déplacé11111111:', movedItem);
       console.log('Nouveau statut:', newStatus);
-      this.companyService.updateCompanystatus(movedItem.id,movedItem).subscribe(
+
+      this.companyService.updateCompanystatus(movedItem.id,this.companyForm.value).subscribe(
         (response: any) => {
           console.log(`societe ${movedItem.id} mis à jour avec le statuttttttttttttttttttttttttttttttttttttt ${newStatus}`);
-          this.companycontacts.forEach((element: any) => {
-            console.log('Contact hahah :', element);
-            console.log('ID du contact:', element.id); // Debugging line
-            console.log('Statut du societe :', newStatus); // Debugging line
-            this.contactsService.updateContactStatut(element.id,newStatus).subscribe(
-              (response: any) => {
-                console.log(`contact ${element.lastname} mis à jour avec le statut ${newStatus}`);
-                this.ngOnInit();
-              },
-              (error: any) => {
-                console.error(`Erreur lors de la mise à jour du contact ${element.id}`, error);
-              }
-            );
-           
-      
-            
-          });
+          
           this.ngOnInit();
         },
         (error: any) => {

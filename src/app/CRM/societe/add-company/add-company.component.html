@@ -36,7 +36,22 @@
 <h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
     <img src="assets/images/logo/companies.svg" alt="file" class="w-10 h-10">
     
-    <span  class="ml-4 font-bold">Fiche Société</span>
+    <span  class="ml-4 font-bold">Fiche Société  <span style="color:#16a34a">{{this.companyName}}</span> </span>
+  </h1>
+  <h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
+    
+    
+    <span  class="ml-4 font-bold" [ngClass]="{
+                                'danger': this.companyStatus=== 'Prospect',
+                                'warning':this.companyStatus === 'Client',
+                                'success':this.companyStatus === 'Client direct',
+                                'info': this.companyStatus === 'Fournisseur',
+                                'primary': this.companyStatus === 'Partenaire',
+                                'secondary': this.companyStatus === 'Piste',
+                                'light': this.companyStatus=== 'Archivé',
+                                'dark': this.companyStatus === 'Client via intermédiaire',
+                                'default': this.companyStatus === 'Intermédiaire de facturation'
+                              }">  {{this.companyStatus}}</span>
   </h1>
 <!-- Liens Synthèse et Actions alignés en bas -->
 <div *ngIf="mode==='edit'" class="flex gap-4 items-end mt-2">
@@ -71,8 +86,8 @@
       <div *ngIf="mode==='edit'" class="mt-4 sm:mt-0 pt-10">
        
 
-        <button *ngIf="modeS=='contacts'"  routerLink="/addcontact/{{this.idCompany}}" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
-          Ajouter
+        <button *ngIf="modeS=='contacts'"  (click)="gotoContactAdd()" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
+          Ajouter un contact
         </button>
         <button *ngIf="modeS=='besoins'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="gotobesoin()" >
           Ajouter Un besoin
@@ -225,10 +240,28 @@
                     <div class="flex flex-col px-2">
                         <div class="flex flex-col">
                           <label for="email" class="font-bold text-sm text-gray-500">Email *</label>
-                              <input type="email" id="email" class="form-control" placeholder="" formControlName="email" [readOnly]="this.userRole  == 'Manager De Production'" />
+                              <input type="email" id="email" 
+                                class="form-control" 
+                                [ngClass]="{'border-2 border-red-600 bg-red-50': companyForm.get('email')?.invalid && (companyForm.get('email')?.dirty || companyForm.get('email')?.touched)}"
+                                placeholder="" 
+                                formControlName="email" 
+                                [readOnly]="this.userRole == 'Manager De Production'" />
+                            <div *ngIf="companyForm.get('email')?.invalid && (companyForm.get('email')?.dirty || companyForm.get('email')?.touched)" class="text-xs text-red-600 mt-1">
+                              <span *ngIf="companyForm.get('email')?.errors?.['required']">Email est obligatoire</span>
+                              <span *ngIf="companyForm.get('email')?.errors?.['email']">Format d'email invalide</span>
+                            </div>
 
-                            <label for="input" class="font-bold text-sm text-gray-500">Téléphone *</label>
-                            <input type="text" id="input" class="form-control" placeholder="" formControlName="phone" [readOnly]="this.userRole  == 'Manager De Production'" />
+                            <label for="input" class="font-bold text-sm text-gray-500">Téléphone *</label>
+                            <input type="text" id="input" 
+                              class="form-control" 
+                              [ngClass]="{'border-2 border-red-600 bg-red-50': companyForm.get('phone')?.invalid && (companyForm.get('phone')?.dirty || companyForm.get('phone')?.touched)}"
+                              placeholder="" 
+                              formControlName="phone" 
+                              [readOnly]="this.userRole == 'Manager De Production'" />
+                            <div *ngIf="companyForm.get('phone')?.invalid && (companyForm.get('phone')?.dirty || companyForm.get('phone')?.touched)" class="text-xs text-red-600 mt-1">
+                              <span *ngIf="companyForm.get('phone')?.errors?.['required']">Téléphone est obligatoire</span>
+                              <span *ngIf="companyForm.get('phone')?.errors?.['pattern']">Format de téléphone invalide (8 chiffres)</span>
+                            </div>
 
                            <label for="input" class="font-bold text-sm text-gray-500">Adresse *</label>
                             <input type="text" id="input" class="form-control" placeholder="" formControlName="address" [readOnly]="this.userRole  == 'Manager De Production'" 
@@ -322,7 +355,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let contact of companycontacts" class="hover:bg-gray-50 text-gray-600 text-base" routerLink="/updatecontact/{{ contact.id }}">
+                    <tr *ngFor="let contact of companycontacts" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotoContact(contact.id)">
                         <td class="px-4 py-6 font-semibold">{{ contact.firstname}} {{contact.lastname}}</td>
                       <td class="px-4 py-6 ">{{ contact.function }}</td>
                       <td class="px-4 py-6 ">{{ contact.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</td>
@@ -533,32 +566,28 @@
     </div>
 
 
-    
-  </main>
-  <div *ngIf="isAddActionBesoinModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
-    <div class="bg-white p-4 rounded-lg w-1/3">
-      <h2 class="text-xl font-bold">Ajout d'une Action Besoin</h2>
+      </main>  <div *ngIf="isAddActionBesoinModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-[100]">
+    <div class="bg-white p-6 rounded-lg w-1/3 shadow-2xl max-h-[90vh] overflow-auto">
+      <h2 class="text-2xl font-bold mb-4 text-center">Ajout d'une Action Besoin</h2>
       <form [formGroup]="actionBesoinAddForm" (ngSubmit)="addActionBesoin()">
-        <div>
-          <label for="description">Description :</label>
-          <input type="text" id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description">
-        </div>
-  
-        <div class="mt-4">
-          <label for="type">Besoin</label>
+        <div class="mb-4">
+          <label for="description" class="block mb-1">Description :</label>
+          <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" rows="3"></textarea>
+        </div>        <div class="mb-4">
+          <label for="type" class="block mb-1">Besoin</label>
           <select id="type" formControlName="besoinId" class="w-full p-2 mt-1 border rounded">
               <option *ngFor="let besoin of companyBesoins" [ngValue]="besoin.id">{{ besoin.title}} </option>
           </select>
         </div>
-        <div class="mt-4">
-          <label for="type">Type d'Action</label>
+        <div class="mb-4">
+          <label for="type" class="block mb-1">Type d'Action</label>
           <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
-              <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name}}</option>
+              <option *ngFor="let type of typeActionsBesoin" [ngValue]="type.name">{{ type.name}}</option>
           </select>
         </div>
   
-        <div [hidden]="this.userRole== 'Manager De Production'">
-          <label for="manager">Manager Responable </label>
+        <div class="mb-4" [hidden]="this.userRole== 'Manager De Production'">
+          <label for="manager" class="block mb-1">Manager Responsable </label>
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded" 
             [class.pointer-events-none]="this.userRole == 'Manager De Production'"
             [class.bg-gray-200]="this.userRole== 'Manager De Production'"
@@ -570,46 +599,41 @@
           </select>
         </div>
       
-        <div class="mt-4">
-          <label for="files">Fichiers :</label>
+        <div class="mb-4">
+          <label for="files" class="block mb-1">Fichiers :</label>
           <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded">
           <span class="text-sm text-gray-700">
             Max : 10 fichiers de 10Mo max
           </span>
-        </div>
-  
-        <div class="flex justify-end gap-4 mt-4">
-        <button type="submit"  class="bg-blue-500 text-white px-4 py-2 rounded">Enregistrer</button>
-        <button type="button" (click)="closeActionBesoinAddModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Annuler</button>
+        </div>        <div class="flex justify-end gap-4 mt-6">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors">Enregistrer</button>
+        <button type="button" (click)="closeActionBesoinAddModal()" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded shadow-md transition-colors">Annuler</button>
         </div>
       </form>
-      
-    </div>
-  </div>
-  <div *ngIf="isAddActionModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
-    <div class="bg-white p-4 rounded-lg w-1/3">
-      <h2 class="text-xl font-bold">Ajout d'une Action contact</h2>
+    </div>  </div>  <div *ngIf="isAddActionModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-[100]">
+    <div class="bg-white p-6 rounded-lg w-1/3 shadow-2xl max-h-[90vh] overflow-auto">
+      <h2 class="text-2xl font-bold mb-4 text-center">Ajout d'une Action Contact</h2>
       <form [formGroup]="actionAddForm" (ngSubmit)="addAction()">
-        <div>
-          <label for="description">Description :</label>
-          <input type="text" id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description">
+        <div class="mb-4">
+          <label for="description" class="block mb-1">Description :</label>
+          <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" rows="3"></textarea>
         </div>
   
-        <div class="mt-4">
-          <label for="type">Contact</label>
+        <div class="mb-4">
+          <label for="type" class="block mb-1">Contact</label>
           <select id="type" formControlName="contactId" class="w-full p-2 mt-1 border rounded">
               <option *ngFor="let contact of companycontacts" [ngValue]="contact.id">{{ contact.firstname}} {{ contact.lastname }}</option>
           </select>
         </div>
-        <div class="mt-4">
-          <label for="type">Type d'Action</label>
+        <div class="mb-4">
+          <label for="type" class="block mb-1">Type d'Action</label>
           <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
               <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name}}</option>
           </select>
         </div>
   
-        <div [hidden]="this.userRole== 'Manager De Production'">
-          <label for="manager">Manager Responable </label>
+        <div class="mb-4" [hidden]="this.userRole== 'Manager De Production'">
+          <label for="manager" class="block mb-1">Manager Responsable </label>
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded" 
             [class.pointer-events-none]="this.userRole == 'Manager De Production'"
             [class.bg-gray-200]="this.userRole== 'Manager De Production'"
@@ -621,25 +645,23 @@
           </select>
         </div>
       
-        <div class="mt-4">
-          <label for="files">Fichiers :</label>
+        <div class="mb-4">
+          <label for="files" class="block mb-1">Fichiers :</label>
           <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded">
           <span class="text-sm text-gray-700">
             Max : 10 fichiers de 10Mo max
           </span>
         </div>
   
-        <div class="flex justify-end gap-4 mt-4">
-        <button type="submit"  class="bg-blue-500 text-white px-4 py-2 rounded">Enregistrer</button>
-        <button type="button" (click)="closeActionAddModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Annuler</button>
+        <div class="flex justify-end gap-4 mt-6">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors">Enregistrer</button>
+        <button type="button" (click)="closeActionAddModal()" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded shadow-md transition-colors">Annuler</button>
         </div>
       </form>
-      
     </div>
   </div>
 
-
-  <div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+  <div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-gray-700 bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50">
     <div class="bg-white rounded-lg w-1/3 p-6">
       <h2 class="text-2xl font-bold mb-4 bg-white text-black">Etes-Vous Sûr de supprimer l'action</h2>
       
@@ -650,8 +672,7 @@
     </div>
   </div>
 
-  <!-- modal de details d'action  -->
-  <div *ngIf="isActionDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <!-- modal de details d'action  -->  <div *ngIf="isActionDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-50">
       <div class="bg-white p-6 rounded-lg w-1/3">
         <h2 class="text-xl font-bold mb-4">Détails d'Action Besoin</h2>
         <div class="max-h-[85vh] overflow-y-auto">
@@ -727,8 +748,7 @@
       </div>
 
 
-    </div>
-  <div *ngIf="isActionCrmDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    </div>  <div *ngIf="isActionCrmDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-50">
       <div class="bg-white p-6 rounded-lg w-1/3">
         <h2 class="text-xl font-bold mb-4">Détails d'Action Contact</h2>
         <div class="max-h-[85vh] overflow-y-auto">
@@ -812,7 +832,7 @@
 
 
 
-<div *ngIf="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+<div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-700 bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50">
   <div class="bg-white rounded-2xl w-1/3 p-8 shadow-lg border-t-4 border-green-500 animate-fade-in">
 
     <div class="flex flex-col items-center">

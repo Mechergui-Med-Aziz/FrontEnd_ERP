@@ -46,7 +46,7 @@ export class AddCompanyComponent implements OnInit, AfterViewInit {
   societesStatusList: any[] = [ 
     { value: 'Prospect', name: 'Prospect',                                         color: "#FFA500"    },
     { value: 'Client', name: 'Client',                                             color : "#000080"       },
-    { value: 'Client_direct', name: 'Client direct',                               color: "#00FFFF"       },
+    { value: 'Client direct', name: 'Client direct',                               color: "#00FFFF"       },
     { value: 'Partenaire', name: 'Partenaire',                                     color: "#80FF00"      },
     { value: 'Piste', name: 'Piste',                                               color: "#0096AA"     },
     { value: 'Fournisseur', name: 'Fournisseur',                                   color: "#FA0000"       },
@@ -173,37 +173,18 @@ export class AddCompanyComponent implements OnInit, AfterViewInit {
       precise : ['', [Validators.required]],
       filiales : [null, []],
       email : ['', [Validators.email, Validators.required]],
-      
-      
-     
       agency: ['', [Validators.required]],
-      phone: ['', [Validators.pattern('^[0-9]*$'),Validators.required]],
+      phone: ['', [
+      Validators.required,
+      Validators.pattern('^[0-9]{8}$') // Exactly 8 digits
+      ]],
       address: ['', [Validators.required]],
       postalCode: ['', []],
       city: ['', []],
       country: ['', []],
-      
       informations: ['', []],
-    
-      
-         
-     
-     
       creationDate: [{value:new Date().toLocaleDateString('fr-FR')}],
       createdBy: ['', []],
-      
-     
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
     });
     this.actionAddForm= this.fb.group({
             description: ['', Validators.required],
@@ -287,6 +268,8 @@ ngOnInit(): void {
   }  this.activatedRoute.queryParams.subscribe(params => {
     if (params['modeS'] == 'besoin') {
       this.modeS = 'besoins';
+    }else if (params['modeS'] == 'contacts') {
+      this.modeS = 'contacts';
     }
   });
 }
@@ -477,12 +460,16 @@ fillActionCrmDetailsForm(action: any) {
     }
 
   }
+  companyName: string = '';
+  companyStatus: string = '';
 loadCompanyData(id: number) {
   this.companyBesoins= [];
   this.compService.getCompById(id).subscribe(
     (company: any) => {
        // Assurez-vous que contacts est un tableau
       this.companyForm.patchValue(company);
+      this.companyName = company.name;
+      this.companyStatus=company.status; // Stocker le nom de la société pour l'afficher dans le titre
       console.log('Company data loaded:', this.companyForm.value);
       this.companycontacts = company.contacts || [];
        // Assurez-vous que contacts est un tableau
@@ -620,7 +607,7 @@ saveChanges() {
     this.compService.updateCompany(this.idCompany, this.companyForm.value).subscribe(
       
       (response: any) => {
-        console.log('Company updated successfully:', response);
+        console.log('Company updated successfullyYYYYyYYYYYYYYYY11111222233333:', this.companyForm.value);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société mise à jour avec succès' });
         this.router.navigate(['/company']);
       },
@@ -629,23 +616,10 @@ saveChanges() {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la mise à jour' });
       }
     );
-    this.companycontacts.forEach((element: any) => {
-      console.log('Contact hahah :', element);
-      console.log('ID du contact:', element.id); // Debugging line
-      console.log('Statut du societe:', this.companyForm.value.status); // Debugging line
-      this.contactsService.updateContactStatut(element.id,this.companyForm.value.status).subscribe(
-        (response: any) => {
-          console.log(`contact ${element.name} mis à jour avec le statut ${this.companyForm.value.status}`);
-          this.ngOnInit();
-        },
-        (error: any) => {
-          console.error(`Erreur lors de la mise à jour du contact ${element.id}`, error);
-        }
-      );
-     
+   
+     this.ngOnInit();
 
-      
-    });
+   
     } 
     else {
       
@@ -694,6 +668,27 @@ modeS: string = 'informations'; // Onglet par défaut
   
 });
   }
+
+  gotoContact(id: number) {
+    this.router.navigate(['/updatecontact/'+id], { 
+  queryParams: { 
+    c: 'company', 
+  }
+  
+});
+  }
+  gotoContactAdd(){
+    this.router.navigate(['/addcontact/'], { 
+  queryParams: { 
+    c: 'company', 
+  }
+  
+});
+  }
+ 
+  
+
+  
   gotobesoinUpdate(besoin: any) {
     this.router.navigate(['/besoins'], {
   queryParams: {
@@ -716,7 +711,7 @@ modeS: string = 'informations'; // Onglet par défaut
     this.actionAddForm.reset();
   }
   openActionBesoinAddModal(){
-    this.loadTypeActions();
+    this.loadTypeActionsBesoin();
     
     this.isAddActionBesoinModalOpen = true;
   }
@@ -729,6 +724,17 @@ modeS: string = 'informations'; // Onglet par défaut
     this.typeAction.findTypeActionsByBelongTo("CRM").subscribe(
       (typeActions: any) => {
         this.typeActions = typeActions;
+      },
+      (error: any) => {
+        console.error('Erreur lors du chargement des typeActions:', error);
+      }
+    );
+  }
+typeActionsBesoin: any[] = [];
+  loadTypeActionsBesoin() {
+    this.typeAction.findTypeActionsByBelongTo("Besoin").subscribe(
+      (typeActions: any) => {
+        this.typeActionsBesoin = typeActions;
       },
       (error: any) => {
         console.error('Erreur lors du chargement des typeActions:', error);

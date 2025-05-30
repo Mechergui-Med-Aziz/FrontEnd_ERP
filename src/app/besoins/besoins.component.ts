@@ -482,6 +482,11 @@ this.activatedRoute.queryParams.subscribe(params => {
       if (this.r =='company'||this.r=='contact') {
         this.location.back();
       }
+      if (this.r =='company') {  
+                  this.router.navigate(['/addcomp/'+this.comp], { queryParams: { modeS: 'besoin' } });
+                }else if (this.r=='contact') {
+                  this.router.navigate(['/updatecontact/'+this.cont], { queryParams: { modeS: 'besoin' } });
+                }
     }
 
     saveChanges() {
@@ -589,9 +594,12 @@ this.activatedRoute.queryParams.subscribe(params => {
     closeAddModal() {
       this.isAddModalOpen = false;
       this.besoinAddForm.reset();
-      if ( this.r =='company'||this.r=='contact') {
-         this.location.back();
-      }
+     
+      if (this.r =='company') {  
+                  this.router.navigate(['/addcomp/'+this.comp], { queryParams: { modeS: 'besoin' } });
+                }else if (this.r=='contact') {
+                  this.router.navigate(['/updatecontact/'+this.cont], { queryParams: { modeS: 'besoin' } });
+                }
     }
 
     openModal(besoin: any) {
@@ -610,6 +618,17 @@ this.activatedRoute.queryParams.subscribe(params => {
 
     closeDashboard() {
       this.Dashboard=false;
+      if (this.r =='company'||this.besoinIdFromCompany) {  
+                   if(this.compF){
+                  this.router.navigate(['/addcomp/'+this.compF], { queryParams: { modeS: 'besoin' } });
+                }else{
+                    this.router.navigate(['/addcomp/'+this.comp], { queryParams: { modeS: 'besoin' } });
+                  }}else if (this.r=='contact'||this.besoinIdFromContact) {
+                  if(this.contF){
+                  this.router.navigate(['/updatecontact/'+this.contF], { queryParams: { modeS: 'besoin' } });}else{
+                    this.router.navigate(['/updatecontact/'+this.cont], { queryParams: { modeS: 'besoin' } });
+                  }
+                }
     }
     
     

@@ -222,7 +222,27 @@
     </div>
   </div>
 </div>
-
+ <div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+        <div class="bg-white p-4 rounded-lg w-1/3">
+          <h2 class="text-xl font-bold">Select Company</h2>
+          <form>
+            <br>
+           
+              
+              <div>
+                <label for="priority">Company</label>
+                <select id="name" [(ngModel)]="companyname" name="companyname" class="w-full p-2 mt-1 border rounded" >
+                  <option  *ngFor="let c of companies" [value]="c.name">{{c.name}} </option>
+                  
+                </select>
+              </div>
+              <div class="flex justify-end gap-4">
+                <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeAddModal()">Annuler</button>
+                <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded"  [disabled]="companyname==null" (click)="create()" data-cy="create-contact-button">Créer</button>
+              </div>
+          </form>
+        </div>
+      </div>
 
 
 

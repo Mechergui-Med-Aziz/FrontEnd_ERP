@@ -162,7 +162,7 @@
 }
 
 .badge-dark {
-  background-color: #FF00FF;
+  background-color: brown;
   color: white;
   padding: 4px 8px;
   border-radius: 20px;
@@ -171,7 +171,7 @@
 }
 
 .badge-default {
-  background-color: #FF00FF;
+  background-color: gray;
   color: white;
   padding: 4px 8px;
   border-radius: 20px;

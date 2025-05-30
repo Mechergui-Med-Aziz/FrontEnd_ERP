@@ -263,3 +263,57 @@
     padding: 20px;
     box-sizing: border-box;
   }
+
+  /* Badge styles for list view */
+.danger {
+ 
+  color: #FFA500;
+  
+}
+
+.warning {
+  
+  color: #000080;
+ 
+}
+
+.success {
+ 
+  color: #00FFFF;
+
+}
+
+.info {
+ 
+  color: #FA0000;
+ 
+}
+
+.primary {
+ 
+  color: #80FF00;
+}
+
+.secondary {
+  
+  color: #0096AA;
+  
+}
+
+.light {
+  
+  color: #FF80FF;
+ 
+}
+
+.dark {
+ 
+  color: brown;
+  
+}
+
+.default {
+
+  color: gray;
+
+}

@@ -88,7 +88,7 @@ export class AddContactComponent implements OnInit{
   listeEtat: any[] = [
     { value: 'Prospect', name: 'Prospect',                                        color: "#FFA500" },
     { value: 'Client', name: 'Client',                                            color : "#000080"},
-    { value: 'Client_direct', name: 'Client direct',                              color: "#00FFFF" },
+    { value: 'Client direct', name: 'Client direct',                              color: "#00FFFF" },
     { value: 'Partenaire', name: 'Partenaire',                                    color: "#80FF00" },
     { value: 'Piste', name: 'Piste',                                              color: "#0096AA" },
     { value: 'Fournisseur', name: 'Fournisseur',                                  color: "#FA0000" },
@@ -143,12 +143,13 @@ mode: any;
       service: ['', [Validators.required]],
       createdBy: ['', []],
       type: ['', [Validators.required]],
-      status: ['', []],
-      provenance: [null, [Validators.required]],
       
+      provenance: [null, [Validators.required]],
+      otherTools: ['', []],
+      otherDomaines: ['', []],
       agency: ['', [Validators.required]],
-      email: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
+      email: ['', [Validators.required , Validators.email]],
+      phone: ['', [Validators.required , Validators.pattern('^[0-9]{8}$') ]], // tunisian phone number format
       address: ['', [Validators.required]],
       postalCode: ['', []],
       city: ['', []],
@@ -193,14 +194,20 @@ mode: any;
     
     this.modeS="informations"
     this.loadCountries();
-      this.activatedRoute.params.subscribe((params) => {
+    this.activatedRoute.params.subscribe((params) => {
       this.idCompany = params['idCompany'];
       this.idContact = params['idContact'];
+      
       console.log('ID de la société :', this.idCompany); // Debugging line
       console.log('ID du contact hhhh:', this.idContact); // Debugging line
+      console.log('where from:', this.wherefrom); // Debugging line
       
       }
     );
+    this.activatedRoute.queryParams.subscribe((params) => {
+      this.wherefrom = params['c'];
+      console.log('where fromMMMMMMMMMMMMMMMMMMMM:', this.wherefrom);
+    });
     if (this.idCompany) {
       this.mode='add';
       this.loadCompanyData(this.idCompany);
@@ -222,7 +229,7 @@ mode: any;
 
       
   }
-
+wherefrom:any;
 
    gotobesoin(){
     this.router.navigate(['/besoins'], { 
@@ -268,7 +275,9 @@ mode: any;
         (response: any) => {
           console.log('Contact updated successfully:', response);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contacte mis à jour avec succès' });
-          this.location.back(); // Navigate back to the previous page
+         if(this.wherefrom == 'company'){
+                  this.router.navigate(['/addcomp/'+this.idCompany], { queryParams: { modeS: 'contacts' } });}
+                  else{this.location.back(); }
         },
         (error: any) => {
           console.error('Error updating contact:', error);
@@ -288,7 +297,10 @@ mode: any;
       this.contactservice.createContact(this.contact.value).subscribe(
         (response: any) => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact créé avec succès' });
-           this.location.back(); 
+          console.log('where EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE', this.wherefrom);
+           if(this.wherefrom == 'company'){
+                  this.router.navigate(['/addcomp/'+this.idCompany], { queryParams: { modeS: 'contacts' } });}
+                  else{this.location.back(); }
         },
         (error: any) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la création' });
@@ -540,6 +552,11 @@ mode: any;
 
 }
 retourner() {
+  console.log('return toOOOOOOOOOOOOOOOOO', this.wherefrom); // Debugging line
+  if (this.wherefrom == 'company') {
+    this.router.navigate(['/addcomp/' + this.idCompany], { queryParams: { modeS: 'contacts' } });
+  }
+  
   this.location.back(); // Navigate back to the previous page
 
 }

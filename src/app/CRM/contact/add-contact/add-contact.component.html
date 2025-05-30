@@ -89,7 +89,7 @@
       </div>    </div>
   </header>
 
-  <main class="mt-[15%] pb-[10%] ml-[1%] w-[100%] h-[100%] px-4 " *ngIf="modeS === 'informations'">
+  <main class="mt-[15%] pb-[20%] ml-[1%] w-[100%] h-[100%] px-4 " *ngIf="modeS === 'informations'">
     <div class="flex flex-col md:flex-row gap-4 right-100" >
         <form class="px-4 w-full sm:flex-col md:flex-row flex " [formGroup]="contact" >
 
@@ -186,7 +186,7 @@
                                 <div class="flex flex-col">
                                     <div class="font-bold text-sm text-gray-500">Etat</div>
                                   
-                                    <input type="text" class="form-control"  [value]="this.companyStatus" formControlName="status" readonly/>
+                                    <input type="text" class="form-control"  [value]="this.companyStatus"  readonly/>
                                 </div>
                             </div>
         
@@ -235,25 +235,26 @@
                             <div class="flex flex-col">
                                 <div class="font-bold text-sm text-gray-500 mb-1">Domaines *</div>
                                 <div class="h-[35px]">
-                                    <p-multiSelect [options]="domaines" formControlName="domains" [hidden]
+                                  
+                                    <p-multiSelect [options]="domaines" formControlName="domains" 
                                         appendTo="body" 
                                         display="chip"
                                         styleClass="custom-multiselect"
                                         [showToggleAll]="true"
-                                        [dropdownIcon]="'pi pi-chevron-down'"
+                                       emptyFilterMessage="Aucun outil trouvé"
                                        >
-                                        <ng-template let-group pTemplate="group">
-                                            <div class="flex align-items-center">
-                                                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
-                                                    [class]="'mr-2 flag flag-' + group.value" style="width: 20px" />
-                                                <span>{{ group.label }}</span>
-                                            </div>
-                                        </ng-template>
+                                        
                                     </p-multiSelect>
                                 </div>
+                                 <div class="">
+                                <div class="font-bold text-sm text-gray-500 ">Autres domaines</div>
+                                <div class="input-container mt-1">
+                                    <input type="text" class="form-control" placeholder="Domaine,Domaine,....." formControlName="otherDomains"  />
+                                </div>
+                            </div>
                             </div>
                         </div>
-                        <div class="flex flex-col px-2 mt-4">
+                        <div class="flex flex-col px-2 mt-2">
                             <div class="flex flex-col">
                                 <div class="font-bold text-sm text-gray-500 mb-1">Outils *</div>
                                 <div class="h-[35px]">
@@ -265,6 +266,13 @@
                                         [dropdownIcon]="'pi pi-chevron-down'"
                                         emptyFilterMessage="Aucun outil trouvé" />
                                 </div>
+                                 <div class="col-span-3">
+                                <div class="font-bold text-sm text-gray-500">Autres outils</div>
+                                <div class="input-container mt-1">
+                                
+                                    <input type="text" class="form-control" placeholder="Outil,Outil,....." formControlName="otherTools"  />
+                                </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -330,12 +338,27 @@
             <app-card-synthese [customTitle]="'Coordonnées contact'" [customActionLabel]="" [hasIconActions]="false">
               <div body>
                   <div class="flex flex-col px-2">
-                      <div class="flex flex-col">
-                        <label for="input" class="font-bold text-sm text-gray-500">Email *</label>
-                        <input type="text" id="input" class="form-control" placeholder="" formControlName="email" />
+                      <div class="flex flex-col">                        <label for="input" class="font-bold text-sm text-gray-500">Email *</label>
+                        <input type="text" id="input" 
+                          class="form-control" 
+                          [ngClass]="{'border-2 border-red-600 bg-red-50': contact.get('email')?.invalid && (contact.get('email')?.dirty || contact.get('email')?.touched)}"
+                          placeholder="" 
+                          formControlName="email" />
+                        <div *ngIf="contact.get('email')?.invalid && (contact.get('email')?.dirty || contact.get('email')?.touched)" class="text-xs text-red-600 mt-1">
+                          <span *ngIf="contact.get('email')?.errors?.['required']">Email est obligatoire</span>
+                          <span *ngIf="contact.get('email')?.errors?.['email']">Format d'email invalide</span>
+                        </div>
 
-                          <label for="input" class="font-bold text-sm text-gray-500">Téléphone *</label>
-                          <input type="text" id="input" class="form-control" placeholder="" formControlName="phone"  />
+                          <label for="input" class="font-bold text-sm text-gray-500">Téléphone *</label>
+                          <input type="text" id="input" 
+                            class="form-control" 
+                            [ngClass]="{'border-2 border-red-600 bg-red-50': contact.get('phone')?.invalid && (contact.get('phone')?.dirty || contact.get('phone')?.touched)}"
+                            placeholder="" 
+                            formControlName="phone"  />
+                          <div *ngIf="contact.get('phone')?.invalid && (contact.get('phone')?.dirty || contact.get('phone')?.touched)" class="text-xs text-red-600 mt-1">
+                            <span *ngIf="contact.get('phone')?.errors?.['required']">Téléphone est obligatoire</span>
+                            <span *ngIf="contact.get('phone')?.errors?.['pattern']">Format de téléphone invalide (8 chiffres)</span>
+                          </div>
 
                           <label for="input" class="font-bold text-sm text-gray-500">Adresse *</label>
                           <input type="text" id="input" class="form-control" placeholder="" formControlName="address" 
@@ -508,25 +531,24 @@
 
 
 <!-- modal d'ajout d'action  -->
-
-  <div *ngIf="isAddActionModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
-    <div class="bg-white p-4 rounded-lg w-1/3">
-      <h2 class="text-xl font-bold">Ajout d'une Action</h2>
+  <div *ngIf="isAddActionModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-[100]">
+    <div class="bg-white p-6 rounded-lg w-1/3 shadow-2xl max-h-[90vh] overflow-auto">
+      <h2 class="text-2xl font-bold mb-4 text-center">Ajout d'une Action</h2>
       <form [formGroup]="actionAddForm" (ngSubmit)="addAction()">
-        <div>
-          <label for="description">Description :</label>
-          <input type="text" id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description">
+        <div class="mb-4">
+          <label for="description" class="block mb-1">Description :</label>
+          <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" rows="3"></textarea>
         </div>
   
-        <div class="mt-4">
-          <label for="type">Type d'Action</label>
+        <div class="mb-4">
+          <label for="type" class="block mb-1">Type d'Action</label>
           <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
               <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name}}</option>
           </select>
         </div>
   
-        <div [hidden]="this.userRole== 'Manager De Production'">
-          <label for="manager">Manager Responable </label>
+        <div class="mb-4" [hidden]="this.userRole== 'Manager De Production'">
+          <label for="manager" class="block mb-1">Manager Responsable</label>
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded" 
             [class.pointer-events-none]="this.userRole == 'Manager De Production'"
             [class.bg-gray-200]="this.userRole== 'Manager De Production'"
@@ -538,39 +560,36 @@
           </select>
         </div>
       
-        <div class="mt-4">
-          <label for="files">Fichiers :</label>
+        <div class="mb-4">
+          <label for="files" class="block mb-1">Fichiers :</label>
           <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded">
           <span class="text-sm text-gray-700">
             Max : 10 fichiers de 10Mo max
           </span>
         </div>
   
-        <div class="flex justify-end gap-4 mt-4">
-        <button type="submit"  class="bg-blue-500 text-white px-4 py-2 rounded">Enregistrer</button>
-        <button type="button" (click)="closeActionAddModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Annuler</button>
+        <div class="flex justify-end gap-4 mt-6">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors">Enregistrer</button>
+        <button type="button" (click)="closeActionAddModal()" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded shadow-md transition-colors">Annuler</button>
         </div>
       </form>
-      
     </div>
   </div>
-
   <!-- modal de confirmation de suppression  -->
-  <div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-    <div class="bg-white rounded-lg w-1/3 p-6">
-      <h2 class="text-2xl font-bold mb-4 bg-white text-black">Etes-Vous Sûr de supprimer l'action</h2>
+  <div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-gray-700 bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg w-1/3 p-6 shadow-xl">
+      <h2 class="text-2xl font-bold mb-4 text-center">Etes-Vous Sûr de supprimer l'action</h2>
       
       <div class="flex justify-end gap-4">
-        <button type="button" class="bg-green-400 text-white px-4 py-2 rounded" (click)="closeDeleteModal()">Non</button>
-        <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"(click)="deleteAction(deletedAction.id)">Oui</button>
+        <button type="button" class="bg-green-400 hover:bg-green-500 text-white px-6 py-2 rounded shadow-md transition-colors" (click)="closeDeleteModal()">Non</button>
+        <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded shadow-md transition-colors" (click)="deleteAction(deletedAction.id)">Oui</button>
       </div>
     </div>
   </div>
-
   <!-- modal de details d'action  -->
-  <div *ngIf="isActionDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div class="bg-white p-6 rounded-lg w-1/3">
-        <h2 class="text-xl font-bold mb-4">Détails d'Action</h2>
+  <div *ngIf="isActionDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-50">
+      <div class="bg-white p-6 rounded-lg w-1/3 shadow-2xl">
+        <h2 class="text-2xl font-bold mb-4 text-center">Détails d'Action</h2>
         <div class="max-h-[85vh] overflow-y-auto">
         <form [formGroup]="DetailsActionForm">
           <div hidden>
@@ -630,11 +649,9 @@
             <span class="text-sm text-gray-700">
               NB : La jointure de fichiers supprimera les anciens fichiers. Si vous souhaitez les conserver, veuillez les télécharger.
             </span>
-          </div>
-    
-          <div class="flex justify-end gap-4 mt-4">
-            <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeDetailsActionModal()">Annuler</button>
-            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="EditAction()" [disabled]="DetailsActionForm.invalid || this.userRole=='Manager De Production'">
+          </div>          <div class="flex justify-end gap-4 mt-6">
+            <button type="button" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded shadow-md transition-colors" (click)="closeDetailsActionModal()">Annuler</button>
+            <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors" (click)="EditAction()" [disabled]="DetailsActionForm.invalid || this.userRole=='Manager De Production'">
               Sauvegarder
             </button>
           </div>

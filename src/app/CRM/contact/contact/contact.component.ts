@@ -33,6 +33,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CompServiceService } from '../../../services/comp-service.service';
 import { KanbanCompService } from '../../../services/kanban-comp.service';
 import dayjs from 'dayjs';
+import { forEach } from 'cypress/types/lodash';
 
 
 @Component({
@@ -95,13 +96,13 @@ export class ContactComponent implements OnInit {
     columns: { title: string, statut: string, color:string, contacts: any[] }[] = [
       { title: 'Prospect', statut: 'Prospect', color: "#FFA500", contacts: [] },
       { title: 'Client', statut: 'Client',color : "#000080", contacts: [] },
-      { title: 'Client direct', statut: 'Client_direct',color: "#00FFFF", contacts: [] },
+      { title: 'Client direct', statut: 'Client direct',color: "#00FFFF", contacts: [] },
       { title: 'Partenaire', statut: 'Partenaire',color: "#80FF00", contacts: [] },
       { title: 'Piste', statut: 'Piste',color: "#0096AA", contacts: [] },
       { title: 'Fournisseur', statut: 'Fournisseur',color: "#FA0000", contacts: [] },
       { title: 'Archivé', statut: 'Archivé',color: "#FF80FF", contacts: [] },
-      { title: 'Intermédiaire de facturation', statut: 'Intermédiaire_de_facturation',color: "brown", contacts: [] },
-      { title: 'Client via intermédiaire', statut: 'Client_via_intermédiaire',color: "gray", contacts: [] },
+      { title: 'Intermédiaire de facturation', statut: 'Intermédiaire de facturation',color: "brown", contacts: [] },
+      { title: 'Client via intermédiaire', statut: 'Client via intermédiaire',color: "gray", contacts: [] },
     ];
   ngOnInit(): void {
     this.mode="kanban";
@@ -157,11 +158,18 @@ create() {
 loadContacts() {
   this.columns.forEach(column => {
     console.log('Statut:', column.statut); // Debugging line
-    this.contactsService.findContactByStatut(column.statut).subscribe(
+    this.serv.findCompanyByStatus(column.statut).subscribe(
       (response: any) => {
-        console.log('Response:', response); // Debugging line
-        column.contacts = response;
-        this.nbContacts += response.length;
+        response.forEach ((company: any) => {
+this.nbContacts += company.contacts.length;
+company.contacts.forEach((contact: any) => {
+  contact.company = company; // Associer la société au contact
+  console.log('ContactTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT:', contact); // Debugging line
+ column.contacts.push(contact);
+})
+        });
+        
+        
         },
       (error: any) => {
         console.error(`Erreur lors du chargement des contact pour le statut ${column.statut}:`, error);
