@@ -304,8 +304,14 @@ this.activatedRoute.queryParams.subscribe(params => {
   loadContacts() {
     this.contactsService.findAllContacts().subscribe(
       (contacts: any) => {
-        //console.log('Contacts:', contacts); // Debugging line
-        this.contacts = contacts;
+        console.log('ContactsRRRRRRRRRRRRRRRRR:', contacts); // Debugging line
+        console.log('this.compRRRRRRRR:', this.comp); // Debugging line
+       if(this.comp){
+        this.contacts=contacts.filter((contact: any) => contact.company.id == this.comp);
+        console.log('Filtered contactsRRRRRRRR:', this.contacts); // Debugging line
+       }else{
+        this.contacts = contacts;}
+
       },
       (error: any) => {
         console.error('Erreur lors du chargement des contacts:', error);

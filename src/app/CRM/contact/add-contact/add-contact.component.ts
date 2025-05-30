@@ -146,7 +146,7 @@ mode: any;
       
       provenance: [null, [Validators.required]],
       otherTools: ['', []],
-      otherDomaines: ['', []],
+      otherDomains: ['', []],
       agency: ['', [Validators.required]],
       email: ['', [Validators.required , Validators.email]],
       phone: ['', [Validators.required , Validators.pattern('^[0-9]{8}$') ]], // tunisian phone number format
@@ -251,10 +251,14 @@ wherefrom:any;
         });
 
       }
+      contactName: string = '';
+      contactStatus: string = '';
   loadContactData(id: number) {
     this.contactservice.findContactById(id).subscribe(
       (contact: any) => {
         this.contact.patchValue(contact);
+        this.contactName = contact.firstname + ' ' + contact.lastname;
+        this.contactStatus = contact.company.status;
         console.log('le contact:', contact); 
         console.log('Contact company:', contact.company); // Debugging line
         this.company = contact.company;
