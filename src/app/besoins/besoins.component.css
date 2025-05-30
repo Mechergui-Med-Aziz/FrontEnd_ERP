@@ -66,9 +66,9 @@
   padding-top: 60px; 
 }
   
-
-
-
+a:hover {
+  cursor: pointer;
+}
 
 
 

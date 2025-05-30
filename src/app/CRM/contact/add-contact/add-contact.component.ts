@@ -46,7 +46,7 @@ export class AddContactComponent implements OnInit{
   
   managers: any[] = ["ilyes","aziz","khaled"];
   typesDomaines: any[] = [];
-  company: any;
+  company!: any;
   filteredCompany: any[] | undefined;
   societesPaysList: any[] = [];
   

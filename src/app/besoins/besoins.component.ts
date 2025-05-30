@@ -44,7 +44,7 @@ export class BesoinsComponent implements OnInit{
   isDetailsActionModalOpen: boolean = false;
   creationDate: any;
   nbBesoins: number = 0;
-  mode: string = 'kanban';
+  mode: string = 'list';
   besoins: any[] = [];
   Dashboard:any=false;
   selectedTab: string = 'synthese';
@@ -66,9 +66,8 @@ export class BesoinsComponent implements OnInit{
   BesoinActions: any[] = [];
   deletedAction:any;
   manager:  any;
-
   fullManagerInformations:{manager:any,nbrBesoins:number}[] = [];
-
+  sortAsc: boolean = true; 
 
 
   columns: { title: string, status: string, color:string, besoins: any[] }[] = [
@@ -211,7 +210,7 @@ export class BesoinsComponent implements OnInit{
   loadContacts() {
     this.contactsService.findAllContacts().subscribe(
       (contacts: any) => {
-        //console.log('Contacts:', contacts); // Debugging line
+        //console.log('Contacts:', contacts); 
         this.contacts = contacts;
       },
       (error: any) => {
@@ -862,4 +861,35 @@ filterBesoins(): void {
    closeHistoricModal() {
      this.isHistoricModalOpen = false;
    }
+   
+
+   sortPriority() {
+     const priorityOrder: { [key: string]: number } = {
+       'BASSE': 1,
+       'MOYENNE': 2,
+       'HAUTE': 3,
+       'TRÉS_HAUTE': 4
+     };
+   
+     this.besoins.sort((a, b) => {
+       const valueA = priorityOrder[a.priority] || 0;
+       const valueB = priorityOrder[b.priority] || 0;
+   
+       return this.sortAsc ? valueA - valueB : valueB - valueA;
+     });
+   
+     this.sortAsc = !this.sortAsc;
+   }
+
+   sortDate() {
+     this.besoins.sort((a, b) => {
+       const dateA = new Date(a.creationDate).getTime();
+       const dateB = new Date(b.creationDate).getTime();
+   
+       return this.sortAsc ? dateA - dateB : dateB - dateA;
+     });
+   
+     this.sortAsc = !this.sortAsc;
+   }
+   
  }

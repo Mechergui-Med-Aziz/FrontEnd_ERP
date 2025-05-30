@@ -173,7 +173,7 @@
                                 <div class="flex flex-col">
                                     <div class="font-bold text-sm text-gray-500">Etat</div>
                                   
-                                    <input type="text" class="form-control"  [(ngModel)]="this.company.status" formControlName="status" readonly/>
+                                    <input type="text" class="form-control" [value]="company?.status" formControlName="status" readonly/>
                                 </div>
                             </div>
         
@@ -347,8 +347,8 @@
                                   <span class="font-bold text-sm text-gray-500">Pays</span>
 
                                   
-                                  <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="user.role == 'Manager De Production'"
-                                  [class.bg-gray-200]="user.role == 'Manager De Production'">
+                                  <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="user?.role == 'Manager De Production'"
+                                  [class.bg-gray-200]="user?.role == 'Manager De Production'">
                                       <mat-option *ngFor="let option of societesPaysList" [value]="option.name">
                                         <span class="status-label">
                                           {{ option.name }} <!-- Displays flag + country name -->

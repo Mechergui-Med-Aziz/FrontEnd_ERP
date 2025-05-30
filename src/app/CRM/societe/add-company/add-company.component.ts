@@ -226,6 +226,7 @@ loadCompanyData(id: number) {
        // Assurez-vous que contacts est un tableau
       this.companyForm.patchValue(company);
       console.log('Company data loaded:', this.companyForm.value);
+      console.log("aaaaaaaaaaaa"+company)
       this.companycontacts = company.contacts || [];
        // Assurez-vous que contacts est un tableau
       console.log('Company contacts:', this.companycontacts);
