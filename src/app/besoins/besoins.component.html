@@ -252,7 +252,7 @@
         <label for="description">Description</label>
         <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded"></textarea>
       </div>
-      <div>
+      <div *ngIf="this.r !== 'contact'">
           <label for="contact">Contact</label>
           <select id="contact" formControlName="contact" class="w-full p-2 mt-1 border rounded">
               <option *ngFor="let contact of contacts" [ngValue]="contact.id">{{ contact.firstname }} {{ contact.lastname }} ({{contact.company.name}})</option>
@@ -521,7 +521,7 @@
             </div>
             <div class="mt-2">
               <label for="contact">Contact</label>
-              <input id="contact" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.firstname}} {{selectedBesoin.contact.lastname}}" readonly/>
+              <input id="contact" type="text" class="w-full p-2 mt-1 border rounded" value="{{selectedBesoin?.contact?.firstname}} {{selectedBesoin?.contact?.lastname}}" readonly/>
             </div>
 
             <div class="mt-2">

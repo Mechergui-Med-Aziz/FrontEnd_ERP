@@ -1,52 +1,45 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- (Optionnel) Inclusion de Material Icons si besoin -->
-<link
-  href="https://fonts.googleapis.com/icon?family=Material+Icons"
-  rel="stylesheet"
-/>
-<div class="flex flex-col w-full bg-white">
+
+
+
+
+
+
+
+
+
+
+
+  <script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+<div class="flex flex-col w-full bg-white" >
   <div class="w-full flex flex-col">
     <div
-    class="fixed top-0 left-[250px] right-0  flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent " >
-    <div class="flex">
-      <!-- Title -->
-      <div class="flex-1">
-        <h2
-          class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate flex flex-row items-center"
-        >
-          <mat-icon class="icon-size-10 ml-4 relative-t-5">group </mat-icon>
-          <span class="ml-4">Sociétés ({{nbCompanies}})</span>
-        </h2>
+      class="fixed top-0 left-[250px] right-0 flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+      <div class="flex">
+        <div class="flex-1">
+          <h2
+            class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate flex flex-row items-center">
+            <img src="assets/images/logo/companies.svg" alt="file" class="w-10 h-10">
+            <span class="ml-4">Sociétés ({{nbCompanies}})</span>
+          </h2>
+          <div class="flex flex-row items-center">
+            <mat-button-toggle-group
+              [(ngModel)]="mode"
+              class="mt-1"
+              name="favoriteColor"
+              aria-label="Favorite Color"
+              (change)="switchMode($event)">
+              <mat-button-toggle value="kanban">
+                <mat-icon fontIcon="view_kanban"></mat-icon>Kanban
+              </mat-button-toggle>
+              <mat-button-toggle value="list">
+                <mat-icon fontIcon="list"></mat-icon>List
+              </mat-button-toggle>
+            </mat-button-toggle-group>
 
-        <div class="flex flex-row items-center">
-          <mat-button-toggle-group
-          [(ngModel)]="mode"
-            class="mt-1"
-            name="favoriteColor"
-            aria-label="Favorite Color"
-            (change)="switchMode($event)"
-          >
-            <mat-button-toggle value="kanban">
-              <mat-icon
-                aria-hidden="false"
-                aria-label="Example home icon"
-                fontIcon="view_kanban"
-              >
-              </mat-icon
-              >Kanban
-            </mat-button-toggle>
-            <mat-button-toggle value="list">
-              <mat-icon
-                aria-hidden="false"
-                aria-label="Example home icon"
-                fontIcon="list"
-              >
-              </mat-icon
-              >List
-            </mat-button-toggle>
-          </mat-button-toggle-group>
-
-          <div class="flex flex-row items-center ml-2">
             <div class="relative flex flex-row items-center ml-2">
               <button (click)="toggleFilterPanel()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full shadow transition duration-200">Filtrer</button>
               <div *ngIf="showFilterPanel"
@@ -55,7 +48,7 @@
                   <label class="block text-sm font-medium text-gray-700">Sélectionnez la méthode de filtrage</label>
                   <select [(ngModel)]="selectedFilterMethod"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                    <option value="">-- Choisir --</option>
+                   <option value="">-- Choisir --</option>
                     <option value="company">Nom du société</option>
                     
                     <option value="dateExact">Date précise</option>
@@ -65,7 +58,7 @@
                 <form [formGroup]="filterForm" class="mt-4">
                   <div [ngSwitch]="selectedFilterMethod">
 
-                    <div *ngSwitchCase="'company'">
+                            <div *ngSwitchCase="'company'">
                       <label for="companyFilter" class="block text-sm font-medium text-gray-700">Nom du société</label>
                       <input id="companyFilter" type="text" formControlName="company"
                         placeholder="Rechercher par nom de société"
@@ -98,279 +91,134 @@
             </div>
 
           </div>
+          <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;" />
         </div>
-        <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;"/>
-      </div>
-      
-
-      <!-- Actions -->
-
-      <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
-        <button class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg z-50" routerLink="/addcomp" [hidden]="userrole == 'Manager De Production'" data-cy="add-company-button">
-          + Ajouter
-        </button>
-       
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+          <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full shadow transition duration-200" data-cy="open-add-besoin" routerLink="/addcomp" [hidden]="userrole=='Manager De Production'">
+            + Ajouter
+          </button>
+        </div>
       </div>
 
-</div>
       <div class="px-4 w-full sm:flex-col md:flex-row flex">
         <div class="sm:w-full w-2/3 flex flex-col sm:mt-2 md:mt-0">
-          <div class="py-4">
+          <div class="py-4"></div>
+          <div>
             <div class="relative" *ngIf="mode === 'kanban'">
-              
-  
-  
+              <button (click)="scrollKanban('left')"
+                class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
+                aria-label="Scroll Left">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+              <div #scrollContainer class="kanban-container overflow-x-auto">
+                <div #scrollInner cdkDropListGroup class="flex space-x-4 pb-4">
+                  <div *ngFor="let column of columns"
+                    class="w-85 flex-shrink-0 bg-white p-4 rounded-lg shadow-lg h-full flex flex-col">
+                    <div class="flex-shrink-0">
+                      <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 mb-3 rounded-full" [ngStyle]="{'background-color': column.color}"></span>
+                        <h2 class="font-bold text-lg text-gray-700">{{ column.title }} ({{ column.companies.length }})</h2>
+                      </div>
+                      <div class="h-1 w-full mt-2" [ngStyle]="{'background-color': column.color}"></div>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="column.companies"
+                      (cdkDropListDropped)="drop($event, column.status)"
+                      class="min-h-[100px] p-2 bg-gray-100 rounded-md max-h-[60vh] overflow-y-auto">
+                      <div *ngFor="let company of column.companies" cdkDrag (cdkDragMoved)="onDragMoved($event)"
+                        class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between h-24 w-full">
+                        <!--<div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}"
+                          class="w-10 h-[85px] rounded-l-lg"></div>-->
+                        <div class="p-4 w-full flex items-center justify-between" data-cy="edit-besoin"  routerLink="/addcomp/{{ company.id }}"
+                          style="margin-left: -8%;">
+                          <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full text-white font-bold"
+                              [ngStyle]="{'background-color': company.color}">
+                              {{ company.initiales }}
+                            </div>
+                            <div class="pr-[50px]">
+                              <h3 class="font-semibold">{{ company.name }}</h3>
+                              <p class="text-sm text-gray-500">{{ company.sector}}</p>
+                            </div>
+                          </div>
+                          <div class="flex flex-col">
+                            <p class="text-sm text-gray-500">{{ company.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
 
-
-  
-  <div class="relative" >
-    <!-- Bouton gauche -->
-    <button 
-      (click)="scrollKanban('left')"
-      class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
-      aria-label="Scroll Left">
-      <!-- Tu peux utiliser une icône ou du texte -->
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-  
-    <!-- Conteneur Kanban -->
-    <div #scrollContainer class="kanban-container overflow-x-auto">
-      <div #scrollInner cdkDropListGroup 
-      class="flex space-x-4 pb-4">
-        <div *ngFor="let column of columns" class="w-90 flex-shrink-0 bg-white p-4 rounded-lg shadow-lg h-full flex flex-col">
-          <!-- Titre et contenu de la colonne -->
-          <div class="flex-shrink-0">
-            <div class="flex items-center space-x-2">
-              <span class="w-3 h-3 rounded-full" [ngStyle]="{'background-color': column.color}"></span>
-              <h2 class="font-bold text-lg text-gray-700">
-                {{ column.title }} ({{ column.companies.length }}) <span *ngIf="column.companies.length==0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-              </h2>
-            </div>
-            <div class="h-1 w-full mt-2" [ngStyle]="{'background-color': column.color}"></div>
-          </div>
-  
-          <!-- Liste des besoins -->
-          <div cdkDropList 
-          [cdkDropListData]="column.companies" 
-          (cdkDropListDropped)="drop($event, column.status)" 
-               
-               class="min-h-[100px] p-2 bg-gray-100 rounded-md">
-            <div *ngFor="let company of column.companies" 
-            cdkDrag 
-            
-                 class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between h-24 w-full">
-              <!-- Barre de priorité -->
-              
-  
-              <!-- Contenu principal -->
-              <div class="p-4 w-full flex items-center justify-between" routerLink="/addcomp/{{ company.id }}" style="margin-left: -8%;">
-                <div class="flex items-center space-x-2">
-                  <div class="w-8 h-8 flex items-center justify-center rounded-full text-white font-bold"
-                       [ngStyle]="{'background-color': company.color}">
-                    {{ company.initiales }}
+                            <p class="text-sm text-gray-500 font-semibold">{{ company.country}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h3 class="font-semibold">{{ company.name }}</h3>
-                    <p class="text-sm text-gray-500">{{ company.sector}}</p>
-                  </div>
-                </div>
-  
-                <div class="flex flex-col">
-                  
-                  <p class="text-sm text-gray-500">{{ company.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
                 </div>
               </div>
-  
-              <!-- Bouton historique -->
+              <button (click)="scrollKanban('right')"
+                class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
+                aria-label="Scroll Right">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+
+            <div class="flex flex-col w-full bg-white" *ngIf="mode === 'list'">
+              <div class="w-full flex flex-col">
+                <!-- Table avec en-tête fixe - Structure optimisée -->
+                <div class="overflow-x-auto">
+                  <div class="overflow-y-auto max-h-[60vh]">
+                    <table class="min-w-full divide-y divide-gray-200 bg-white">
+                      <thead class="bg-gray-100 sticky top-0 z-10">
+                        <tr>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[15%]">Titre de societe</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[12%]">Secteur</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[15%]">Status</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[18%]">Creation Date</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Pays</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Telephone</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Email</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody class="text-sm text-gray-700">
+                        <tr *ngFor="let company of liste" class="hover:bg-gray-50">
+                          <td class="px-4 py-3 font-semibold">{{ company.name }}</td>
+                          <td class="px-4 py-3">{{ company.sector }}</td>
+                          <td class="px-4 py-3">
+                            <span class="inline-flex items-center">
+                              <mat-icon style="font-size: 12px; width: 12px; height: 15px;" [ngClass]="{
+                                'badge-danger': company.status === 'Prospect',
+                                'badge-warning': company.status === 'Client',
+                                'badge-success': company.status === 'Client direct',
+                                'badge-info': company.status === 'Fournisseur',
+                                'badge-primary': company.status === 'Partenaire',
+                                'badge-secondary': company.status === 'Piste',
+                                'badge-light': company.status === 'Archivé',
+                                'badge-dark': company.status === 'Client via intermédiaire',
+                                'badge-default': company.status === 'Intermédiaire de facturation'
+                              }">dot</mat-icon>
+                              <span class="ml-1">{{ company.status }}</span>
+                            </span>
+                          </td>
+                          <td class="px-4 py-3">{{ company.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                          <td class="px-4 py-3">{{ company.country }}</td>
+                          <td class="px-4 py-3">{{ company.phone }}</td>
+                          <td class="px-4 py-3">{{ company.email }}</td>
+                          <td class="px-4 py-3">
+                            <button routerLink="/addcomp/{{ company.id }}" data-cy="edit-besoin" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded-full transition">
+                              Ouvrir Fiche
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
               
             </div>
           </div>
         </div>
       </div>
     </div>
-  
-    <!-- Bouton droit -->
-    <button 
-      (click)="scrollKanban('right')"
-      class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full z-10 focus:outline-none"
-      aria-label="Scroll Right">
-      <mat-icon>chevron_right</mat-icon>
-    </button>
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            </div>
-            <div class="relative" *ngIf="mode === 'list'">
-              
-
-
-
-
-
-
-<div class="flex flex-col w-full bg-white" >
-  <div class="w-full flex flex-col">
-    
-    <head>
-      <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        rel="stylesheet"
-      />
-      <!-- Google Fonts -->
-      <link
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-        rel="stylesheet"
-      />
-      <!-- MDB -->
-      <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
-        rel="stylesheet"
-      />
-      <!-- Styles pour tableau avec en-tête fixe -->
-      <style>
-        .table-scroll-container {
-          height: 70vh;
-          overflow-y: auto;
-          position: relative;
-          border-radius: 8px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          margin-top: 10px;
-        }
-        
-        .table-scroll-container table {
-          width: 100%;
-          border-collapse: separate;
-          border-spacing: 0;
-          margin-bottom: 0;
-        }
-        
-        .table-scroll-container thead {
-          position: sticky;
-          top: 0;
-          z-index: 2;
-          background-color: #f8f9fa;
-        }
-        
-        .table-scroll-container th {
-          padding: 12px 15px;
-          border-bottom: 2px solid #dee2e6;
-          font-weight: bold;
-          text-align: left;
-          color: #495057;
-          background-color: #f8f9fa;
-        }
-        
-        .table-scroll-container tbody tr:hover {
-          background-color: rgba(0, 123, 255, 0.05);
-        }
-        
-        .table-scroll-container td {
-          padding: 12px 15px;
-          vertical-align: middle;
-          border-bottom: 1px solid #dee2e6;
-        }
-        
-        /* Pour éviter que l'en-tête ne décale par rapport au corps du tableau */
-        .table-scroll-container thead tr th {
-          box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* S'assurer que tous les éléments s'affichent correctement */
-        .table-scroll-container tbody tr td {
-          white-space: nowrap;
-        }
-      </style>
-    </head>
-    
-    <div class="table-scroll-container">
-      <table class="table align-middle bg-white min-w-full">
-        <thead class="bg-light">
-          <tr>
-            <th>Titre de societe</th>
-            <th>Secteur</th>
-            <th>Status</th>
-            <th>Effectif</th>
-            <th>Pays</th>
-            <th>Telephone</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let company of liste">
-            <td>
-              <div class="ms-3">
-                <p class="fw-bold mb-1">{{ company.name }}</p>
-              </div>
-            </td>
-            <td>
-              <p class="fw-normal mb-1">{{ company.sector }}</p>
-            </td>
-            <td>
-              <span 
-                [ngClass]="{
-                  'badge-danger': company.status === 'Prospect',
-                  'badge-warning': company.status === 'Client',
-                  'badge-success': company.status === 'Client_direct',
-                  'badge-info': company.status === 'Fournisseur',
-                  'badge-primary': company.status === 'Partenaire',
-                  'badge-secondary': company.status === 'Piste',
-                  'badge-light': company.status === 'Archivé',
-                  'badge-dark': company.status === 'Client via intermédiaire',
-                  'badge-default': company.status === 'Intermédiaire de facturation'
-                }">
-                {{ company.status }}
-              </span>
-            </td>
-            <td>{{ company.effective }}</td>
-            <td><p class="text-sm text-gray-500">{{ company.country }}</p></td>
-            <td><p class="text-sm text-gray-500">{{ company.phone }}</p></td>
-            <td>
-              <span class="d-flex"><button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="editCompany(company)" >
-                Ouvrir Fiche
-              </button></span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </div>
 </div>
-
-
-
-
-            </div>
-          </div>
-          
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
 
 
 

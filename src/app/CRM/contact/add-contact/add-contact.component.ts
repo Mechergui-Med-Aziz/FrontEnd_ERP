@@ -46,7 +46,8 @@ export class AddContactComponent implements OnInit{
   
   managers: any[] = ["ilyes","aziz","khaled"];
   typesDomaines: any[] = [];
-  company!: any;
+  company: any;
+  companyStatus: any;
   filteredCompany: any[] | undefined;
   societesPaysList: any[] = [];
   
@@ -85,15 +86,15 @@ export class AddContactComponent implements OnInit{
     { name: "Autre", value: "Autre" }
   ];
   listeEtat: any[] = [
-    { value: 'Prospect', name: 'Prospect', color: 'green' },
-    { value: 'Client', name: 'Client', color: 'red' },
-    { value: 'Client_direct', name: 'Client direct', color: 'blue' },
-    { value: 'Partenaire', name: 'Partenaire', color: 'orange' },
-    { value: 'Piste', name: 'Piste', color: 'purple' },
-    { value: 'Fournisseur', name: 'Fournisseur', color: 'yellow' },
-    { value: 'Archivé', name: 'Archivé', color: 'grey' },
-    { value: 'Intermédiaire de facturation', name: 'Intermédiaire de facturation', color: 'pink'},
-    { value: 'Client via intermédiaire', name: 'Client via intermédiaire', color: 'brown' },
+    { value: 'Prospect', name: 'Prospect',                                        color: "#FFA500" },
+    { value: 'Client', name: 'Client',                                            color : "#000080"},
+    { value: 'Client direct', name: 'Client direct',                              color: "#00FFFF" },
+    { value: 'Partenaire', name: 'Partenaire',                                    color: "#80FF00" },
+    { value: 'Piste', name: 'Piste',                                              color: "#0096AA" },
+    { value: 'Fournisseur', name: 'Fournisseur',                                  color: "#FA0000" },
+    { value: 'Archivé', name: 'Archivé',                                          color: "#FF80FF" },
+    { value: 'Intermédiaire de facturation', name: 'Intermédiaire de facturation',color: "bronw" },
+    { value: 'Client via intermédiaire', name: 'Client via intermédiaire',        color: "gray"   },
     ]
     ;
   
@@ -119,6 +120,7 @@ mode: any;
   DetailsActionForm: FormGroup;
   selectedAction!: any;
   contactBesoins: any[] = [];
+  userRole: any;
 
   constructor(
       private profileService: ProfileService,
@@ -141,12 +143,13 @@ mode: any;
       service: ['', [Validators.required]],
       createdBy: ['', []],
       type: ['', [Validators.required]],
-      status: ['', []],
-      provenance: [null, [Validators.required]],
       
+      provenance: [null, [Validators.required]],
+      otherTools: ['', []],
+      otherDomains: ['', []],
       agency: ['', [Validators.required]],
-      email: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
+      email: ['', [Validators.required , Validators.email]],
+      phone: ['', [Validators.required , Validators.pattern('^[0-9]{8}$') ]], // tunisian phone number format
       address: ['', [Validators.required]],
       postalCode: ['', []],
       city: ['', []],
@@ -186,18 +189,25 @@ mode: any;
     this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
       (user: any) => {
         this.user = user;
+        this.userRole = user.role;
       });
     
     this.modeS="informations"
     this.loadCountries();
-      this.activatedRoute.params.subscribe((params) => {
+    this.activatedRoute.params.subscribe((params) => {
       this.idCompany = params['idCompany'];
       this.idContact = params['idContact'];
+      
       console.log('ID de la société :', this.idCompany); // Debugging line
       console.log('ID du contact hhhh:', this.idContact); // Debugging line
+      console.log('where from:', this.wherefrom); // Debugging line
       
       }
     );
+    this.activatedRoute.queryParams.subscribe((params) => {
+      this.wherefrom = params['c'];
+      console.log('where fromMMMMMMMMMMMMMMMMMMMM:', this.wherefrom);
+    });
     if (this.idCompany) {
       this.mode='add';
       this.loadCompanyData(this.idCompany);
@@ -211,21 +221,44 @@ mode: any;
       // Debugging line
       
     }
+     this.activatedRoute.queryParams.subscribe(params => {
+    if (params['modeS'] == 'besoin') {
+      this.modeS = 'besoins';
+    }
+  });
 
       
   }
+wherefrom:any;
+
+   gotobesoin(){
+    this.router.navigate(['/besoins'], { 
+  queryParams: { 
+    c: 'contact',
+    idC: this.idContact,
+  }
+  
+});
+  }
+
+
   loadCompanyData(id: number) {
     this.compService.getCompById(id).subscribe(
       (company: any) => {
         this.company = company;
+        this.companyStatus = company.status;
        
         });
 
       }
+      contactName: string = '';
+      contactStatus: string = '';
   loadContactData(id: number) {
     this.contactservice.findContactById(id).subscribe(
       (contact: any) => {
         this.contact.patchValue(contact);
+        this.contactName = contact.firstname + ' ' + contact.lastname;
+        this.contactStatus = contact.company.status;
         console.log('le contact:', contact); 
         console.log('Contact company:', contact.company); // Debugging line
         this.company = contact.company;
@@ -246,7 +279,9 @@ mode: any;
         (response: any) => {
           console.log('Contact updated successfully:', response);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contacte mis à jour avec succès' });
-          this.location.back(); // Navigate back to the previous page
+         if(this.wherefrom == 'company'){
+                  this.router.navigate(['/addcomp/'+this.idCompany], { queryParams: { modeS: 'contacts' } });}
+                  else{this.location.back(); }
         },
         (error: any) => {
           console.error('Error updating contact:', error);
@@ -266,7 +301,10 @@ mode: any;
       this.contactservice.createContact(this.contact.value).subscribe(
         (response: any) => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact créé avec succès' });
-          this.router.navigate(['/contact']);
+          console.log('where EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE', this.wherefrom);
+           if(this.wherefrom == 'company'){
+                  this.router.navigate(['/addcomp/'+this.idCompany], { queryParams: { modeS: 'contacts' } });}
+                  else{this.location.back(); }
         },
         (error: any) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la création' });
@@ -517,7 +555,24 @@ mode: any;
   }
 
 }
+retourner() {
+  console.log('return toOOOOOOOOOOOOOOOOO', this.wherefrom); // Debugging line
+  if (this.wherefrom == 'company') {
+    this.router.navigate(['/addcomp/' + this.idCompany], { queryParams: { modeS: 'contacts' } });
+  }
+  
+  this.location.back(); // Navigate back to the previous page
 
 }
+ gotobesoinUpdate(besoin: any) {
+    this.router.navigate(['/besoins'], {
+  queryParams: {
+    besoinIdContact: besoin,
+    contactId: this.idContact,
+  }
+  
+  });
+  console.log('Navigating to besoin update with params::::::::::::::::::', besoin);
+}
 
-
+}

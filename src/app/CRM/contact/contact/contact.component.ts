@@ -25,8 +25,7 @@ import { MatTableModule } from '@angular/material/table';
 import { ToastModule } from 'primeng/toast';
 
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ContactListComponent } from '../contact-list/contact-list.component';
-import { ContactKanbanComponent } from '../contact-kanban/contact-kanban.component';
+
 
 import { ContactsService } from '../../../services/contacts.service';
 
@@ -34,6 +33,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CompServiceService } from '../../../services/comp-service.service';
 import { KanbanCompService } from '../../../services/kanban-comp.service';
 import dayjs from 'dayjs';
+import { forEach } from 'cypress/types/lodash';
 
 
 @Component({
@@ -96,13 +96,13 @@ export class ContactComponent implements OnInit {
     columns: { title: string, statut: string, color:string, contacts: any[] }[] = [
       { title: 'Prospect', statut: 'Prospect', color: "#FFA500", contacts: [] },
       { title: 'Client', statut: 'Client',color : "#000080", contacts: [] },
-      { title: 'Client direct', statut: 'Client_direct',color: "#00FFFF", contacts: [] },
+      { title: 'Client direct', statut: 'Client direct',color: "#00FFFF", contacts: [] },
       { title: 'Partenaire', statut: 'Partenaire',color: "#80FF00", contacts: [] },
       { title: 'Piste', statut: 'Piste',color: "#0096AA", contacts: [] },
       { title: 'Fournisseur', statut: 'Fournisseur',color: "#FA0000", contacts: [] },
       { title: 'Archivé', statut: 'Archivé',color: "#FF80FF", contacts: [] },
-      { title: 'Intermédiaire de facturation', statut: 'Intermédiaire_de_facturation',color: "#FF00FF", contacts: [] },
-      { title: 'Client via intermédiaire', statut: 'Client_via_intermédiaire',color: "#FF00FF", contacts: [] },
+      { title: 'Intermédiaire de facturation', statut: 'Intermédiaire de facturation',color: "brown", contacts: [] },
+      { title: 'Client via intermédiaire', statut: 'Client via intermédiaire',color: "gray", contacts: [] },
     ];
   ngOnInit(): void {
     this.mode="kanban";
@@ -112,6 +112,7 @@ export class ContactComponent implements OnInit {
     this.loadContacts();
     this.listPaginate();
     this.filterForm = this.fb.group({
+      
       company: [''],
       contact: [''],
       dateExact: [''],
@@ -121,7 +122,9 @@ export class ContactComponent implements OnInit {
   }
  
   // Removed duplicate implementation of openFilterDialog
-  drop(event: CdkDragDrop<any[]>) {}
+  drop(event: CdkDragDrop<any[]>) {
+    
+  }
   
 openAddModal() {
   console.log('openAddModal');
@@ -155,11 +158,18 @@ create() {
 loadContacts() {
   this.columns.forEach(column => {
     console.log('Statut:', column.statut); // Debugging line
-    this.contactsService.findContactByStatut(column.statut).subscribe(
+    this.serv.findCompanyByStatus(column.statut).subscribe(
       (response: any) => {
-        console.log('Response:', response); // Debugging line
-        column.contacts = response;
-        this.nbContacts += response.length;
+        response.forEach ((company: any) => {
+this.nbContacts += company.contacts.length;
+company.contacts.forEach((contact: any) => {
+  contact.company = company; // Associer la société au contact
+  console.log('ContactTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT:', contact); // Debugging line
+ column.contacts.push(contact);
+})
+        });
+        
+        
         },
       (error: any) => {
         console.error(`Erreur lors du chargement des contact pour le statut ${column.statut}:`, error);
@@ -306,7 +316,8 @@ editContact(contact: any) {
 
 
   filterContacts(): void {
-    const { company,  dateExact, startDate, endDate } = this.filterForm.value;
+    
+    const { contact ,company,  dateExact, startDate, endDate } = this.filterForm.value;
     let filtered = this.liste;
     console.log('filtered:', this.filterForm.value);
   
@@ -320,6 +331,20 @@ editContact(contact: any) {
           console.log('searchLower:',searchLower);
           const companyName = (contact.company.name || '').toLowerCase();
           return companyName.includes(searchLower);
+        }
+        return false;
+      });
+    }
+    if(this.selectedFilterMethod === 'contact' && contact && contact.trim() !== '') {
+  
+      const searchLower = contact.trim().toLowerCase();
+      console.log('searchLower:',searchLower);
+      filtered = filtered.filter(contact => {
+        if (contact.firstnamename+contact.lastname) {
+          console.log('contact.name:',contact.firstname);
+          console.log('searchLower:',searchLower);
+          const contactName = (contact.firstname+contact.lastname || '').toLowerCase();
+          return contactName.includes(searchLower);
         }
         return false;
       });
@@ -373,6 +398,11 @@ editContact(contact: any) {
       this.filterForm.reset();
       this.ngOnInit();
     }
+  }
+  
+  onDragMoved(event: any): void {
+    // Cette méthode gère les mises à jour de l'interface utilisateur pendant l'opération de glisser-déposer
+    // Elle peut être utilisée pour faire défiler le conteneur lors du glissement près des bords
   }
   
 }

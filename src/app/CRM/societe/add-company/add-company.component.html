@@ -23,20 +23,35 @@
         rel="stylesheet"
       />
 </head>
-<header  class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-10 h-[20%] rounded-lg">
+<header class="fixed top-0 left-[19%] right-6 bg-white shadow border-b p-6 z-50 rounded-lg">
     <div class="flex flex-col sm:flex-row items-center justify-between">
       <!-- Zone titre et navigation -->
       <!-- Zone titre et navigation -->
 <div class="flex-1">
 <h1 *ngIf="mode==='add'"  class="text-3xl pt-[45px] font-extrabold tracking-tight flex items-center">
-  <span  class="material-icons  text-4xl ml-4">group</span>
+  <img src="assets/images/logo/companies.svg" alt="file" class="w-10 h-10">
   <span class="ml-4 font-bold">Nouvelle Société</span>
   
 </h1>
 <h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
-    <span  class="material-icons  text-4xl ml-4">group</span>
+    <img src="assets/images/logo/companies.svg" alt="file" class="w-10 h-10">
     
-    <span  class="ml-4 font-bold">Société Dashboard</span>
+    <span  class="ml-4 font-bold">Fiche Société  <span style="color:#16a34a">{{this.companyName}}</span> </span>
+  </h1>
+  <h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
+    
+    
+    <span  class="ml-4 font-bold" [ngClass]="{
+                                'danger': this.companyStatus=== 'Prospect',
+                                'warning':this.companyStatus === 'Client',
+                                'success':this.companyStatus === 'Client direct',
+                                'info': this.companyStatus === 'Fournisseur',
+                                'primary': this.companyStatus === 'Partenaire',
+                                'secondary': this.companyStatus === 'Piste',
+                                'light': this.companyStatus=== 'Archivé',
+                                'dark': this.companyStatus === 'Client via intermédiaire',
+                                'default': this.companyStatus === 'Intermédiaire de facturation'
+                              }">  {{this.companyStatus}}</span>
   </h1>
 <!-- Liens Synthèse et Actions alignés en bas -->
 <div *ngIf="mode==='edit'" class="flex gap-4 items-end mt-2">
@@ -70,19 +85,22 @@
       <!-- Bouton d'action -->
       <div *ngIf="mode==='edit'" class="mt-4 sm:mt-0 pt-10">
        
-<!--
-        <button *ngIf="modeS=='actions'" [disabled] class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
-          Ajouter Une Action
+
+        <button *ngIf="modeS=='contacts'"  (click)="gotoContactAdd()" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
+          Ajouter un contact
         </button>
--->
+        <button *ngIf="modeS=='besoins'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="gotobesoin()" >
+          Ajouter Un besoin
+        </button>
+
+
         <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" routerLink="/contact">
           Retour
         </button>
       </div>
-    </div>
-  </header>
+    </div>  </header>
   
-  <main class="pt-[100px]  w-full h-full overflow-y-auto h-full px-4 mt-8" *ngIf="modeS === 'informations'">
+  <main class="pt-[160px] w-full h-full overflow-y-auto px-4 mt-8" *ngIf="modeS === 'informations'">
     <div class="flex flex-col md:flex-row gap-4 right-100" >
 <form class="w-full pb-[10px] h-full"  [formGroup]="companyForm" >
     <div class="px-4 w-full sm:flex-col md:flex-row flex">
@@ -93,7 +111,7 @@
                 'bg-green-500  hover:bg-green-600':!companyForm.invalid,
 
             }"
-            [hidden]="user?.role == 'Manager De Production'">
+            [hidden]="this.userRole == 'Manager De Production'">
             <mat-icon class="icon-size-7 text-white hover:text-white self-center">
                 save
             </mat-icon>
@@ -110,15 +128,15 @@
                             </div>
 
                             <input type="text" id="input" class="form-control" placeholder=""
-                                formControlName="name" [readOnly]="user?.role == 'Manager De Production'"  />
+                                formControlName="name" [readOnly]="this.userRole == 'Manager De Production'"  />
                         </div>
                         <div class="flex flex-col">
                             <div class="font-bold text-sm text-gray-500">
                                 Etat *
 
                             </div>
-                            <mat-select class="form-control" formControlName="status" [class.pointer-events-none]="user?.role == 'Manager De Production'"
-                            [class.bg-gray-200]="user?.role == 'Manager De Production'" id="status" type="status" data-cy="status-dropdown">
+                            <mat-select class="form-control" formControlName="status" [class.pointer-events-none]="this.userRole  == 'Manager De Production'"
+                            [class.bg-gray-200]="this.userRole  == 'Manager De Production'" id="status" type="status" data-cy="status-dropdown">
                                 <mat-option *ngFor="let option of societesStatusList" [value]="option.value">
                                     <span class="status-label">
                                        
@@ -136,14 +154,14 @@
                             </div>
 
                             <input type="number" id="input" class="form-control" placeholder="" value="0"
-                                formControlName="effective" [readOnly]="user?.role == 'Manager De Production'"  />
+                                formControlName="effective" [readOnly]="this.userRole  == 'Manager De Production'"  />
                         </div>
                         <div class="">
                             <div class="flex flex-col">
                                 <span class="font-bold text-sm text-gray-500">Secteur *</span>
 
-                                <mat-select class="form-control" formControlName="sector" [class.pointer-events-none]="user?.role == 'Manager De Production'"
-                                [class.bg-gray-200]="user?.role == 'Manager De Production'" data-cy="sector-dropdown">
+                                <mat-select class="form-control" formControlName="sector" [class.pointer-events-none]="this.userRole  == 'Manager De Production'"
+                                [class.bg-gray-200]="this.userRole  == 'Manager De Production'" data-cy="sector-dropdown">
                                     <mat-option *ngFor="
                                             let sector of societesSecteurList
                                         " [value]="sector.value">
@@ -160,15 +178,15 @@
                           </div>
 
                           <input type="text" id="input" class="form-control" placeholder=""
-                              formControlName="filiales"  [readOnly]="user?.role == 'Manager De Production'" />
+                              formControlName="filiales"  [readOnly]="this.userRole  == 'Manager De Production'" />
                       </div>
 
                       <div class="">
                         <div class="flex flex-col">
                             <span class="font-bold text-sm text-gray-500">Provenance *</span>
 
-                            <mat-select class="form-control" formControlName="provenance" [class.pointer-events-none]="user?.role == 'Manager De Production'"
-                            [class.bg-gray-200]="user?.role == 'Manager De Production'" data-cy="provenance-dropdown">
+                            <mat-select class="form-control" formControlName="provenance" [class.pointer-events-none]="this.userRole  == 'Manager De Production'"
+                            [class.bg-gray-200]="this.userRole  == 'Manager De Production'" data-cy="provenance-dropdown">
                                 <mat-option *ngFor="
                                         let sector of societesProvenanceList
                                     " [value]="sector.value">
@@ -186,7 +204,7 @@
                         </div>
 
                         <input type="text" id="input" class="form-control" placeholder=""
-                            formControlName="precise" [readOnly]="user?.role == 'Manager De Production'"  />
+                            formControlName="precise" [readOnly]="this.userRole == 'Manager De Production'"  />
                     </div>
                     
                        
@@ -201,8 +219,8 @@
                             <div class="flex flex-col">
                                 <span class="font-bold text-sm text-gray-500">Agence *</span>
 
-                                <mat-select data-cy="agency-dropdown" class="form-control" formControlName="agency" [class.pointer-events-none]="user?.role == 'Manager De Production'"
-                                [class.bg-gray-200]="user?.role == 'Manager De Production'">
+                                <mat-select data-cy="agency-dropdown" class="form-control" formControlName="agency" [class.pointer-events-none]="this.userRole  == 'Manager De Production'"
+                                [class.bg-gray-200]="this.userRole  == 'Manager De Production'">
                                     <mat-option *ngFor=" let option of agenceList" [value]="option.value" >
                                         <span class="status-label">
                                             {{ option.name }}
@@ -222,26 +240,44 @@
                     <div class="flex flex-col px-2">
                         <div class="flex flex-col">
                           <label for="email" class="font-bold text-sm text-gray-500">Email *</label>
-                              <input type="email" id="email" class="form-control" placeholder="" formControlName="email" [readOnly]="user?.role == 'Manager De Production'" />
+                              <input type="email" id="email" 
+                                class="form-control" 
+                                [ngClass]="{'border-2 border-red-600 bg-red-50': companyForm.get('email')?.invalid && (companyForm.get('email')?.dirty || companyForm.get('email')?.touched)}"
+                                placeholder="" 
+                                formControlName="email" 
+                                [readOnly]="this.userRole == 'Manager De Production'" />
+                            <div *ngIf="companyForm.get('email')?.invalid && (companyForm.get('email')?.dirty || companyForm.get('email')?.touched)" class="text-xs text-red-600 mt-1">
+                              <span *ngIf="companyForm.get('email')?.errors?.['required']">Email est obligatoire</span>
+                              <span *ngIf="companyForm.get('email')?.errors?.['email']">Format d'email invalide</span>
+                            </div>
 
-                            <label for="input" class="font-bold text-sm text-gray-500">Téléphone *</label>
-                            <input type="text" id="input" class="form-control" placeholder="" formControlName="phone" [readOnly]="user?.role == 'Manager De Production'" />
+                            <label for="input" class="font-bold text-sm text-gray-500">Téléphone *</label>
+                            <input type="text" id="input" 
+                              class="form-control" 
+                              [ngClass]="{'border-2 border-red-600 bg-red-50': companyForm.get('phone')?.invalid && (companyForm.get('phone')?.dirty || companyForm.get('phone')?.touched)}"
+                              placeholder="" 
+                              formControlName="phone" 
+                              [readOnly]="this.userRole == 'Manager De Production'" />
+                            <div *ngIf="companyForm.get('phone')?.invalid && (companyForm.get('phone')?.dirty || companyForm.get('phone')?.touched)" class="text-xs text-red-600 mt-1">
+                              <span *ngIf="companyForm.get('phone')?.errors?.['required']">Téléphone est obligatoire</span>
+                              <span *ngIf="companyForm.get('phone')?.errors?.['pattern']">Format de téléphone invalide (8 chiffres)</span>
+                            </div>
 
                            <label for="input" class="font-bold text-sm text-gray-500">Adresse *</label>
-                            <input type="text" id="input" class="form-control" placeholder="" formControlName="address" [readOnly]="user?.role == 'Manager De Production'" 
+                            <input type="text" id="input" class="form-control" placeholder="" formControlName="address" [readOnly]="this.userRole  == 'Manager De Production'" 
                                 value="" />
 
                             <div class="grid grid-cols-3 gap-2">
                                 <div class="flex flex-col">
                                     <label for="input" class="font-bold text-sm text-gray-500">Code postal</label>
                                     <input type="text" id="input" class="form-control" placeholder=""
-                                        formControlName="postalCode" [readOnly]="user?.role == 'Manager De Production'"  />
+                                        formControlName="postalCode" [readOnly]="this.userRole  == 'Manager De Production'"  />
                                 </div>
 
                                 <div class="flex flex-col">
                                     <label for="input" class="font-bold text-sm text-gray-500">Ville</label>
                                     <input type="text" id="input" class="form-control" placeholder=""
-                                        formControlName="city" [readOnly]="user?.role == 'Manager De Production'"  />
+                                        formControlName="city" [readOnly]="this.userRole  == 'Manager De Production'"  />
 
 
                                 </div>
@@ -250,8 +286,8 @@
                                     <span class="font-bold text-sm text-gray-500">Pays</span>
 
                                     
-                                    <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="user?.role == 'Manager De Production'"
-                                    [class.bg-gray-200]="user?.role == 'Manager De Production'">
+                                    <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="this.userRole  == 'Manager De Production'"
+                                    [class.bg-gray-200]="this.userRole == 'Manager De Production'">
                                         <mat-option *ngFor="let option of societesPaysList" [value]="option.name">
                                           <span class="status-label">
                                             {{ option.name }} <!-- Displays flag + country name -->
@@ -276,7 +312,7 @@
                     <div class="relative">
                         <div class="input-container w-full h-30 p-2">
                             <textarea type="text" class="input-field-commentaire" formControlName="informations"
-                                placeholder="Rédigez vos commentaires" [readOnly]="user?.role == 'Manager De Production'" ></textarea>
+                                placeholder="Rédigez vos commentaires" [readOnly]="this.userRole  == 'Manager De Production'" ></textarea>
                         </div>
                     </div>
                 </div>
@@ -292,7 +328,7 @@
 </div>
 </main>
 <!-- Synthèse des contacts -->
-<main class="pt-[100px] pl-[60px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'contacts'">
+<main class="pt-[160px] pl-[5%] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'contacts'">
     <div class="w-full max-w-7xl">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="w-full flex flex-col gap-8">
@@ -307,42 +343,26 @@
                   <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
                     <tr>
                         <th class="px-4 py-6">Nom</th>
-                      <th class="px-4 py-6">Civilité</th>
-                      <th class="px-4 py-6">Status</th>
+                      <th class="px-4 py-6">Fonction</th>
+                      <th class="px-4 py-6">Date de création</th>
                       <th class="px-4 py-6">Créé Par</th>
-                      <th class="px-4 py-6">Manager</th>
+                      <th class="px-4 py-6">Email</th>
                       
-                      <th class="px-4 py-6">Société</th>
+                      <th class="px-4 py-6">Type</th>
                       <th class="px-4 py-6">Téléphone</th>
                       
                      
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let contact of companycontacts" class="hover:bg-gray-50 text-gray-600 text-base" routerLink="/updatecontact/{{ contact.id }}">
-                        <td class="px-4 py-6">{{ contact.firstname}} {{contact.lastname}}</td>
-                      <td class="px-4 py-6 font-semibold">{{ contact.civility }}</td>
-                      <td class="px-4 py-6 font-semibold">
-                        <span 
-                          [ngClass]="{
-                             'badge-danger': contact.status === 'Prospect',
-                              'badge-warning': contact.status === 'Client',
-                              'badge-success': contact.status === 'Client_direct',
-                              'badge-info': contact.status === 'Fournisseur',
-                              'badge-primary': contact.status === 'Partenaire',
-                              'badge-secondary': contact.status === 'Piste',
-                              'badge-light': contact.status === 'Archivé',
-                              'badge-dark': contact.status === 'Client via intermédiaire',
-                              'badge-default': contact.status === 'Intermédiaire de facturation'
-                          
-                          }">
-                          {{ contact.status }}
-                        </span>
-                      </td>
+                    <tr *ngFor="let contact of companycontacts" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotoContact(contact.id)">
+                        <td class="px-4 py-6 font-semibold">{{ contact.firstname}} {{contact.lastname}}</td>
+                      <td class="px-4 py-6 ">{{ contact.function }}</td>
+                      <td class="px-4 py-6 ">{{ contact.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</td>
                       
                       <td class="px-4 py-6">{{contact?.createdBy.firstname}} {{contact?.createdBy.lastname}} </td>
-                      <td class="px-4 py-6">{{contact?.manager?.firstname}} {{contact?.manager?.lastname}}hhhhhhhhhhhhhhhh</td>
-                        <td class="px-4 py-6">{{ this.companyForm.value.name }}</td>
+                      <td class="px-4 py-6">{{contact?.email}}</td>
+                        <td class="px-4 py-6">{{ contact?.type }}</td>
                         <td class="px-4 py-6">{{ contact.phone }}</td>
                      
                       
@@ -362,14 +382,18 @@
 
 <!-- liste des actions -->
 
-  <main class="pt-[100px] pl-[100px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
+  <main class="pt-[160px] pl-[6%] pb-[100px] overflow-y-auto h-full w-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
     <div class="w-full max-w-7xl">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="w-full flex flex-col gap-8">
           <div class="bg-white p-8 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
-              Liste Des Actions
+            <div class="flex "><h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Actions Contact
             </h2>
+            <button  class="bg-green-600 h-[50%] ml-[65%] text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" >
+          Ajouter
+        </button></div>
+
   
             <div class="flex-1 overflow-hidden border rounded-lg">
               <div class="overflow-y-auto max-h-[70vh]">
@@ -382,6 +406,7 @@
                       <th class="px-4 py-6">Manager Responsable</th>
                       <th class="px-4 py-6">Fichiers</th>
                       <th class="px-4 py-6">Date Action</th>
+                      <th class="px-4 py-6">Actions</th>
                      
                     </tr>
                   </thead>
@@ -400,7 +425,16 @@
                         <span *ngIf="action.attachments.length==0">--------</span>
                       </td>
                       <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                      
+                        <td>
+                        <div class="flex space-x-2">
+                          <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action, 'contact')"> 
+                            Edit
+                          </button>
+                          <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action, 'contact')">
+                            Supprimer
+                          </button>
+                        </div>
+                      </td>
                       
                       
                     </tr>
@@ -409,13 +443,73 @@
               </div>
             </div>
           </div>
+
+
+
+            <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <div class="flex "><h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+              Liste Des Actions Besoins
+            </h2>
+            <button  class="bg-green-600 h-[50%] ml-[65%] text-white px-6 py-3 rounded-full shadow" (click)="openActionBesoinAddModal()" >
+          Ajouter
+        </button></div>
+  
+            <div class="flex-1 overflow-hidden border rounded-lg">
+              <div class="overflow-y-auto max-h-[70vh]">
+                <table class="min-w-full table-auto text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>
+                      <th class="px-4 py-6">Type d'action</th>
+                      <th class="px-4 py-6">Besoin</th>
+                      <th class="px-4 py-6">Créé Par</th>
+                      <th class="px-4 py-6">Manager Responsable</th>
+                      <th class="px-4 py-6">Fichiers</th>
+                      <th class="px-4 py-6">Date Action</th>
+                      <th class="px-4 py-6">Actions</th>
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let action of BesoinActions" class="hover:bg-gray-50 text-gray-600 text-base">
+                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
+                      <td class="px-4 py-6">{{ action.besoinId.title }}</td>
+                      <td class="px-4 py-6">{{ action.createdBy.firstname }} {{ action.createdBy.lastname }}</td>
+                      <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td>
+                      <td class="px-4 py-6">
+                        <ul class="list-disc list-inside space-y-1" *ngIf="action?.attachments?.length!=0">
+                          <li *ngFor="let file of action.attachments">
+                            {{ file.fileName }}
+                          </li>
+                        </ul>
+                        <span *ngIf="action.attachments.length==0">--------</span>
+                      </td>
+                      <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                     <td>
+                        <div class="flex space-x-2">
+                          <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action, 'besoin')">
+                            Edit
+                          </button>
+                          <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action, 'besoin')">
+                            Supprimer
+                          </button>
+                        </div>
+                      </td>
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
         </div>      
       </div>
     </div>
   </main>
 
 
-  <main class="pt-[100px] pl-[80px] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'besoins'">
+  <main class="pt-[160px] pl-[6%] pb-[100px] overflow-y-auto h-full w-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'besoins'">
     <div class="w-full max-w-7xl">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="w-full flex flex-col gap-8">
@@ -439,7 +533,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let besoin of companyBesoins" class="hover:bg-gray-50 text-gray-600 text-base" routerLink="/besoins/{{ besoin.id }}">
+                    <tr *ngFor="let besoin of companyBesoins" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotobesoinUpdate(besoin.id)" >
                       <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
                       <td class="px-4 py-6">{{ besoin.contact }}</td>
                       <td class="px-4 py-6">{{ besoin.status }}</td>
@@ -470,5 +564,302 @@
         </div>      
       </div>
     </div>
-  </main>
+
+
+      </main>  <div *ngIf="isAddActionBesoinModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-[100]">
+    <div class="bg-white p-6 rounded-lg w-1/3 shadow-2xl max-h-[90vh] overflow-auto">
+      <h2 class="text-2xl font-bold mb-4 text-center">Ajout d'une Action Besoin</h2>
+      <form [formGroup]="actionBesoinAddForm" (ngSubmit)="addActionBesoin()">
+        <div class="mb-4">
+          <label for="description" class="block mb-1">Description :</label>
+          <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" rows="3"></textarea>
+        </div>        <div class="mb-4">
+          <label for="type" class="block mb-1">Besoin</label>
+          <select id="type" formControlName="besoinId" class="w-full p-2 mt-1 border rounded">
+              <option *ngFor="let besoin of companyBesoins" [ngValue]="besoin.id">{{ besoin.title}} </option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="type" class="block mb-1">Type d'Action</label>
+          <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
+              <option *ngFor="let type of typeActionsBesoin" [ngValue]="type.name">{{ type.name}}</option>
+          </select>
+        </div>
+  
+        <div class="mb-4" [hidden]="this.userRole== 'Manager De Production'">
+          <label for="manager" class="block mb-1">Manager Responsable </label>
+          <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded" 
+            [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+            [class.bg-gray-200]="this.userRole== 'Manager De Production'"
+            >
+  
+            <option *ngFor="let manager of productionManagers" [ngValue]="manager">
+              {{ manager.firstname }} {{ manager.lastname }}
+            </option>
+          </select>
+        </div>
+      
+        <div class="mb-4">
+          <label for="files" class="block mb-1">Fichiers :</label>
+          <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded">
+          <span class="text-sm text-gray-700">
+            Max : 10 fichiers de 10Mo max
+          </span>
+        </div>        <div class="flex justify-end gap-4 mt-6">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors">Enregistrer</button>
+        <button type="button" (click)="closeActionBesoinAddModal()" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded shadow-md transition-colors">Annuler</button>
+        </div>
+      </form>
+    </div>  </div>  <div *ngIf="isAddActionModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-[100]">
+    <div class="bg-white p-6 rounded-lg w-1/3 shadow-2xl max-h-[90vh] overflow-auto">
+      <h2 class="text-2xl font-bold mb-4 text-center">Ajout d'une Action Contact</h2>
+      <form [formGroup]="actionAddForm" (ngSubmit)="addAction()">
+        <div class="mb-4">
+          <label for="description" class="block mb-1">Description :</label>
+          <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" rows="3"></textarea>
+        </div>
+  
+        <div class="mb-4">
+          <label for="type" class="block mb-1">Contact</label>
+          <select id="type" formControlName="contactId" class="w-full p-2 mt-1 border rounded">
+              <option *ngFor="let contact of companycontacts" [ngValue]="contact.id">{{ contact.firstname}} {{ contact.lastname }}</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="type" class="block mb-1">Type d'Action</label>
+          <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
+              <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name}}</option>
+          </select>
+        </div>
+  
+        <div class="mb-4" [hidden]="this.userRole== 'Manager De Production'">
+          <label for="manager" class="block mb-1">Manager Responsable </label>
+          <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded" 
+            [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+            [class.bg-gray-200]="this.userRole== 'Manager De Production'"
+            >
+  
+            <option *ngFor="let manager of productionManagers" [ngValue]="manager">
+              {{ manager.firstname }} {{ manager.lastname }}
+            </option>
+          </select>
+        </div>
+      
+        <div class="mb-4">
+          <label for="files" class="block mb-1">Fichiers :</label>
+          <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded">
+          <span class="text-sm text-gray-700">
+            Max : 10 fichiers de 10Mo max
+          </span>
+        </div>
+  
+        <div class="flex justify-end gap-4 mt-6">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors">Enregistrer</button>
+        <button type="button" (click)="closeActionAddModal()" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded shadow-md transition-colors">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-gray-700 bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg w-1/3 p-6">
+      <h2 class="text-2xl font-bold mb-4 bg-white text-black">Etes-Vous Sûr de supprimer l'action</h2>
+      
+      <div class="flex justify-end gap-4">
+        <button type="button" class="bg-green-400 text-white px-4 py-2 rounded" (click)="closeDeleteModal()">Non</button>
+        <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"(click)="deleteAction(deletedAction.id)">Oui</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal de details d'action  -->  <div *ngIf="isActionDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-50">
+      <div class="bg-white p-6 rounded-lg w-1/3">
+        <h2 class="text-xl font-bold mb-4">Détails d'Action Besoin</h2>
+        <div class="max-h-[85vh] overflow-y-auto">
+        <form [formGroup]="DetailsActionForm">
+          <div hidden>
+            <label for="id">ID</label>
+            <input id="id" formControlName="id" class="w-full p-2 mt-1 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label for="type">Type</label>
+            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'" />
+          </div>
+          <div class="mb-4">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'"></textarea>
+          </div>
+          <div class="mb-4">
+            <label for="creationDate">Date De Création</label>
+            <input id="creationDate" formControlName="dateAction" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+          <div class="mb-4">
+            <label for="createdBy">Créé Par</label>
+            <input id="createdBy" formControlName="createdBy" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+
+          <div class="mb-4">
+            <label for="manager">Manager Responsable</label>
+          <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
+          [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+          [class.bg-gray-200]="this.userRole== 'Manager De Production'">
+
+          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
+            {{ manager.firstname }} {{ manager.lastname }}
+          </option>
+        </select>
+
+      </div>
+      
+    
+          <!-- Section affichant les fichiers existants sous forme de liens cliquables -->
+          <div class="mb-4">
+            <label class="block">Fichiers déjà joints :</label>
+            <ul class="list-disc list-inside space-y-1">
+              <li *ngFor="let file of selectedAction.attachments">
+                <!-- Ici, on concatène la base URL du serveur avec le chemin du fichier. Adaptez l’URL selon votre configuration -->
+                <a [attr.download]="file.fileName" [href]="'http://localhost:8080/api/action-besoin/files/' + file.filePath.replace('uploads\\', '')" target="_blank" class="text-blue-500 hover:underline">
+                    {{ file.fileName }}
+                  </a>
+              </li>
+            </ul>
+            <span class="text-sm text-gray-700">
+              Téléchargez les fichiers avant de joindre de nouveaux fichiers si besoin.
+            </span>
+          </div>
+    
+          <!-- Section pour joindre de nouveaux fichiers -->
+          <div class="mb-4">
+            <label for="files" class="block">Joindre de nouveaux fichiers :</label>
+            <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'">
+            <span class="text-sm text-gray-700">
+              NB : La jointure de fichiers supprimera les anciens fichiers. Si vous souhaitez les conserver, veuillez les télécharger.
+            </span>
+          </div>
+    
+          <div class="flex justify-end gap-4 mt-4">
+            <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeDetailsActionModal()">Annuler</button>
+            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="EditAction()" [disabled]=" this.userRole=='Manager De Production'">
+              Sauvegarder
+            </button>
+          </div>
+        </form>
+      </div>
+      </div>
+
+
+    </div>  <div *ngIf="isActionCrmDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-50">
+      <div class="bg-white p-6 rounded-lg w-1/3">
+        <h2 class="text-xl font-bold mb-4">Détails d'Action Contact</h2>
+        <div class="max-h-[85vh] overflow-y-auto">
+        <form [formGroup]="DetailsActionCrmForm">
+          <div hidden>
+            <label for="id">ID</label>
+            <input id="id" formControlName="id" class="w-full p-2 mt-1 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label for="type">Type</label>
+            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'" />
+          </div>
+          <div class="mb-4">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'"></textarea>
+          </div>
+          <div class="mb-4">
+            <label for="creationDate">Date De Création</label>
+            <input id="creationDate" formControlName="dateAction" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+          <div class="mb-4">
+            <label for="createdBy">Créé Par</label>
+            <input id="createdBy" formControlName="createdBy" class="w-full p-2 mt-1 border rounded" readonly />
+          </div>
+
+          <div class="mb-4">
+            <label for="manager">Manager Responsable</label>
+          <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
+          [class.pointer-events-none]="this.userRole == 'Manager De Production'"
+          [class.bg-gray-200]="this.userRole== 'Manager De Production'">
+
+          <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
+            {{ manager.firstname }} {{ manager.lastname }}
+          </option>
+        </select>
+
+      </div>
+      
+    
+          <!-- Section affichant les fichiers existants sous forme de liens cliquables -->
+          <div class="mb-4">
+            <label class="block">Fichiers déjà joints :</label>
+            <ul class="list-disc list-inside space-y-1">
+              <li *ngFor="let file of selectedAction.attachments">
+                <!-- Ici, on concatène la base URL du serveur avec le chemin du fichier. Adaptez l’URL selon votre configuration -->
+                <a [attr.download]="file.fileName" [href]="'http://localhost:8080/api/action-crm/files/' + file.filePath.replace('uploads\\', '')" target="_blank" class="text-blue-500 hover:underline">
+                    {{ file.fileName }}
+                  </a>
+              </li>
+            </ul>
+            <span class="text-sm text-gray-700">
+              Téléchargez les fichiers avant de joindre de nouveaux fichiers si besoin.
+            </span>
+          </div>
+    
+          <!-- Section pour joindre de nouveaux fichiers -->
+          <div class="mb-4">
+            <label for="files" class="block">Joindre de nouveaux fichiers :</label>
+            <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'">
+            <span class="text-sm text-gray-700">
+              NB : La jointure de fichiers supprimera les anciens fichiers. Si vous souhaitez les conserver, veuillez les télécharger.
+            </span>
+          </div>
+    
+          <div class="flex justify-end gap-4 mt-4">
+            <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeDetailsActionModal()">Annuler</button>
+            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="EditAction()" [disabled]=" this.userRole=='Manager De Production'">
+              Sauvegarder
+            </button>
+          </div>
+        </form>
+      </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-700 bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50">
+  <div class="bg-white rounded-2xl w-1/3 p-8 shadow-lg border-t-4 border-green-500 animate-fade-in">
+
+    <div class="flex flex-col items-center">
+
+      <div class="text-green-500 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <h2 class="text-2xl font-bold text-green-600 mb-2 text-center">
+        Succès !
+      </h2>
+
+      <p class="text-gray-700 text-center mb-6">
+        {{ message }}
+      </p>
+
+      <div class="flex justify-center">
+        <button type="button" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg" (click)="closeModal()">
+          Ok
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
 <p-toast />

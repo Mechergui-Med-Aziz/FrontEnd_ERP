@@ -1,5 +1,5 @@
 import { Component , ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragMove, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -25,8 +25,8 @@ import { MatTableModule } from '@angular/material/table';
 import { ToastModule } from 'primeng/toast';
 import { CompServiceService } from '../../../services/comp-service.service';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
-import { CompanyKanbanComponent } from "../company-kanban/company-kanban.component";
-import { CompanyListComponent } from "../company-list/company-list.component";
+
+
 import { ContactsService } from '../../../services/contacts.service';
 import { Router, RouterModule } from '@angular/router';
 import dayjs from 'dayjs';
@@ -39,7 +39,7 @@ import dayjs from 'dayjs';
     MatTooltip,RouterModule,
     MatFormFieldModule, MatIcon,
     MatInputModule,
-    ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatLabel, MatButtonModule, CompanyKanbanComponent, CompanyListComponent],
+    ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatLabel, MatButtonModule],
    
    
   templateUrl: './company.component.html',
@@ -71,27 +71,62 @@ switchMode($event: MatButtonToggleChange) {
       }
     }
   
-    
-    
+    // Properties for scroll behavior
+    private scrollThreshold = 50; // Distance from edge to trigger scroll
+    private scrollStep = 15; // Scroll amount per event
+
+   onDragMoved(event: CdkDragMove<any>): void {
+      const container = this.scrollContainer.nativeElement;
+      const containerRect = container.getBoundingClientRect();
+      const pointerX = event.pointerPosition.x;
+  
+      if (pointerX < containerRect.left + this.scrollThreshold) {
+        container.scrollLeft -= this.scrollStep;
+      }
+      else if (pointerX > containerRect.right - this.scrollThreshold) {
+        container.scrollLeft += this.scrollStep;
+      }
+    }
   
   
     columns: { title: string, status: string, color:string, companies: any[] }[] = [
-      { title: 'Prospect', status: 'Prospect', color: "#FFA500", companies: [] },
-      { title: 'Client', status: 'Client',color : "#000080", companies: [] },
-      { title: 'Client direct', status: 'Client_direct',color: "#00FFFF", companies: [] },
-      { title: 'Partenaire', status: 'Partenaire',color: "#80FF00", companies: [] },
-      { title: 'Piste', status: 'Piste',color: "#0096AA", companies: [] },
-      { title: 'Fournisseur', status: 'Fournisseur',color: "#FA0000", companies: [] },
-      { title: 'Archivé', status: 'Archivé',color: "#FF80FF", companies: [] },
-      { title: 'Intermédiaire de facturation', status: 'Intermédiaire_de_facturation',color: "#FF00FF", companies: [] },
-      { title: 'Client via intermédiaire', status: 'Client_via_intermédiaire',color: "#FF00FF", companies: [] },
+      { title: 'Prospect', status: 'Prospect',                                        color: "#FFA500", companies: [] },
+      { title: 'Client', status: 'Client',                                            color : "#000080", companies: [] },
+      { title: 'Client direct', status: 'Client direct',                              color: "#00FFFF", companies: [] },
+      { title: 'Partenaire', status: 'Partenaire',                                    color: "#80FF00", companies: [] },
+      { title: 'Piste', status: 'Piste',                                              color: "#0096AA", companies: [] },
+      { title: 'Fournisseur', status: 'Fournisseur',                                  color: "#FA0000", companies: [] },
+      { title: 'Archivé', status: 'Archivé',                                          color: "#FF80FF", companies: [] },
+      { title: 'Intermédiaire de facturation', status: 'Intermédiaire de facturation',color: "brown", companies: [] },
+      { title: 'Client via intermédiaire', status: 'Client via intermédiaire',        color: "gray", companies: [] },
     ];
+    companyForm!: FormGroup;
   
   constructor(private companyService: CompServiceService, private fb: FormBuilder,
     private contactsService: ContactsService, 
    private messageService: MessageService,
           private router: Router,
-          private dialog: MatDialog, ) { }
+          private dialog: MatDialog, ) {
+             this.companyForm = this.fb.group({
+                  name: ['', []],
+                  status: ['', []],
+                  effective: [1, []],
+                  sector: [null, []],
+                  provenance : [null, []],
+                  precise : ['', []],
+                  filiales : [null, []],
+                  email : ['', []],
+                  agency: ['', []],
+                  phone: ['', []],
+                  address: ['', []],
+                  postalCode: ['', []],
+                  city: ['', []],
+                  country: ['', []],
+                  informations: ['', []],
+                  creationDate: ['', []],
+                  createdBy: ['', []],
+                });
+           }
   
   ngOnInit(): void {
     this.mode="kanban";
@@ -156,33 +191,36 @@ switchMode($event: MatButtonToggleChange) {
         event.previousIndex,
         event.currentIndex
       );
+      this.companyForm.patchValue({
+        name: movedItem.name,
+        status: newStatus,
+        effective: movedItem.effective,
+        sector: movedItem.sector,
+        provenance: movedItem.provenance,
+        precise: movedItem.precise,
+        filiales: movedItem.filiales,
+        email: movedItem.email,
+        agency: movedItem.agency,
+        phone: movedItem.phone,
+        address: movedItem.address,
+        postalCode: movedItem.postalCode,
+        city: movedItem.city,
+        country: movedItem.country,
+        informations: movedItem.informations,
+        creationDate: movedItem.creationDate,
+        createdBy: movedItem.createdBy
+      });
+  
+      
       
   
-      movedItem.status = newStatus;
-      this.companycontacts = movedItem.contacts;
-  
-      console.log('societe déplacé:', movedItem);
+      console.log('societe déplacé11111111:', movedItem);
       console.log('Nouveau statut:', newStatus);
-      this.companyService.updateCompanystatus(movedItem.id,movedItem).subscribe(
+
+      this.companyService.updateCompanystatus(movedItem.id,this.companyForm.value).subscribe(
         (response: any) => {
           console.log(`societe ${movedItem.id} mis à jour avec le statuttttttttttttttttttttttttttttttttttttt ${newStatus}`);
-          this.companycontacts.forEach((element: any) => {
-            console.log('Contact hahah :', element);
-            console.log('ID du contact:', element.id); // Debugging line
-            console.log('Statut du societe :', newStatus); // Debugging line
-            this.contactsService.updateContactStatut(element.id,newStatus).subscribe(
-              (response: any) => {
-                console.log(`contact ${element.lastname} mis à jour avec le statut ${newStatus}`);
-                this.ngOnInit();
-              },
-              (error: any) => {
-                console.error(`Erreur lors de la mise à jour du contact ${element.id}`, error);
-              }
-            );
-           
-      
-            
-          });
+          
           this.ngOnInit();
         },
         (error: any) => {

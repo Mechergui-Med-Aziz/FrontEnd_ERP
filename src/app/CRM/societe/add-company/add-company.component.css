@@ -14,7 +14,10 @@
     :host {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100vh;
     align-items: flex-start;
+    position: relative;
   }
   
   .mat-mdc-text-field-wrapper .mdc-text-field .mdc-text-field--filled mdc-text-field--no-label {
@@ -45,6 +48,78 @@
     border-radius: 50%;
     display: inline-block;
     margin-right: 8px;
+  }
+  
+  /* Style pour le conteneur principal responsive */
+  .main-container {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Style pour assurer que le contenu s'adapte au zoom */
+  .responsive-content {
+    width: 100%;
+    height: auto;
+    font-size: 1rem; /* Taille de police de base */
+    line-height: 1.5;
+    transform-origin: top left;
+  }
+
+  /* Media query pour ajuster l'échelle en fonction de la taille d'écran */
+  @media (max-width: 768px) {
+    .responsive-content {
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Media query pour adaptation au zoom */
+  @media (min-resolution: 1.25dppx) {
+    .responsive-content {
+      zoom: 0.8;
+    }
+  }
+
+  @media (min-resolution: 1.5dppx) {
+    .responsive-content {
+      zoom: 0.7;
+    }
+  }
+
+  @media (min-resolution: 2dppx) {
+    .responsive-content {
+      zoom: 0.5;
+    }
+  }
+
+  /* Assurer que le contenu reste lisible sur petits écrans */
+  @media (max-width: 640px) {
+    .responsive-content {
+      font-size: 0.85rem;
+    }
+
+    .text-3xl {
+      font-size: 1.5rem !important;
+    }
+
+    .text-2xl {
+      font-size: 1.2rem !important;
+    }
+  }
+
+  /* Style pour assurer que les formulaires s'adaptent bien */
+  form {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Style pour garantir que les éléments enfants héritent de l'échelle adaptative */
+  .responsive-content * {
+    max-width: 100%;
   }
   
   /* Container for input and label */
@@ -84,26 +159,12 @@
     border-width: 1px;
   }
   
-  
-  
-  
   /* Show the line when the input field is hovered */
   input:hover {
     outline: 1px solid #4597b6;
     border-color: #4597b6; /* Color for hover */
     border-width: 1px;
   }
-  
- 
-  
-  
-  
-  
-  
-  
- 
-  
-  
   
   .span-label {
     top: 10px;
@@ -121,7 +182,6 @@
     pointer-events: none; /* Prevent icon from blocking input field clicks */
   }
   
-  
   .floating-label-icon {
     position: absolute;
     pointer-events: none;
@@ -134,19 +194,6 @@
       font-size 0.3s ease-in-out, 
       color 0.3s ease-in-out;
   }
-  
-  
-
-  
-
-  
-  
-  
-  
-  
-  
-  
-
   
   .input-field-commentaire {
   
@@ -169,12 +216,104 @@
     outline:1px solid #FFC107;
   }
   
-  
-  
-  
   .upload-file-label{
   
     font-size: 12px;
     color: #778ca2;
   
   }
+
+  /* Styles pour améliorer la mise à l'échelle des formulaires */
+  .form-group, .form-control, .input-group {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Garantir que les boutons et les contrôles s'adaptent à la taille de l'écran */
+  button, 
+  select, 
+  input, 
+  textarea {
+    transform-origin: left top;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Garantir que les textes restent lisibles à différentes échelles */
+  h1, h2, h3, h4, h5, h6, p, label, span {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  /* Assurer que les colonnes et les conteneurs s'adaptent également */
+  .row, .col, .container, .container-fluid {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Style pour assurer que la hauteur du contenu s'étend sur toute la page */
+  .content-wrapper {
+    min-height: calc(100vh - 80px); /* 80px est une estimation pour le header */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  /* Badge styles for list view */
+.danger {
+ 
+  color: #FFA500;
+  
+}
+
+.warning {
+  
+  color: #000080;
+ 
+}
+
+.success {
+ 
+  color: #00FFFF;
+
+}
+
+.info {
+ 
+  color: #FA0000;
+ 
+}
+
+.primary {
+ 
+  color: #80FF00;
+}
+
+.secondary {
+  
+  color: #0096AA;
+  
+}
+
+.light {
+  
+  color: #FF80FF;
+ 
+}
+
+.dark {
+ 
+  color: brown;
+  
+}
+
+.default {
+
+  color: gray;
+
+}
