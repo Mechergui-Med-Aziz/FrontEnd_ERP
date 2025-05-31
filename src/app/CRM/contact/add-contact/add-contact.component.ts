@@ -198,7 +198,7 @@ mode: any;
       this.idCompany = params['idCompany'];
       this.idContact = params['idContact'];
       
-      console.log('ID de la société :', this.idCompany); // Debugging line
+      console.log('ID de la société  :', this.idCompany); // Debugging line
       console.log('ID du contact hhhh:', this.idContact); // Debugging line
       console.log('where from:', this.wherefrom); // Debugging line
       
@@ -261,6 +261,7 @@ wherefrom:any;
         this.contact.patchValue(contact);
         this.contactName = contact.firstname + ' ' + contact.lastname;
         this.contactStatus = contact.company.status;
+        this.idCompany = contact.company.id;
         console.log('le contact:', contact); 
         console.log('Contact company:', contact.company); // Debugging line
         this.company = contact.company;
@@ -563,8 +564,10 @@ retourner() {
   if (this.wherefrom == 'company') {
     this.router.navigate(['/addcomp/' + this.idCompany], { queryParams: { modeS: 'contacts' } });
   }
+
   
-  this.location.back(); // Navigate back to the previous page
+  
+  this.router.navigate(['/contact']) ; // Navigate back to the previous page
 
 }
  gotobesoinUpdate(besoin: any) {
