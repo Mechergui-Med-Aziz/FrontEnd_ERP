@@ -479,9 +479,7 @@ this.activatedRoute.queryParams.subscribe(params => {
           console.error('erreur lors de l\'ajout de besoin:', error);
         }
       );
-      if (this.r =='company'||this.r=='contact') {
-        this.location.back();
-      }
+     
       if (this.r =='company') {  
                   this.router.navigate(['/addcomp/'+this.comp], { queryParams: { modeS: 'besoin' } });
                 }else if (this.r=='contact') {

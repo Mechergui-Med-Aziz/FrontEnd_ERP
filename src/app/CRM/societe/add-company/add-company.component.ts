@@ -254,10 +254,12 @@ ngOnInit(): void {
   // Récupérer l'ID de l'URL si on est en mode édition
   this.activatedRoute.params.subscribe(params => {
     if (params['id']) {
-      console.log("AHAHHAHAHAHHAHHAHHAHAHAHHAAHAHAHHAHAHAHAHHAHHAAHAHAHHAHA",params['id']);
+     
       this.idCompany = params['id'];
       console.log("idCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYUUUUUUUUUUUUUUUUU",this.idCompany);
+      
       this.loadCompanyData(this.idCompany);
+      console.log("HHHHHHHEEEERRREEEEEE", this.companyBesoins);
       console.log("COMPANY DATAAAAAAAAAAAAAAAAAAAAAAAAAA",this.companyForm.value);
     }
   });
@@ -463,7 +465,8 @@ fillActionCrmDetailsForm(action: any) {
   companyName: string = '';
   companyStatus: string = '';
 loadCompanyData(id: number) {
-  this.companyBesoins= [];
+  this.companyBesoins = []; // Réinitialiser la liste des besoins
+ console.log("besins company first YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYUUUUUUUUUUUUUUUUU",this.companyBesoins);
   this.compService.getCompById(id).subscribe(
     (company: any) => {
        // Assurez-vous que contacts est un tableau
@@ -496,11 +499,13 @@ loadCompanyData(id: number) {
 
                     
                   );
+                  
                   this.besoinsService.findBesoinsById(action.besoinId).subscribe(
                     (besoinDetails: any) => {
+                      
                       action.besoinId = besoinDetails;
-
-                      this.BesoinActions.push(action);
+                      
+                      this.BesoinActions.push(action); // Ajoutez l'action chargée à la liste des actions du besoin
                     },(error :any) => {
                       console.error('Erreur lors de la récupération de l’utilisateur pour l’action besoin ', error);
                     }
@@ -597,7 +602,7 @@ loadCompanyData(id: number) {
       console.error('Error loading company data:', error);
     }
   );
-  
+  console.log('Company besoinssSSSSSSSSS:', this.companyBesoins);
   console.log('Company contacts:', this.companycontacts);
   console.log('Company actionssssssssssssssssssssss:', this.companyActions); // Debugging line
 }

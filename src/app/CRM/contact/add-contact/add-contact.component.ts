@@ -216,6 +216,7 @@ mode: any;
       this.mode='edit';
       this.loadActions(this.idContact);
       this.loadContactData(this.idContact);
+      
 
       this.loadProductionManagers();
       // Debugging line
@@ -256,6 +257,7 @@ wherefrom:any;
   loadContactData(id: number) {
     this.contactservice.findContactById(id).subscribe(
       (contact: any) => {
+        this.companyStatus = contact.company.status;
         this.contact.patchValue(contact);
         this.contactName = contact.firstname + ' ' + contact.lastname;
         this.contactStatus = contact.company.status;
