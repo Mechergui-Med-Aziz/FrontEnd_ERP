@@ -402,7 +402,7 @@ switchMode($event: MatButtonToggleChange) {
         
         
           this.columns.forEach(column => {
-            column.companies = filtered.filter(contact => contact.status === column.status);
+            column.companies = filtered.filter(company => company.status === column.status);
           });
         
           

@@ -187,17 +187,17 @@
                           <td class="px-4 py-3">
                             <span class="inline-flex items-center">
                               <mat-icon style="font-size: 12px; width: 12px; height: 15px;" [ngClass]="{
-                                'badge-danger': contact.status === 'Prospect',
-                                'badge-warning': contact.status === 'Client',
-                                'badge-success': contact.status === 'Client_direct',
-                                'badge-info': contact.status === 'Fournisseur',
-                                'badge-primary': contact.status === 'Partenaire',
-                                'badge-secondary': contact.status === 'Piste',
-                                'badge-light': contact.status === 'Archivé',
-                                'badge-dark': contact.status === 'Client via intermédiaire',
-                                'badge-default': contact.status === 'Intermédiaire de facturation'
+                                'badge-danger': contact.company.status === 'Prospect',
+                                'badge-warning': contact.company.status === 'Client',
+                                'badge-success': contact.company.status === 'Client_direct',
+                                'badge-info': contact.company.status === 'Fournisseur',
+                                'badge-primary': contact.company.status === 'Partenaire',
+                                'badge-secondary': contact.company.status === 'Piste',
+                                'badge-light': contact.company.status === 'Archivé',
+                                'badge-dark': contact.company.status === 'Client via intermédiaire',
+                                'badge-default': contact.company.status === 'Intermédiaire de facturation'
                               }">dot</mat-icon>
-                              <span class="ml-1">{{ contact.status }}</span>
+                              <span class="ml-1">{{ contact.company.status }}</span>
                             </span>
                           </td>
                           <td class="px-4 py-3">{{ contact.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>

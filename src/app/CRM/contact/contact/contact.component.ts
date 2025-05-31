@@ -33,7 +33,15 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CompServiceService } from '../../../services/comp-service.service';
 import { KanbanCompService } from '../../../services/kanban-comp.service';
 import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { forEach } from 'cypress/types/lodash';
+
+// Extend dayjs with required plugins
+dayjs.extend(isBetween);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 
 @Component({
@@ -164,8 +172,10 @@ loadContacts() {
 this.nbContacts += company.contacts.length;
 company.contacts.forEach((contact: any) => {
   contact.company = company; // Associer la société au contact
+  let contactss:any[] = [];
+  contactss.push(contact);
   console.log('ContactTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT:', contact); // Debugging line
- column.contacts.push(contact);
+ column.contacts=contactss;
 })
         });
         
@@ -239,7 +249,7 @@ listPaginate() {
       (response: any) => {
           this.liste = response;
           this.dataSource = this.liste;
-          console.log('Liste des contact:', this.liste);
+          console.log('Liste des contactAAAAAAAAAAAAAAAAAAA:', this.liste);
       },
       (error: any) => { console.error('Erreur lors de la récupération des sociétés:', error); }
   );  
@@ -319,6 +329,7 @@ editContact(contact: any) {
     
     const { contact ,company,  dateExact, startDate, endDate } = this.filterForm.value;
     let filtered = this.liste;
+    console.log('filterContacts called DDDDDDDDDDEDED  ' ,this.liste);
     console.log('filtered:', this.filterForm.value);
   
     if(this.selectedFilterMethod === 'company' && company && company.trim() !== '') {
@@ -327,7 +338,7 @@ editContact(contact: any) {
       console.log('searchLower:',searchLower);
       filtered = filtered.filter(contact => {
         if (contact.company.name) {
-          console.log('besoin.contact.company.name:',contact.company.name);
+          console.log('besoin.contact.company.nameEEEEEEEEEEE:',contact.company.name);
           console.log('searchLower:',searchLower);
           const companyName = (contact.company.name || '').toLowerCase();
           return companyName.includes(searchLower);
@@ -377,7 +388,7 @@ editContact(contact: any) {
   
   
     this.columns.forEach(column => {
-      column.contacts = filtered.filter(contact => contact.status === column.statut);
+      column.contacts = filtered.filter(contact => contact.company.status === column.statut);
     });
   
     
