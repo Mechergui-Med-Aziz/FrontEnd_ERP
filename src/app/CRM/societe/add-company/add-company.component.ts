@@ -464,13 +464,16 @@ fillActionCrmDetailsForm(action: any) {
   companyName: string = '';
   companyStatus: string = '';
   loadCompanyData(id: number) {
+    console.log("idCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYAAAA33",id)
     // ✅ Réinitialisation propre des tableaux
     this.companyBesoins = [];
     this.BesoinActions = [];
     this.companyActions = [];
+    this.companycontacts = [];
   
     this.compService.getCompById(id).subscribe(
       (company: any) => {
+        console.log("company dataAAAAAAAAAAAAAAAAAAAAAAAAAAA333",company)
         this.companyForm.patchValue(company);
         this.companyName = company.name;
         this.companyStatus = company.status;
@@ -624,8 +627,8 @@ if(tab=='besoins' || tab=='actions'){
   
 });
   }
-  gotoContactAdd(){
-    this.router.navigate(['/addcontact/'], { 
+  gotoContactAdd(id: number) {
+    this.router.navigate(['/addcontact/'+id], { 
   queryParams: { 
     c: 'company', 
   }

@@ -86,7 +86,7 @@
       <div *ngIf="mode==='edit'" class="mt-4 sm:mt-0 pt-10">
        
 
-        <button *ngIf="modeS=='contacts'"  (click)="gotoContactAdd()" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
+        <button *ngIf="modeS=='contacts'"  (click)="gotoContactAdd(this.idCompany)" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
           Ajouter un contact
         </button>
         
