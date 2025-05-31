@@ -22,6 +22,7 @@ import { ActionService } from '../services/action.service';
 import { TypeActionsService } from '../services/type-actions.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { AddCompanyComponent } from '../CRM/societe/add-company/add-company.component';
 
 
 
@@ -38,6 +39,8 @@ export class BesoinsComponent implements OnInit{
   
   constructor(private typeAction:TypeActionsService,  private location: Location,private router: Router ,private activatedRoute: ActivatedRoute,private actionService: ActionService,private AuthSer:AuthService,private hbs:HistoriqueBesoinsService,private ps:ProfileService,private contactsService: ContactsService ,private besoinsService:BesoinsService,private fb: FormBuilder,private profileService : ProfileService) { }
  
+  @ViewChild(AddCompanyComponent)
+addCompanyComponent!: AddCompanyComponent;
   selectedBesoin!: any;
   isModalOpen: boolean = false;
   isAddModalOpen: boolean = false;
@@ -619,11 +622,14 @@ this.activatedRoute.queryParams.subscribe(params => {
       if (this.r =='company'||this.besoinIdFromCompany) {  
                    if(this.compF){
                   this.router.navigate(['/addcomp/'+this.compF], { queryParams: { modeS: 'besoin' } });
+                  this.addCompanyComponent?.ngOnInit(); // Reinitialize the component to load the updated company
                 }else{
                     this.router.navigate(['/addcomp/'+this.comp], { queryParams: { modeS: 'besoin' } });
-                  }}else if (this.r=='contact'||this.besoinIdFromContact) {
+                    this.addCompanyComponent.ngOnInit();
+                }}else if (this.r=='contact'||this.besoinIdFromContact) {
                   if(this.contF){
-                  this.router.navigate(['/updatecontact/'+this.contF], { queryParams: { modeS: 'besoin' } });}else{
+                  this.router.navigate(['/updatecontact/'+this.contF], { queryParams: { modeS: 'besoin' } });
+                }else{
                     this.router.navigate(['/updatecontact/'+this.cont], { queryParams: { modeS: 'besoin' } });
                   }
                 }

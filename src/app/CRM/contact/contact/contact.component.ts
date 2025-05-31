@@ -331,6 +331,10 @@ editContact(contact: any) {
     let filtered = this.liste;
     console.log('filterContacts called DDDDDDDDDDEDED  ' ,this.liste);
     console.log('filtered:', this.filterForm.value);
+
+    if(this.selectedFilterMethod !="" && company=="" && contact=="" && dateExact=="" && startDate=="" && endDate=="") {
+      this.ngOnInit()
+      }
   
     if(this.selectedFilterMethod === 'company' && company && company.trim() !== '') {
   

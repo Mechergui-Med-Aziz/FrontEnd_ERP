@@ -359,6 +359,10 @@ switchMode($event: MatButtonToggleChange) {
           const { company,  dateExact, startDate, endDate } = this.filterForm.value;
           let filtered = this.liste;
           console.log('filtered:', this.filterForm.value);
+
+          if(this.selectedFilterMethod !="" && company=="" && dateExact=="" && startDate=="" && endDate=="") {
+          this.ngOnInit()
+          }
         
           if(this.selectedFilterMethod === 'company' && company && company.trim() !== '') {
         

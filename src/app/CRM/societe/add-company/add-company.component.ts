@@ -240,6 +240,8 @@ userId: any;
 ngOnInit(): void {
   this.BesoinActions= [];
   this.companyActions = [];
+  this.companyBesoins = []
+  console.log("companyBesoins",this.companyBesoins)
 
   this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
     (user: any) => {
@@ -279,11 +281,8 @@ ngOnInit(): void {
 ngAfterViewInit(): void {
   // Refresh the data if modeS was updated
   if (this.modeS == 'besoins') {
-    // Small timeout to avoid ExpressionChangedAfterItHasBeenCheckedError
-    setTimeout(() => {
-      this.ngOnInit();
-    }, 0);
-  }
+      this.ngOnInit();}
+  
 }
  closeDetailsActionModal() {
     this.isActionDetailsModalOpen = false;
@@ -464,148 +463,88 @@ fillActionCrmDetailsForm(action: any) {
   }
   companyName: string = '';
   companyStatus: string = '';
-loadCompanyData(id: number) {
-  this.companyBesoins = []; // Réinitialiser la liste des besoins
- console.log("besins company first YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYUUUUUUUUUUUUUUUUU",this.companyBesoins);
-  this.compService.getCompById(id).subscribe(
-    (company: any) => {
-       // Assurez-vous que contacts est un tableau
-      this.companyForm.patchValue(company);
-      this.companyName = company.name;
-      this.companyStatus=company.status; // Stocker le nom de la société pour l'afficher dans le titre
-      console.log('Company data loaded:', this.companyForm.value);
-      console.log("aaaaaaaaaaaa"+company)
-      this.companycontacts = company.contacts || [];
-       // Assurez-vous que contacts est un tableau
-      console.log('Company contacts:', this.companycontacts);
-      this.companycontacts.forEach((element: {
-        lastname: string;
-        firstname: string;besoins: any[]; 
-}) => {
+  loadCompanyData(id: number) {
+    // ✅ Réinitialisation propre des tableaux
+    this.companyBesoins = [];
+    this.BesoinActions = [];
+    this.companyActions = [];
+  
+    this.compService.getCompById(id).subscribe(
+      (company: any) => {
+        this.companyForm.patchValue(company);
+        this.companyName = company.name;
+        this.companyStatus = company.status;
+        this.companycontacts = company.contacts || [];
+  
+        // 🔁 Parcours de chaque contact
+        this.companycontacts.forEach((element: any) => {
+          // 🔁 Parcours de chaque besoin du contact
           element.besoins.forEach((besoin: any) => {
+            
+            // Charger les actions liées au besoin
             this.actionService.findActionsByBssoinId(besoin.id).subscribe(
               (actions: any) => {
-                console.log('Actions loaded DDDDDDDDDtttttttttttttttttttttt:', actions);
                 actions.forEach((action: any) => {
+                  // Charger user
                   this.profileService.findUserById(action.createdBy).subscribe(
-                    (user: any) => {
-                      action.createdBy = user;
-                      
-                      
-                    },
-                    (error :any) => {
-                      console.error('Erreur lors de la récupération de l’utilisateur pour l’action besoin ', error);
-                    }
-
-                    
+                    (user: any) => action.createdBy = user
                   );
-                  
+  
+                  // Charger détails besoin
                   this.besoinsService.findBesoinsById(action.besoinId).subscribe(
                     (besoinDetails: any) => {
-                      
                       action.besoinId = besoinDetails;
-                      
-                      this.BesoinActions.push(action); // Ajoutez l'action chargée à la liste des actions du besoin
-                    },(error :any) => {
-                      console.error('Erreur lors de la récupération de l’utilisateur pour l’action besoin ', error);
+                      this.BesoinActions.push(action);
                     }
-
                   );
-                
                 });
-                
-                
-                
-              },
-              (error: any) => {
-                console.error('Error loading actions:', error);
               }
             );
-            console.log('Besoin actions RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR:', this.BesoinActions);
+  
+            // Charger user du besoin
             this.profileService.findUserById(besoin.createdBy).subscribe(
-              (user: any) => {
-                besoin.createdBy = user;
-                
-                
-              },
-              (error :any) => {
-                console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
-              }
+              (user: any) => besoin.createdBy = user
             );
-            besoin.contact=element.firstname + ' ' + element.lastname; // Ajoutez le nom du contact au besoin
-
-
-
-
-            this.companyBesoins.push(besoin); // Ajoutez le besoin chargé à la liste des besoins
-          });});
-          console.log('Company besoinsssssssssssssssssssssssssssSSSSSSSSSSSSSSSS4444444:', this.companyBesoins); // Debugging line
-      
-
-
-
-      this.companycontacts.forEach((element: any) => {
-       // Debugging line
-
-        this.profileService.findUserById(element.createdBy).subscribe(
-          (user: any) => {
-            element.createdBy = user;
-            
-          },
-          (error :any) => {
-            console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
-          }
-
-          
-        );
-        this.actionCrmService.findActionsByContactId(element.id).subscribe(
-          (actions: any) => {
-            console.log('Contact actions loaded:', actions);
-            actions.forEach((action: any) => {
-
-             
+  
+            // Ajouter le nom du contact au besoin
+            besoin.contact = `${element.firstname} ${element.lastname}`;
+  
+            // ✅ Vérification pour éviter les doublons
+            if (!this.companyBesoins.some(b => b.id === besoin.id)) {
+              this.companyBesoins.push(besoin);
+            }
+          });
+  
+          // Charger user du contact
+          this.profileService.findUserById(element.createdBy).subscribe(
+            (user: any) => element.createdBy = user
+          );
+  
+          // Charger les actions liées au contact
+          this.actionCrmService.findActionsByContactId(element.id).subscribe(
+            (actions: any) => {
+              actions.forEach((action: any) => {
                 this.profileService.findUserById(action.createdBy).subscribe(
-                  (user: any) => {
-                    action.createdBy = user;
-                    
-                  },
-                  (error :any) => {
-                    console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
-                  }
-
-                  
+                  (user: any) => action.createdBy = user
                 );
-                
+  
                 this.contactsService.findContactById(action.contactId).subscribe(
                   (contact: any) => {
                     action.contactId = contact;
                     this.companyActions.push(action);
-                  },
-                  (error :any) => {
-                    console.error('Erreur lors de la récupération de l’utilisateur pour l’action', error);
                   }
                 );
-              
-
-              
-            }) // Ajoutez le contact chargé à la liste des contacts
-          },
-          (error: any) => {
-            console.error('Error loading contact actions:', error);
-          }
-        );
-        
-
-      });
-    },
-    (error: any) => {
-      console.error('Error loading company data:', error);
-    }
-  );
-  console.log('Company besoinssSSSSSSSSS:', this.companyBesoins);
-  console.log('Company contacts:', this.companycontacts);
-  console.log('Company actionssssssssssssssssssssss:', this.companyActions); // Debugging line
-}
+              });
+            }
+          );
+        });
+      },
+      (error: any) => {
+        console.error('Erreur lors du chargement de la société :', error);
+      }
+    );
+  }
+  
 
 saveChanges() {
   if (this.idCompany) {
@@ -658,7 +597,9 @@ saveChanges() {
 
 modeS: string = 'informations'; // Onglet par défaut
   selectModeS(tab: string): void {
-
+if(tab=='besoins' || tab=='actions'){
+  this.ngOnInit()
+}
     this.modeS = tab;
 
     

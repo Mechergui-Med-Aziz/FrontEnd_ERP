@@ -89,8 +89,17 @@
         <button *ngIf="modeS=='contacts'"  (click)="gotoContactAdd()" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
           Ajouter un contact
         </button>
+        
         <button *ngIf="modeS=='besoins'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="gotobesoin()" >
           Ajouter Un besoin
+        </button>
+
+        <button *ngIf="modeS=='actions'"  class="bg-green-600 btn-sm text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" >
+          Ajouter Action Contact
+        </button>
+
+        <button *ngIf="modeS=='actions'"  class="bg-green-600 btn-sm text-white px-6 py-3 rounded-full shadow" (click)="openActionBesoinAddModal()" >
+          Ajouter Action Besoin
         </button>
 
 
@@ -328,7 +337,7 @@
 </div>
 </main>
 <!-- Synthèse des contacts -->
-<main class="pt-[160px] pl-[5%] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'contacts'">
+<main class="pt-[160px] pl-[6%] pb-[100px] overflow-y-auto h-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'contacts'">
     <div class="w-full max-w-7xl">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="w-full flex flex-col gap-8">
@@ -390,9 +399,7 @@
             <div class="flex "><h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
               Liste Des Actions Contact
             </h2>
-            <button  class="bg-green-600 h-[50%] ml-[55%] text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" >
-          Ajouter Action Contact
-        </button></div>
+            </div>
 
   
             <div class="flex-1 overflow-hidden border rounded-lg">
@@ -450,9 +457,7 @@
             <div class="flex "><h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
               Liste Des Actions Besoins
             </h2>
-            <button  class="bg-green-600 h-[50%] ml-[55%] text-white px-6 py-3 rounded-full shadow" (click)="openActionBesoinAddModal()" >
-          Ajouter Action Besoin
-        </button></div>
+            </div>
   
             <div class="flex-1 overflow-hidden border rounded-lg">
               <div class="overflow-y-auto max-h-[70vh]">

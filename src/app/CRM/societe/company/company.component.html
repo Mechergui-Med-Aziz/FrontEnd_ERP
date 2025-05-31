@@ -58,25 +58,27 @@
                 <form [formGroup]="filterForm" class="mt-4">
                   <div [ngSwitch]="selectedFilterMethod">
 
-                            <div *ngSwitchCase="'company'">
+                    <div *ngSwitchCase="'company'">
                       <label for="companyFilter" class="block text-sm font-medium text-gray-700">Nom du société</label>
                       <input id="companyFilter" type="text" formControlName="company"
                         placeholder="Rechercher par nom de société"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" (input)="filterCompanies()" />
                     </div>
                    
                     <div *ngSwitchCase="'dateExact'">
                       <label for="dateExact" class="block text-sm font-medium text-gray-700">Date précise</label>
                       <input id="dateExact" type="date" formControlName="dateExact"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" (input)="filterCompanies()" />
                     </div>
                     <div *ngSwitchCase="'dateRange'">
                       <label for="startDate" class="block text-sm font-medium text-gray-700">Date de début</label>
                       <input id="startDate" type="date" formControlName="startDate"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"  (input)="filterCompanies()"/>
+
                       <label for="endDate" class="block text-sm font-medium text-gray-700 mt-2">Date de fin</label>
                       <input id="endDate" type="date" formControlName="endDate"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"  (input)="filterCompanies()"/>
+                        
                     </div>
                     <div *ngSwitchDefault>
                       <p class="text-gray-500">Veuillez sélectionner une méthode de filtrage</p>
