@@ -274,6 +274,7 @@ wherefrom:any;
   saveChanges() {
     if (this.idContact) {
       // Mode édition
+      console.log('Updating contact with ID:', this.contact.value); // Debugging line
       this.contactservice.updateContact(this.idContact, this.contact.value).subscribe(
         
         (response: any) => {

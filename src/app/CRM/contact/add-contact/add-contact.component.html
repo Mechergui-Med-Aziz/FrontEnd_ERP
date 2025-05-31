@@ -398,8 +398,8 @@
                                   <span class="font-bold text-sm text-gray-500">Pays</span>
 
                                   
-                                  <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="user.role == 'Manager De Production'"
-                                  [class.bg-gray-200]="user.role == 'Manager De Production'">
+                                  <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="user?.role == 'Manager De Production'"
+                                  [class.bg-gray-200]="user?.role == 'Manager De Production'">
                                       <mat-option *ngFor="let option of societesPaysList" [value]="option.name">
                                         <span class="status-label">
                                           {{ option.name }} <!-- Displays flag + country name -->

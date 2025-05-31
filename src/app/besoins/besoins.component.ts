@@ -48,7 +48,7 @@ export class BesoinsComponent implements OnInit{
   isDetailsActionModalOpen: boolean = false;
   creationDate: any;
   nbBesoins: number = 0;
-  mode: string = 'list';
+  mode: string = 'kanban';
   besoins: any[] = [];
   Dashboard:any=false;
   selectedTab: string = 'synthese';
