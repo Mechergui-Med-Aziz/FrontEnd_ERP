@@ -35,7 +35,7 @@
 </h1>
  
 <h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
-    <img src="assets/images/logo/companies.svg" alt="file" class="w-10 h-10">
+    <img src="assets/images/logo/contacts.svg" alt="file" class="w-10 h-10">
     
     <span  class="ml-4 font-bold">Fiche Contact  <span style="color:#16a34a">{{this.contactName}}</span> </span>
   </h1>
@@ -398,8 +398,8 @@
                                   <span class="font-bold text-sm text-gray-500">Pays</span>
 
                                   
-                                  <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="user.role == 'Manager De Production'"
-                                  [class.bg-gray-200]="user.role == 'Manager De Production'">
+                                  <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="this.userRole== 'Manager De Production'"
+                                  [class.bg-gray-200]="this.userRole == 'Manager De Production'">
                                       <mat-option *ngFor="let option of societesPaysList" [value]="option.name">
                                         <span class="status-label">
                                           {{ option.name }} <!-- Displays flag + country name -->
