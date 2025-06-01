@@ -271,8 +271,8 @@
         <div [hidden]="user?.role !== 'Directeur Associé'">
           <label for="manager">Manager Responable </label>
           <select id="manager" formControlName="managerResponsable" class="w-full p-2 mt-1 border rounded"
-            [class.pointer-events-none]="user.role !== 'Directeur Associé'"
-            [class.bg-gray-200]="user.role !== 'Directeur Associé'">
+            [class.pointer-events-none]="user?.role !== 'Directeur Associé'"
+            [class.bg-gray-200]="user?.role !== 'Directeur Associé'">
   
             <option *ngFor="let manager of fullManagerInformations" [ngValue]="manager.manager.id">
               {{ manager.manager.firstname }} {{ manager.manager.lastname }} ({{manager.nbrBesoins}})
