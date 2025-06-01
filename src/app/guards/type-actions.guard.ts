@@ -9,7 +9,7 @@ export const typeActionsGuard: CanActivateFn = (route, state) => {
   if(isAllowed || isAllowed2){
     return true;
 }else{
-  router.navigate(['/home']);
+  router.navigate(['/company']);
   return false;
 }
 };

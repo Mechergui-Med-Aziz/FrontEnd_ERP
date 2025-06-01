@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
@@ -24,11 +23,11 @@ import { contactGuard } from './guards/contact.guard';
 
 export const routes: Routes = [ 
     { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'home', component: HomeComponent, canActivate: [AuthGuard] }, 
+    { path: 'home', redirectTo: 'company', pathMatch: 'full' },
     { path: 'login', component: LoginComponent }, 
     { path:'reset-password', component:ResetPasswordComponent},
     
-    {path:'company',component:CompanyComponent},
+    {path:'company',component:CompanyComponent, canActivate: [AuthGuard]},
     {path:'addcomp',component:AddCompanyComponent, canActivate:[companyGuard]},
     {path:'type-actions',component:TypeActionsComponent ,canActivate:[typeActionsGuard]},
     {path:'besoins',component:BesoinsComponent,canActivate:[besoinsGuard]},

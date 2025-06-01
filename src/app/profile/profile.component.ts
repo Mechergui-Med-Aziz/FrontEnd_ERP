@@ -172,10 +172,13 @@ checkPasswords(password: string, confirmPassword: string): string {
 
   closeModal() {
     this.isModalOpen = false;
+    console.log("User:", this.user);
     if(this.user.role=="Administrateur"){
       this.router.navigate(['/users-accounts']);
+    }else{
+      this.router.navigate(['/besoins']);
     }
-    this.router.navigate(['/home']);
+    
   }
   closeErrorModal() {
     this.isErrorModalOpen = false;

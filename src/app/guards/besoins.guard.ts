@@ -8,7 +8,7 @@ export const besoinsGuard: CanActivateFn = (route, state) => {
       if(isAllowed){
         return true;
     }else{
-      router.navigate(['/home']);
+      router.navigate(['/users-accounts']);
       return false;
     }
 };

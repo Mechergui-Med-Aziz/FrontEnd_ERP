@@ -79,7 +79,7 @@
         </div>
 
         <div class="button-group">
-          <button type="button" class="btn btn-annuler" [routerLink]="['/home']">Annuler</button>
+          <button type="button" class="btn btn-annuler" (click)="closeModal()">Annuler</button>
           <button type="button" class="btn btn-sauvegarder" (click)="saveChanges()" (click)="saveChanges()" [disabled]="userForm.invalid">Sauvegarder</button>
         </div>
       </form>
