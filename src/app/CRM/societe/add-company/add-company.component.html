@@ -94,18 +94,28 @@
           Ajouter Un besoin
         </button>
 
-        <button *ngIf="modeS=='actions'"  class="bg-green-600 btn-sm text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" >
-          Ajouter Action Contact
-        </button>
-
-        <button *ngIf="modeS=='actions'"  class="bg-green-600 btn-sm text-white px-6 py-3 rounded-full shadow" (click)="openActionBesoinAddModal()" >
-          Ajouter Action Besoin
-        </button>
-
-
-        <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" routerLink="/company">
+      
+        <button *ngIf="modeS!=='actions'" class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" routerLink="/company">
           Retour
         </button>
+        <div *ngIf="modeS=='actions'" class="flex items-center gap-2">
+  <button
+          class="bg-green-600 text-white px-3 py-3 rounded-full shadow text-sm whitespace-nowrap"
+          (click)="openActionAddModal()">
+    Ajouter Action Contact
+  </button>
+
+  <button 
+          class="bg-green-600 text-white px-3 py-3 rounded-full shadow text-sm whitespace-nowrap"
+          (click)="openActionBesoinAddModal()">
+    Ajouter Action Besoin
+  </button>
+
+  <button class="bg-gray-600 text-white px-3 py-3 rounded-full shadow text-sm whitespace-nowrap" 
+          routerLink="/company">
+    Retour
+  </button>
+</div>
       </div>
     </div>  </header>
   
