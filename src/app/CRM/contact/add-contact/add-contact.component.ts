@@ -30,6 +30,7 @@ import { ProfileService } from '../../../services/profile.service';
 import dayjs from 'dayjs';
 import { TypeActionsService } from '../../../services/type-actions.service';
 import { BesoinsService } from '../../../services/besoins.service';
+import { is } from 'cypress/types/bluebird';
 
 @Component({
   selector: 'app-add-contact',
@@ -121,7 +122,9 @@ mode: any;
   selectedAction!: any;
   contactBesoins: any[] = [];
   userRole: any;
-
+  DisactivationContact:any;
+  otherContacts:any[] = [];
+disactivationForm:FormGroup;
   constructor(
       private profileService: ProfileService,
       private actionService: ActionCrmService,
@@ -143,10 +146,10 @@ mode: any;
       service: ['', [Validators.required]],
       createdBy: ['', []],
       type: ['', [Validators.required]],
+      active: [true, []],
       
       provenance: [null, [Validators.required]],
-      otherTools: ['', []],
-      otherDomains: ['', []],
+    
       agency: ['', [Validators.required]],
       email: ['', [Validators.required , Validators.email]],
       phone: ['', [Validators.required , Validators.pattern('^[0-9]{8}$') ]], // tunisian phone number format
@@ -164,6 +167,9 @@ mode: any;
       company: [null, []],
       creationDate: [{value:new Date().toLocaleDateString('fr-FR')}],
      
+    });
+    this.disactivationForm = this.fb.group({
+      DisactivationContact: ['', Validators.required],
     });
     
       this.actionAddForm= this.fb.group({
@@ -184,7 +190,7 @@ mode: any;
         manager:[]
       });
   }
-
+isDesactiverModalOpen: boolean = false;
   ngOnInit(): void {
     this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
       (user: any) => {
@@ -240,6 +246,29 @@ wherefrom:any;
   }
   
 });
+  }
+  openDesactiverModal() {
+    if(this.contactBesoins.length > 0){
+    
+    this.compService.getCompById(this.idCompany).subscribe(
+      (company: any) => {
+        console.log('contact id', this.idContact); // Debugging line
+        console.log('company contacts:', company.contacts);
+        this.otherContacts = company.contacts.filter((contact: any) => contact.id != this.idContact&& contact.active == true);
+         // Debugging line
+        console.log('Other contactsSSSSSSSS:', this.otherContacts); // Debugging line
+      }
+      
+
+    );
+  this.isDesactiverModalOpen = true;
+ }else{
+      this.desactiver();
+    }
+  }  closeDesactiverModal() {
+    this.isDesactiverModalOpen = false;
+    // Reset the form when closing the modal
+    this.disactivationForm.reset();
   }
 
 
@@ -315,8 +344,61 @@ wherefrom:any;
         }
       );
     }
+  }  desactiver(){
+    if(this.contactBesoins.length > 0){
+      // Get the selected contact from the form
+      const selectedContact = this.disactivationForm.value.DisactivationContact;
+      
+      console.log('Desactivating contact with ID:', this.idContact); 
+      console.log('Selected new contact for besoinsSSSSSSSSSSSSS:', selectedContact);
+      
+      // Update each besoin with the new contact
+      this.contactBesoins.forEach((besoin: any) => {
+        besoin.contact = selectedContact;
+        console.log('besoin nouvellllLLLLLLLL',besoin)
+       
+        this.besoinservice.updateBesoin(besoin.id, besoin).subscribe(
+          (response: any) => {
+            console.log('Besoin mis à jour avec succès:', response);
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'besoin mis à jour avec succès' });
+            
+            // Deactivate the contact after updating besoins
+            this.contact.patchValue({ active: false });
+            console.log('Contact form value for update:', this.contact.value);
+            
+            this.contactservice.updateContact(this.idContact, this.contact.value).subscribe(
+              (response: any) => {
+                console.log('Contact desactivé avec succès:', response);
+                this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact désactivé avec succès' });
+                this.closeDesactiverModal();
+                this.ngOnInit(); // Reload the contact data
+              }
+            );
+          }
+        );
+      });
+    } else {
+      // If no besoins, just deactivate the contact
+      this.contact.patchValue({ active: false });
+      this.contactservice.updateContact(this.idContact, this.contact.value).subscribe(
+        (response: any) => {
+          console.log('Contact desactivé avec succès:', response);
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact désactivé avec succès' });
+        }
+      );
+    }
   }
-  
+  activerContact() {
+    this.contact.patchValue({ active: true });
+    console.log('Activating contact with ID:', this.contact.value);
+    this.contactservice.updateContact(this.idContact, this.contact.value).subscribe(
+      (response: any) => {
+        console.log('Contact activé avec succès:', response);
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact activé avec succès' });
+       
+        this.ngOnInit(); // Reload the contact data
+      })
+  }
   
   
   
@@ -369,6 +451,7 @@ wherefrom:any;
   }
   selectModeS(tab: string): void {
     this.modeS = tab;
+  
     
   
     // Si besoin, ajouter ici des actions spécifiques au changement d'onglet

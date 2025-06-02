@@ -133,6 +133,10 @@
   font-size: 0.8rem;
   display: inline-block;
 }
+.desactive{
+  background-color: #ffacac;
+
+}
 
 .badge-primary {
   background-color: #80FF00;
