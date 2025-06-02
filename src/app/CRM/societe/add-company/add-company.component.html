@@ -105,7 +105,7 @@
     Ajouter Action Contact
   </button>
 
-  <button 
+  <button [hidden]="userRole=='Manager De Production'"
           class="bg-green-600 text-white px-3 py-3 rounded-full shadow text-sm whitespace-nowrap"
           (click)="openActionBesoinAddModal()">
     Ajouter Action Besoin

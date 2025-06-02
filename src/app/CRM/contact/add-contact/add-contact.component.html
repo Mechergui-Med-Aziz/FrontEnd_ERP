@@ -43,7 +43,7 @@
   <h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
     
     
-    <span  class="ml-4 font-bold" [ngClass]="{
+    <span *ngIf="this.contact.value.active==true"  class="ml-4 font-bold" [ngClass]="{
                                 'danger': this.contactStatus=== 'Prospect',
                                 'warning':this.contactStatus === 'Client',
                                 'success':this.contactStatus === 'Client direct',
@@ -84,10 +84,10 @@
       <div *ngIf="mode==='edit'" class="mt-4 sm:mt-0 pt-10">
        
 
-        <button *ngIf="modeS=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()">
+        <button [hidden]="contact.value.active==false" *ngIf="modeS=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()">
           Ajouter Une Action
         </button>
-        <button *ngIf="modeS=='besoins'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="gotobesoin()">
+        <button [hidden]="contact.value.active==false" *ngIf="modeS=='besoins'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="gotobesoin()">
           Ajouter Un Besoin
         </button>
          <button  class="bg-red-600 text-white px-6 py-3 rounded-full shadow" (click)="openDesactiverModal()" *ngIf="this.modeS=='informations'&&this.contact.value.active==true">
@@ -103,9 +103,6 @@
       </div>
        <div *ngIf="mode==='add'" class="mt-4 sm:mt-0 pt-10">
        
-
-        
-
         <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" (click)="retourner()">
           Retour
         </button>
@@ -138,7 +135,8 @@
                             
                                 <div class="">
                                     <div class="font-bold text-sm text-gray-500">Civilité *</div>
-                                    <mat-select formControlName="civility" formControlName="civility" class="form-control" data-cy="civility-dropdown" >
+                                    <mat-select [class.pointer-events-none]="contact.value.active==false"
+                                                [class.bg-gray-200]="contact.value.active==false" formControlName="civility" formControlName="civility" class="form-control" data-cy="civility-dropdown" >
                                       <mat-option *ngFor="
                                               let s of civilities
                                           " [value]="s.value" class="text-sm font-medium">
@@ -154,13 +152,13 @@
                             <div class="col-span-2">
                                 <div class="font-bold text-sm text-gray-500">Nom *</div>
                                 <div class="input-container">
-                                    <input type="text" class="form-control" placeholder="" formControlName="lastname"  />
+                                    <input [readonly]="contact.value.active==false" type="text" class="form-control" placeholder="" formControlName="lastname"  />
                                 </div>
                             </div>
                             <div class="col-span-3">
-                                <div class="font-bold text-sm text-gray-500">Prénoms *</div>
+                                <div class="font-bold text-sm text-gray-500">Prénom *</div>
                                 <div class="input-container">
-                                    <input type="text" class="form-control" placeholder="" formControlName="firstname"  />
+                                    <input [readonly]="contact.value.active==false" type="text" class="form-control" placeholder="" formControlName="firstname"  />
                                 </div>
                             </div>
                         </div>
@@ -168,14 +166,15 @@
                             <div class="">
                                 <div class="font-bold text-sm text-gray-500">Fonction</div>
                                 <div class="input-container">
-                                    <input type="text" class="form-control" placeholder="" formControlName="function" />
+                                    <input [readonly]="contact.value.active==false" type="text" class="form-control" placeholder="" formControlName="function" />
                                 </div>
                             </div>
                             <div class="">
                                 <div class="flex flex-col">
                                     <div class="font-bold text-sm text-gray-500">Service *</div>
                                    
-                                        <mat-select formControlName="service" formControlName="service" class="form-control" data-cy="service-dropdown" >
+                                        <mat-select [class.pointer-events-none]="contact.value.active==false"
+                                        [class.bg-gray-200]="contact.value.active==false" formControlName="service" formControlName="service" class="form-control" data-cy="service-dropdown" >
                                             <mat-option *ngFor="
                                                     let s of services
                                                 " [value]="s.value" class="text-sm font-medium">
@@ -194,7 +193,8 @@
                                 <div class="flex flex-col">
                                     <div class="font-bold text-sm text-gray-500">Type *</div>
                                     
-                                        <mat-select class="form-control" formControlName="type" data-cy="type-dropdown" >
+                                        <mat-select [class.pointer-events-none]="contact.value.active==false"
+                                        [class.bg-gray-200]="contact.value.active==false" class="form-control" formControlName="type" data-cy="type-dropdown" >
                                             <mat-option *ngFor="let tp of listeTypes" [value]="tp" class="text-sm font-medium">
                                                 <span class="status-label">
                                                     {{ tp}}
@@ -209,7 +209,7 @@
                                 <div class="flex flex-col">
                                     <div class="font-bold text-sm text-gray-500">Etat</div>
                                   
-                                    <input type="text" class="form-control"  [value]="this.companyStatus"  readonly/>
+                                    <input  type="text" class="form-control"  [value]="this.companyStatus"  readonly/>
                                 </div>
                             </div>
         
@@ -217,7 +217,8 @@
                                 <div class="flex flex-col">
                                     <div class="font-bold text-sm text-gray-500">Provenance *</div>
                                     
-                                        <mat-select class="form-control" formControlName="provenance" data-cy="provenance-dropdown" >
+                                        <mat-select [class.pointer-events-none]="contact.value.active==false"
+                                        [class.bg-gray-200]="contact.value.active==false" class="form-control" formControlName="provenance" data-cy="provenance-dropdown" >
                                             <mat-option *ngFor="let tp of listeProvenance" [value]="tp"
                                                 class="text-sm font-medium">
                                                 <span class="status-label">
@@ -233,7 +234,8 @@
                                 <div class="flex flex-col">
                                     <div class="font-bold text-sm text-gray-500">Agence *</div>
                                     
-                                        <mat-select class="form-control" formControlName="agency" data-cy="agency-dropdown" >
+                                        <mat-select [class.pointer-events-none]="contact.value.active==false"
+                                        [class.bg-gray-200]="contact.value.active==false" class="form-control" formControlName="agency" data-cy="agency-dropdown" >
                                             <mat-option *ngFor="let tp of listeAgence" [value]="tp" class="text-sm font-medium">
                                                 <span class="status-label">
                                                     {{ tp }}
@@ -261,7 +263,7 @@
                                  
                                 <div class="font-bold text-sm text-gray-500 ">Domaines</div>
                                 <div class="input-container mt-1">
-                                    <input type="text" class="form-control" placeholder="Domaine,Domaine,....." formControlName="domains"  />
+                                    <input [readonly]="contact.value.active==false" type="text" class="form-control" placeholder="Domaine,Domaine,....." formControlName="domains"  />
                                 
                             </div>
                             </div>
@@ -271,7 +273,7 @@
                                 <div class="font-bold text-sm text-gray-500">Outils</div>
                                 <div class="input-container mt-1">
                                 
-                                    <input type="text" class="form-control" placeholder="Outil,Outil,....." formControlName="tools"  />
+                                    <input [readonly]="contact.value.active==false" type="text" class="form-control" placeholder="Outil,Outil,....." formControlName="tools"  />
                               
                             </div>
                             </div>
@@ -340,7 +342,7 @@
               <div body>
                   <div class="flex flex-col px-2">
                       <div class="flex flex-col">                        <label for="input" class="font-bold text-sm text-gray-500">Email *</label>
-                        <input type="text" id="input" 
+                        <input [readonly]="contact.value.active==false" type="text" id="input" 
                           class="form-control" 
                           [ngClass]="{'border-2 border-red-600 bg-red-50': contact.get('email')?.invalid && (contact.get('email')?.dirty || contact.get('email')?.touched)}"
                           placeholder="" 
@@ -351,7 +353,7 @@
                         </div>
 
                           <label for="input" class="font-bold text-sm text-gray-500">Téléphone *</label>
-                          <input type="text" id="input" 
+                          <input [readonly]="contact.value.active==false" type="text" id="input" 
                             class="form-control" 
                             [ngClass]="{'border-2 border-red-600 bg-red-50': contact.get('phone')?.invalid && (contact.get('phone')?.dirty || contact.get('phone')?.touched)}"
                             placeholder="" 
@@ -362,19 +364,19 @@
                           </div>
 
                           <label for="input" class="font-bold text-sm text-gray-500">Adresse *</label>
-                          <input type="text" id="input" class="form-control" placeholder="" formControlName="address" 
+                          <input [readonly]="contact.value.active==false" type="text" id="input" class="form-control" placeholder="" formControlName="address" 
                               value="" />
 
                           <div class="grid grid-cols-3 gap-2">
                               <div class="flex flex-col">
                                   <label for="input" class="font-bold text-sm text-gray-500">Code postal</label>
-                                  <input type="text" id="input" class="form-control" placeholder=""
+                                  <input [readonly]="contact.value.active==false" type="text" id="input" class="form-control" placeholder=""
                                       formControlName="postalCode"  />
                               </div>
 
                               <div class="flex flex-col">
                                   <label for="input" class="font-bold text-sm text-gray-500">Ville</label>
-                                  <input type="text" id="input" class="form-control" placeholder=""
+                                  <input [readonly]="contact.value.active==false" type="text" id="input" class="form-control" placeholder=""
                                       formControlName="city"  />
 
 
@@ -384,7 +386,8 @@
                                   <span class="font-bold text-sm text-gray-500">Pays</span>
 
                                   
-                                  <mat-select class="form-control" formControlName="country" >
+                                  <mat-select [class.pointer-events-none]="contact.value.active==false"
+                                  [class.bg-gray-200]="contact.value.active==false" class="form-control" formControlName="country" >
                                       <mat-option *ngFor="let option of societesPaysList" [value]="option.name">
                                         <span class="status-label">
                                           {{ option.name }} <!-- Displays flag + country name -->
@@ -443,12 +446,12 @@
                         <span *ngIf="action.attachments.length==0">--------</span>
                       </td>
                       <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                      <td>
+                      <td >
                         <div class="flex space-x-2">
                           <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action)">
-                            Edit
+                            Modifier
                           </button>
-                          <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action)">
+                          <button [hidden]="contact.value.active==false" type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action)">
                             Supprimer
                           </button>
                         </div>

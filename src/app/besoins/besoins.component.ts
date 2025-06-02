@@ -310,10 +310,10 @@ this.activatedRoute.queryParams.subscribe(params => {
         console.log('ContactsRRRRRRRRRRRRRRRRR:', contacts); // Debugging line
         console.log('this.compRRRRRRRR:', this.comp); // Debugging line
        if(this.comp){
-        this.contacts=contacts.filter((contact: any) => contact.company.id == this.comp);
+        this.contacts=contacts.filter((contact: any) => contact.company.id == this.comp && contact.active == true);
         console.log('Filtered contactsRRRRRRRR:', this.contacts); // Debugging line
        }else{
-        this.contacts = contacts;}
+        this.contacts = contacts.filter((contact:any)=>contact.active==true ) ;}
 
       },
       (error: any) => {

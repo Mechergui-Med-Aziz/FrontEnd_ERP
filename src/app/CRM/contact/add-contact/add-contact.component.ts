@@ -354,6 +354,8 @@ wherefrom:any;
       
       // Update each besoin with the new contact
       this.contactBesoins.forEach((besoin: any) => {
+        console.log("besoin naciennnnnnnnnn", besoin);
+        console.log("contact",selectedContact)
         besoin.contact = selectedContact;
         console.log('besoin nouvellllLLLLLLLL',besoin)
        
