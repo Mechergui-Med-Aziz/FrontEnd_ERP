@@ -38,6 +38,7 @@
     <img src="assets/images/logo/contacts.svg" alt="file" class="w-10 h-10">
     
     <span  class="ml-4 font-bold">Fiche Contact  <span style="color:#16a34a">{{this.contactName}}</span> </span>
+    
   </h1>
   <h1  *ngIf="mode==='edit'" class="text-3xl font-extrabold tracking-tight flex items-center">
     
@@ -53,6 +54,7 @@
                                 'dark': this.contactStatus === 'Client via intermédiaire',
                                 'default': this.contactStatus === 'Intermédiaire de facturation'
                               }">  {{this.contactStatus}}</span>
+                               <span *ngIf="this.contact.value.active==false" class="ml-4 font-bold " style="color:red"> Désactivé!!</span>
   </h1>
 <!-- Liens Synthèse et Actions alignés en bas -->
 <div *ngIf="mode==='edit'" class="flex gap-4 items-end mt-2">
@@ -87,6 +89,12 @@
         </button>
         <button *ngIf="modeS=='besoins'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="gotobesoin()">
           Ajouter Un Besoin
+        </button>
+         <button  class="bg-red-600 text-white px-6 py-3 rounded-full shadow" (click)="openDesactiverModal()" *ngIf="this.modeS=='informations'&&this.contact.value.active==true">
+          Désactiver 
+        </button>
+        <button  class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="activerContact()" *ngIf="this.modeS=='informations'&&this.contact.value.active==false">
+          Activer 
         </button>
         
         <button class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" (click)="retourner()">
@@ -246,47 +254,25 @@
                 
                 <app-card-synthese class="pb-[0px]" [customTitle]="'Périmètre fonctionnel'" [customActionLabel]="" [hasIconActions]="false">
                     <div body>
-                        <div class="flex flex-col px-2">
-                            <div class="flex flex-col">
-                                <div class="font-bold text-sm text-gray-500 mb-1">Domaines *</div>
-                                <div class="h-[35px]">
-                                  
-                                    <p-multiSelect [options]="domaines" formControlName="domains" 
-                                        appendTo="body" 
-                                        display="chip"
-                                        styleClass="custom-multiselect"
-                                        [showToggleAll]="true"
-                                       emptyFilterMessage="Aucun outil trouvé"
-                                       >
-                                        
-                                    </p-multiSelect>
-                                </div>
-                                 <div class="">
-                                <div class="font-bold text-sm text-gray-500 ">Autres domaines</div>
-                                <div class="input-container mt-1">
-                                    <input type="text" class="form-control" placeholder="Domaine,Domaine,....." formControlName="otherDomains"  />
-                                </div>
-                            </div>
-                            </div>
-                        </div>
+                      
                         <div class="flex flex-col px-2 mt-2">
+                           <div class="flex flex-col">
+                                
+                                 
+                                <div class="font-bold text-sm text-gray-500 ">Domaines</div>
+                                <div class="input-container mt-1">
+                                    <input type="text" class="form-control" placeholder="Domaine,Domaine,....." formControlName="domains"  />
+                                
+                            </div>
+                            </div>
                             <div class="flex flex-col">
-                                <div class="font-bold text-sm text-gray-500 mb-1">Outils *</div>
-                                <div class="h-[35px]">
-                                    <p-multiSelect [options]="tools" formControlName="tools"
-                                        appendTo="body" 
-                                        display="chip" 
-                                        styleClass="custom-multiselect"
-                                        [showToggleAll]="true"
-                                        [dropdownIcon]="'pi pi-chevron-down'"
-                                        emptyFilterMessage="Aucun outil trouvé" />
-                                </div>
-                                 <div class="col-span-3">
-                                <div class="font-bold text-sm text-gray-500">Autres outils</div>
+                                
+                                 
+                                <div class="font-bold text-sm text-gray-500">Outils</div>
                                 <div class="input-container mt-1">
                                 
-                                    <input type="text" class="form-control" placeholder="Outil,Outil,....." formControlName="otherTools"  />
-                                </div>
+                                    <input type="text" class="form-control" placeholder="Outil,Outil,....." formControlName="tools"  />
+                              
                             </div>
                             </div>
                         </div>
@@ -398,8 +384,7 @@
                                   <span class="font-bold text-sm text-gray-500">Pays</span>
 
                                   
-                                  <mat-select class="form-control" formControlName="country" [class.pointer-events-none]="user?.role == 'Manager De Production'"
-                                  [class.bg-gray-200]="user?.role == 'Manager De Production'">
+                                  <mat-select class="form-control" formControlName="country" >
                                       <mat-option *ngFor="let option of societesPaysList" [value]="option.name">
                                         <span class="status-label">
                                           {{ option.name }} <!-- Displays flag + country name -->
@@ -601,6 +586,30 @@
       </div>
     </div>
   </div>
+
+  <!-- modal de desactivation  -->
+  <div *ngIf="isDesactiverModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-50">
+        <div class="bg-white p-4 rounded-lg w-1/3">
+          <h2 class="text-xl font-bold">Selectionnez un contact pour l'affecter vos besoins</h2>
+          <form [formGroup]="disactivationForm">
+            <br>
+           
+              
+              <div>
+                <label for="priority">Contact</label>                <select id="DisactivationContact" formControlName="DisactivationContact" name="DisactivationContact" class="w-full p-2 mt-1 border rounded" >
+                  <option  *ngFor="let contact of otherContacts" [ngValue]="contact">{{contact.firstname}} {{contact.lastname}} </option>
+                  
+                </select>
+              </div>
+              <div class="flex justify-end gap-4">
+                <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeDesactiverModal()">Annuler</button>
+                <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded"   (click)="desactiver()" data-cy="create-contact-button">Créer</button>
+              </div>
+          </form>
+        </div>
+      </div>
+
+
   <!-- modal de details d'action  -->
   <div *ngIf="isActionDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-50">
       <div class="bg-white p-6 rounded-lg w-1/3 shadow-2xl">
@@ -673,6 +682,20 @@
         </form>
       </div>
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -131,7 +131,8 @@
                     <div cdkDropList [cdkDropListData]="column.contacts"
                       (cdkDropListDropped)="drop($event)"
                       class="min-h-[100px] p-2 bg-gray-100 rounded-md max-h-[60vh] overflow-y-auto">
-                      <div *ngFor="let contact of column.contacts" cdkDrag (cdkDragMoved)="onDragMoved($event)"
+                      <div [ngClass]="{
+                                'desactive': contact.active == false}" *ngFor="let contact of column.contacts" cdkDrag (cdkDragMoved)="onDragMoved($event)" 
                         class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between h-24 w-full">
                         <!--<div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}"
                           class="w-10 h-[85px] rounded-l-lg"></div>-->
@@ -172,7 +173,7 @@
                         <tr>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[15%]">Nom du contact</th>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[12%]">Fonction</th>
-                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[15%]">Statut</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[15%]">Etat</th>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[18%]">Date de Creation</th>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[12%]">Téléphone</th>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Type</th>
@@ -184,7 +185,7 @@
                         <tr *ngFor="let contact of liste" class="hover:bg-gray-50">
                           <td class="px-4 py-3 font-semibold">{{ contact.firstname }} {{ contact.lastname }}</td>
                           <td class="px-4 py-3">{{ contact.function }}</td>
-                          <td class="px-4 py-3">
+                          <td *ngIf="contact.active==true" class="px-4 py-3">
                             <span class="inline-flex items-center">
                               <mat-icon style="font-size: 12px; width: 12px; height: 15px;" [ngClass]="{
                                 'badge-danger': contact.company.status === 'Prospect',
@@ -198,6 +199,12 @@
                                 'badge-default': contact.company.status === 'Intermédiaire de facturation'
                               }">dot</mat-icon>
                               <span class="ml-1">{{ contact.company.status }}</span>
+                            </span>
+                          </td>
+                          <td *ngIf="contact.active==false" class="px-4 py-3">
+                            <span class="inline-flex items-center">
+                             
+                              <span class="ml-1" style="color:red">Désactivé!!</span>
                             </span>
                           </td>
                           <td class="px-4 py-3">{{ contact.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>

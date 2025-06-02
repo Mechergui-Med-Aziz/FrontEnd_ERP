@@ -170,13 +170,16 @@ loadContacts() {
       (response: any) => {
         response.forEach ((company: any) => {
 this.nbContacts += company.contacts.length;
+let contactss:any[] = [];
 company.contacts.forEach((contact: any) => {
   contact.company = company; // Associer la société au contact
-  let contactss:any[] = [];
+  
   contactss.push(contact);
-  console.log('ContactTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT:', contact); // Debugging line
- column.contacts=contactss;
+  // Debugging line
+ 
 })
+column.contacts=contactss;
+console.log('ContactTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT:', column.contacts); 
         });
         
         
