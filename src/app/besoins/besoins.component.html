@@ -245,22 +245,22 @@
     <form [formGroup]="besoinAddForm">
       <br>
       <div>
-        <label for="title">Titre</label>
+        <label for="title">Titre *</label>
         <input id="title" type="text" formControlName="title" class="w-full p-2 mt-1 border rounded" />
       </div>
       <div>
-        <label for="description">Description</label>
+        <label for="description">Description *</label>
         <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded"></textarea>
       </div>
       <div *ngIf="this.r !== 'contact'">
-          <label for="contact">Contact</label>
+          <label for="contact">Contact *</label>
           <select id="contact" formControlName="contact" class="w-full p-2 mt-1 border rounded">
               <option *ngFor="let contact of contacts" [ngValue]="contact.id">{{ contact.firstname }} {{ contact.lastname }} ({{contact.company.name}})</option>
           </select>
         </div>
 
         <div>
-          <label for="priority">Priorité</label>
+          <label for="priority">Priorité *</label>
           <select id="priority" formControlName="priority" class="w-full p-2 mt-1 border rounded">
             <option value="TRÉS_HAUTE">TRÉS_HAUTE</option>
             <option value="HAUTE">HAUTE</option>
@@ -271,8 +271,8 @@
         <div [hidden]="user?.role !== 'Directeur Associé'">
           <label for="manager">Manager Responable </label>
           <select id="manager" formControlName="managerResponsable" class="w-full p-2 mt-1 border rounded"
-            [class.pointer-events-none]="user.role !== 'Directeur Associé'"
-            [class.bg-gray-200]="user.role !== 'Directeur Associé'">
+            [class.pointer-events-none]="user?.role !== 'Directeur Associé'"
+            [class.bg-gray-200]="user?.role !== 'Directeur Associé'">
   
             <option *ngFor="let manager of fullManagerInformations" [ngValue]="manager.manager.id">
               {{ manager.manager.firstname }} {{ manager.manager.lastname }} ({{manager.nbrBesoins}})
@@ -326,12 +326,12 @@
     <h2 class="text-xl font-bold">Ajout d'une Action</h2>
     <form [formGroup]="actionAddForm" (ngSubmit)="addAction()">
       <div>
-        <label for="description">Description :</label>
+        <label for="description">Description *</label>
         <input type="text" id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description">
       </div>
 
       <div class="mt-4">
-        <label for="type">Type d'Action</label>
+        <label for="type">Type d'Action *</label>
         <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
             <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name}}</option>
         </select>
@@ -339,7 +339,7 @@
 
     
       <div class="mt-4">
-        <label for="files">Fichiers :</label>
+        <label for="files">Fichiers </label>
         <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded">
         <span class="text-sm text-gray-700">
           Max : 10 fichiers de 10Mo max
@@ -386,11 +386,11 @@
 </div>
 
         <div class="mt-4 sm:mt-0 pt-10">
-          <button data-cy="confirm-save-changes"  *ngIf="selectedTab=='synthese'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow "(click)="saveChanges()" [disabled]="besoinForm.invalid || user.role == 'Manager De Production'">
+          <button data-cy="confirm-save-changes" [hidden]="user.role == 'Manager De Production'"  *ngIf="selectedTab=='synthese'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow "(click)="saveChanges()" [disabled]="besoinForm.invalid || user.role == 'Manager De Production'">
             Sauvegarder
           </button>
 
-          <button data-cy="open-add-action" *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'|| selectedBesoin.managerResponsable==null">
+          <button data-cy="open-add-action" [hidden]="user.role == 'Manager De Production'" *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'|| selectedBesoin.managerResponsable==null">
             Ajouter Une Action
           </button>
 
@@ -559,7 +559,7 @@
                         <th class="px-4 py-6">Manager Responsable</th>
                         <th class="px-4 py-6">Fichiers</th>
                         <th class="px-4 py-6">Date Action</th>
-                        <th class="px-4 py-6">Actions</th>
+                        <th class="px-4 py-6" [hidden]="user.role == 'Manager De Production'">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -577,10 +577,10 @@
                           <span *ngIf="action.attachments.length==0">--------</span>
                         </td>
                         <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                        <td>
+                        <td [hidden]="user.role == 'Manager De Production'">
                           <div class="flex space-x-2">
                             <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action)">
-                              Edit
+                              Modifier
                             </button>
                             <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action)" [disabled]="user.role=='Manager De Production'">
                               Supprimer

@@ -9,7 +9,7 @@ export const dashboardGuard: CanActivateFn = (route, state) => {
       if(isAllowed){
         return true;
     }else{
-      router.navigate(['/home']);
+      router.navigate(['/company']);
       return false;
     }
 };

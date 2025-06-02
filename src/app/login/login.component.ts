@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit{
           setTimeout(() => {
             this.appComponent.isLoading = false;
             if(localStorage.getItem("role") != "Administrateur"){
-            this.router.navigate(['/home'], { replaceUrl: true });
+            this.router.navigate(['/company'], { replaceUrl: true });
             }else{
               this.router.navigate(['/users-accounts'], { replaceUrl: true });
             }

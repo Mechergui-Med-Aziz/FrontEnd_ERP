@@ -127,6 +127,10 @@ switchMode($event: MatButtonToggleChange) {
                   createdBy: ['', []],
                 });
            }
+
+           isModalOpen: boolean = true;
+  username!:string;
+  role!:any;
   
   ngOnInit(): void {
     this.mode="kanban";
@@ -146,6 +150,20 @@ switchMode($event: MatButtonToggleChange) {
       startDate: [''],
       endDate: ['']
     });
+
+  this.role=localStorage.getItem("role");
+    this.username=localStorage.getItem("username")?.toUpperCase()|| "";
+    if(localStorage.getItem("msg")=="false"){
+      this.isModalOpen=true;
+    }
+    else
+    this.isModalOpen=false;
+      
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+    localStorage.setItem("msg","true");
   }
  
   openFilterDialog(){

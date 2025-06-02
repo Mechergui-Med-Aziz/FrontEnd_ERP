@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { HomeComponent } from "./home/home.component";
 import { AuthService } from './services/auth.service';
 import { NavbarComponent } from "./navbar/navbar.component";
 import { CommonModule } from '@angular/common';
