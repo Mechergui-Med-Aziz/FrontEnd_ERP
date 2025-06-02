@@ -20,7 +20,6 @@ export class CompServiceService {
               })
             };
 
-//                  console.log('token:', this.options.headers.get('Authorization'));
 
   // Create a new task
   createComp(comp: any): any {

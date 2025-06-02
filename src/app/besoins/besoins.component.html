@@ -386,11 +386,11 @@
 </div>
 
         <div class="mt-4 sm:mt-0 pt-10">
-          <button data-cy="confirm-save-changes"  *ngIf="selectedTab=='synthese'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow "(click)="saveChanges()" [disabled]="besoinForm.invalid || user.role == 'Manager De Production'">
+          <button data-cy="confirm-save-changes" [hidden]="user.role == 'Manager De Production'"  *ngIf="selectedTab=='synthese'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow "(click)="saveChanges()" [disabled]="besoinForm.invalid || user.role == 'Manager De Production'">
             Sauvegarder
           </button>
 
-          <button data-cy="open-add-action" *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'|| selectedBesoin.managerResponsable==null">
+          <button data-cy="open-add-action" [hidden]="user.role == 'Manager De Production'" *ngIf="selectedTab=='actions'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="openActionAddModal()" [disabled]="user.role == 'Manager De Production'|| selectedBesoin.managerResponsable==null">
             Ajouter Une Action
           </button>
 
@@ -559,7 +559,7 @@
                         <th class="px-4 py-6">Manager Responsable</th>
                         <th class="px-4 py-6">Fichiers</th>
                         <th class="px-4 py-6">Date Action</th>
-                        <th class="px-4 py-6">Actions</th>
+                        <th class="px-4 py-6" [hidden]="user.role == 'Manager De Production'">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -577,10 +577,10 @@
                           <span *ngIf="action.attachments.length==0">--------</span>
                         </td>
                         <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                        <td>
+                        <td [hidden]="user.role == 'Manager De Production'">
                           <div class="flex space-x-2">
                             <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action)">
-                              Edit
+                              Modifier
                             </button>
                             <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action)" [disabled]="user.role=='Manager De Production'">
                               Supprimer
