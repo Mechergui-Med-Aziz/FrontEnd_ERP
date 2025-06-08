@@ -132,7 +132,7 @@
                       (cdkDropListDropped)="drop($event)"
                       class="min-h-[100px] p-2 bg-gray-100 rounded-md max-h-[60vh] overflow-y-auto">
                       <div [ngClass]="{
-                                'desactive': contact.active == false}" *ngFor="let contact of column.contacts" cdkDrag (cdkDragMoved)="onDragMoved($event)" 
+                                'inactive': contact.active == false}" *ngFor="let contact of column.contacts" cdkDrag (cdkDragMoved)="onDragMoved($event)" 
                         class="bg-white rounded-lg shadow-md mt-2 cursor-pointer flex items-center justify-between h-24 w-full">
                         <!--<div [ngStyle]="{'background-color': getPriorityColor(besoin.priority)}"
                           class="w-10 h-[85px] rounded-l-lg"></div>-->
@@ -144,7 +144,7 @@
                               {{ contact.initiales }}
                             </div>
                             <div class="pr-[50px]">
-                              <h3 class="font-semibold">{{ contact.firstname }} {{ contact.lasttname }}</h3>
+                              <h3 class="font-semibold">{{ contact.firstname }} {{ contact.lastname }}  <span *ngIf="contact.active==false" class="ml-4 font-bold " style="color:red"> Désactivé !!</span></h3>
                               <p class="text-sm text-gray-500">{{ contact.service}}</p>
                             </div>
                           </div>

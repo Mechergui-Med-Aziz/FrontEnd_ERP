@@ -811,9 +811,10 @@ console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
         response => {
 
           this.message = 'Action enregistrée avec succès';
-          this.isModalOpen=true
+          
           //this.Dashboard=false;
-          this.isAddActionModalOpen = false; // Fermer la modal d'ajout d'action
+          this.isAddActionModalOpen = false; 
+          this.isModalOpen=true// Fermer la modal d'ajout d'action
           this.ngOnInit(); // Navigate to the contact update page
           this.modeS="actions" // Navigate back to the previous page
           //console.log('Action enregistrée avec succès', response);

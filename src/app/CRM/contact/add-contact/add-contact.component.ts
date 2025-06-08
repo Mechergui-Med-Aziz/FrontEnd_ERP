@@ -190,8 +190,16 @@ disactivationForm:FormGroup;
         manager:[]
       });
   }
+  contactsExistants: any[] = [];
 isDesactiverModalOpen: boolean = false;
   ngOnInit(): void {
+    this.contactservice.findAllContacts().subscribe(
+      (contacts: any[]) => {
+        this.contactsExistants = contacts;
+        console.log('Contacts existants:', this.contactsExistants); // Debugging line
+      }
+
+    )
     this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
       (user: any) => {
         this.user = user;
@@ -304,6 +312,7 @@ wherefrom:any;
   }
   
   saveChanges() {
+   
     if (this.idContact) {
       // Mode édition
       console.log('Updating contact with ID:', this.contact.value); // Debugging line
@@ -322,6 +331,11 @@ wherefrom:any;
         }
       );
     } else {
+      this.contactsExistants = this.contactsExistants.filter(contact => contact.email == this.contact.value.email && contact.active == true);
+   if(this.contactsExistants.length > 0){
+    this.globalErrorMessage = 'Un contact actif avec le même email existe déjà.';
+    this.isErrorModalOpen = true;
+   }else{
       let creationdate = new Date().toISOString();
       this.contact.patchValue({ creationDate: creationdate ,
         createdBy: this.user.id,
@@ -344,7 +358,9 @@ wherefrom:any;
         }
       );
     }
-  }  desactiver(){
+    }
+  }  
+  desactiver(){
     if(this.contactBesoins.length > 0){
       // Get the selected contact from the form
       const selectedContact = this.disactivationForm.value.DisactivationContact;
@@ -530,9 +546,10 @@ wherefrom:any;
         response => {
 
           this.message = 'Action enregistrée avec succès';
-          this.isModalOpen=true
+          
           //this.Dashboard=false;
-          this.isAddActionModalOpen = false; // Fermer la modal d'ajout d'action
+          this.isAddActionModalOpen = false; 
+          this.isModalOpen=true// Fermer la modal d'ajout d'action
           this.ngOnInit(); // Navigate to the contact update page
           this.modeS="actions" // Navigate back to the previous page
           //console.log('Action enregistrée avec succès', response);
@@ -578,6 +595,16 @@ wherefrom:any;
     this.isActionDetailsModalOpen = true;
     
   }
+   closeModal() {
+      this.isModalOpen = false;
+      if(this.message=='Action enregistrée avec succès')
+      this.closeActionAddModal();
+   
+      this.closeDetailsActionModal();
+          
+    }
+    isErrorModalOpen: boolean = false;
+    globalErrorMessage: string = '';
   
 
 
@@ -585,6 +612,13 @@ wherefrom:any;
     this.isActionDetailsModalOpen = false;
     this.DetailsActionForm.reset();
   }
+   closeErrorModal() {
+      
+      this.isErrorModalOpen = false;
+  
+      this.globalErrorMessage = '';
+      return
+    }
 
   EditAction() {
 
@@ -646,13 +680,15 @@ wherefrom:any;
 }
 retourner() {
   console.log('return toOOOOOOOOOOOOOOOOO', this.wherefrom); // Debugging line
-  if (this.wherefrom == 'company') {
+  if (this.wherefrom == "company") {
     this.router.navigate(['/addcomp/' + this.idCompany], { queryParams: { modeS: 'contacts' } });
+  }else{
+    this.router.navigate(['/contact']) ; 
   }
 
   
   
-  this.router.navigate(['/contact']) ; // Navigate back to the previous page
+  // Navigate back to the previous page
 
 }
  gotobesoinUpdate(besoin: any) {
