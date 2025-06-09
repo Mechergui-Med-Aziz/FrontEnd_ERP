@@ -294,7 +294,7 @@ ngAfterViewInit(): void {
     this.modeAction = mode;
     console.log("action details  GGGGGGGGGGGGGGGGGGGGGGGGGG: ",action);
     // Remplir le formulaire avec les détails de l'action
-    console.log("manager HHHHHHHHHHHHHHHHHHHHHHH",this.productionManagers)
+    console.log("manager HHHHHHHHHHHHHHHHHHHHHHH",this.productionManagers);
 
     this.selectedAction = action;
     if(this.modeAction === 'besoin') {
@@ -371,7 +371,7 @@ fillActionCrmDetailsForm(action: any) {
       typeAction: action.typeAction,
       dateAction: action.dateAction ? new Date(action.dateAction).toLocaleDateString('fr-FR') : '',
       createdBy: action.createdBy.firstname + ' ' + action.createdBy.lastname,
-      contactId: action.contactId.id,
+      contactId: action.contactId,
       manager: action.manager ? action.manager.id : null
     });
     console.log(this.DetailsActionForm.value.manager);
@@ -510,7 +510,7 @@ fillActionCrmDetailsForm(action: any) {
             );
   
             // Ajouter le nom du contact au besoin
-            besoin.contact = `${element.firstname} ${element.lastname}`;
+            besoin.contact = element;
   
             // ✅ Vérification pour éviter les doublons
             if (!this.companyBesoins.some(b => b.id === besoin.id)) {

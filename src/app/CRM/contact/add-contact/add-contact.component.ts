@@ -672,7 +672,7 @@ wherefrom:any;
       contactId: action.contactId,
       manager: action.manager ? action.manager.id : null
     });
-    console.log(this.DetailsActionForm.value.manager);
+    console.log('hahahhahahahahahahhahahaha',this.DetailsActionForm.value);
     (error: any) => {
     console.error('Erreur lors du chargement de l\'action:', error);
   }
