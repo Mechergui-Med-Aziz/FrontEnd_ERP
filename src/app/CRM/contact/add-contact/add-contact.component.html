@@ -686,11 +686,11 @@
           </div>
           <div class="mb-4">
             <label for="type">Type</label>
-            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'" />
+            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'||this.contact.value.active==false" />
           </div>
           <div class="mb-4">
             <label for="description">Description</label>
-            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'"></textarea>
+            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'||this.contact.value.active==false"></textarea>
           </div>
           <div class="mb-4">
             <label for="creationDate">Date De Création</label>
@@ -704,8 +704,8 @@
           <div class="mb-4">
             <label for="manager">Manager Responsable</label>
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
-          [class.pointer-events-none]="this.userRole == 'Manager De Production'"
-          [class.bg-gray-200]="this.userRole== 'Manager De Production'">
+          [class.pointer-events-none]="this.userRole == 'Manager De Production'||this.contact.value.active==false"
+          [class.bg-gray-200]="this.userRole== 'Manager De Production'||this.contact.value.active==false">
 
           <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
             {{ manager.firstname }} {{ manager.lastname }}
@@ -725,13 +725,13 @@
                   </a>
               </li>
             </ul>
-            <span class="text-sm text-gray-700">
+            <span class="text-sm text-gray-700" [hidden]="contact.value.active==false">
               Téléchargez les fichiers avant de joindre de nouveaux fichiers si besoin.
             </span>
           </div>
     
           <!-- Section pour joindre de nouveaux fichiers -->
-          <div class="mb-4">
+          <div class="mb-4" [hidden]="contact.value.active==false">
             <label for="files" class="block">Joindre de nouveaux fichiers :</label>
             <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'">
             <span class="text-sm text-gray-700">

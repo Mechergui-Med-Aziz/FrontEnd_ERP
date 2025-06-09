@@ -374,7 +374,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let contact of companycontacts" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotoContact(contact.id)" >
+                    <tr  *ngFor="let contact of companycontacts" [ngClass]="{
+                                'inactive': contact.active==false,
+                              }" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotoContact(contact.id)" >
                         <td class="px-4 py-6 font-semibold">{{ contact.firstname}} {{contact.lastname}}</td>
                       <td class="px-4 py-6 ">{{ contact.function }}</td>
                       <td class="px-4 py-6 ">{{ contact.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</td>
@@ -446,10 +448,12 @@
                       <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                         <td>
                         <div class="flex space-x-2">
-                          <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action, 'contact')"> 
+                          <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action, 'contact')" [ngClass]="{
+                                'w-full m-2': action.contactId.active==false,
+                              }"> 
                             Edit
                           </button>
-                          <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action, 'contact')">
+                          <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action, 'contact')" [hidden]="action.contactId.active==false">
                             Supprimer
                           </button>
                         </div>
@@ -550,9 +554,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let besoin of companyBesoins" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotobesoinUpdate(besoin.id)" >
+                    <tr *ngFor="let besoin of companyBesoins"  class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotobesoinUpdate(besoin.id)" >
                       <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
-                      <td class="px-4 py-6">{{ besoin.contact }}</td>
+                      <td class="px-4 py-6">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</td>
                       <td class="px-4 py-6">{{ besoin.status }}</td>
                       
                       <td class="px-4 py-6">{{besoin?.managerResponsable?.firstname}} {{besoin?.managerResponsable?.lastname}}</td>
@@ -723,7 +727,7 @@
 
   <!-- modal de details d'action  -->  <div *ngIf="isActionDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-50">
       <div class="bg-white p-6 rounded-lg w-1/3">
-        <h2 class="text-xl font-bold mb-4">Détails d'Action Besoin</h2>
+        <h2 class="text-xl font-bold mb-4">Détails d'action Besoin</h2>
         <div class="max-h-[85vh] overflow-y-auto">
         <form [formGroup]="DetailsActionForm">
           <div hidden>
@@ -799,7 +803,7 @@
 
     </div>  <div *ngIf="isActionCrmDetailsModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 backdrop-blur-sm z-50">
       <div class="bg-white p-6 rounded-lg w-1/3">
-        <h2 class="text-xl font-bold mb-4">Détails d'Action Contact</h2>
+        <h2 class="text-xl font-bold mb-4">Détails d'action Contact</h2>
         <div class="max-h-[85vh] overflow-y-auto">
         <form [formGroup]="DetailsActionCrmForm">
           <div hidden>
@@ -808,11 +812,11 @@
           </div>
           <div class="mb-4">
             <label for="type">Type</label>
-            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'" />
+            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'||DetailsActionCrmForm.value.contactId.active==false" />
           </div>
           <div class="mb-4">
             <label for="description">Description</label>
-            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'"></textarea>
+            <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'||DetailsActionCrmForm.value.contactId.active==false"></textarea>
           </div>
           <div class="mb-4">
             <label for="creationDate">Date De Création</label>
@@ -826,8 +830,8 @@
           <div class="mb-4">
             <label for="manager">Manager Responsable</label>
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded"
-          [class.pointer-events-none]="this.userRole == 'Manager De Production'"
-          [class.bg-gray-200]="this.userRole== 'Manager De Production'">
+          [class.pointer-events-none]="this.userRole == 'Manager De Production'||DetailsActionCrmForm.value.contactId.active==false"
+          [class.bg-gray-200]="this.userRole== 'Manager De Production'||DetailsActionCrmForm.value.contactId.active==false">
 
           <option *ngFor="let manager of productionManagers" [ngValue]="manager.id">
             {{ manager.firstname }} {{ manager.lastname }}
@@ -838,7 +842,7 @@
       
     
           <!-- Section affichant les fichiers existants sous forme de liens cliquables -->
-          <div class="mb-4">
+          <div class="mb-4" >
             <label class="block">Fichiers déjà joints :</label>
             <ul class="list-disc list-inside space-y-1">
               <li *ngFor="let file of selectedAction.attachments">
@@ -848,13 +852,13 @@
                   </a>
               </li>
             </ul>
-            <span class="text-sm text-gray-700">
+            <span class="text-sm text-gray-700" [hidden]="DetailsActionCrmForm.value.contactId.active==false">
               Téléchargez les fichiers avant de joindre de nouveaux fichiers si besoin.
             </span>
           </div>
     
           <!-- Section pour joindre de nouveaux fichiers -->
-          <div class="mb-4">
+          <div class="mb-4" [hidden]="DetailsActionCrmForm.value.contactId.active==false">
             <label for="files" class="block">Joindre de nouveaux fichiers :</label>
             <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'">
             <span class="text-sm text-gray-700">
