@@ -109,12 +109,15 @@ checkPasswords(password: string, confirmPassword: string): string {
   const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[v+\-*$#@!])[A-Za-z\dv+\-*$#@!]{8,}$/;
 
 
-  if (!password) {
+  if (!password && confirmPassword.length!=0) {
     return this.msg='Veuillez entrer un mot de passe !';
   }
 
-  if (!confirmPassword) {
+  if (!confirmPassword && password.length!=0) {
     return this.msg='Veuillez confirmer le mot de passe !';
+  }
+  if(password.length ==0 && confirmPassword.length==0){ 
+    return this.msg=''; 
   }
 
   if (!passwordPattern.test(password)) {
@@ -136,7 +139,7 @@ checkPasswords(password: string, confirmPassword: string): string {
 
    var text=this.checkPasswords(password, confirmPassword)
   
-    if (text!='Les mots de passe correspondent !'){
+    if (text != 'Les mots de passe correspondent !' && text != ''){
       this.message=text;
       this.isErrorModalOpen = true;
       return;}
