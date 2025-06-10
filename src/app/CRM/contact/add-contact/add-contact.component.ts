@@ -161,8 +161,8 @@ disactivationForm:FormGroup;
       country: ['', []],
       
       
-      domains: ['', [Validators.required]],      
-      tools: ['', [Validators.required]],
+      domains: ['', []],      
+      tools: ['', []],
       
       company: [null, []],
       creationDate: [{value:new Date().toLocaleDateString('fr-FR')}],
@@ -270,6 +270,14 @@ wherefrom:any;
 
     );
   this.isDesactiverModalOpen = true;
+  if(this.otherContacts.length==0){
+    this.globalErrorMessage = 'Aucun autre contact actif disponible pour la désactivation.Veuillez créer un nouveau contact avant de désactiver celui-ci.';
+    
+    
+    this.closeDesactiverModal();
+    this.isErrorModalOpen = true;
+    return;
+  }
  }else{
       this.desactiver();
     }

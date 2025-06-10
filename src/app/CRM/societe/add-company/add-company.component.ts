@@ -651,9 +651,10 @@ if(tab=='besoins' || tab=='actions'){
 }
   productionManagers : any[] = [];
   typeActions : any[] = []; 
+  companyActiveContacts: any[] = [];
   openActionAddModal(){
     this.loadTypeActions();
-    
+    this.companyActiveContacts = this.companycontacts.filter((contact: { active: boolean; }) => contact.active == true);
     this.isAddActionModalOpen = true;
   }
   closeActionAddModal(){
