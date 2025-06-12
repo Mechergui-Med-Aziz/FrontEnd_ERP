@@ -196,7 +196,7 @@ isDesactiverModalOpen: boolean = false;
     this.contactservice.findAllContacts().subscribe(
       (contacts: any[]) => {
         this.contactsExistants = contacts;
-        console.log('Contacts existants:', this.contactsExistants); // Debugging line
+        //console.log('Contacts existants:', this.contactsExistants); // Debugging line
       }
 
     )
@@ -212,15 +212,15 @@ isDesactiverModalOpen: boolean = false;
       this.idCompany = params['idCompany'];
       this.idContact = params['idContact'];
       
-      console.log('ID de la société  :', this.idCompany); // Debugging line
-      console.log('ID du contact hhhh:', this.idContact); // Debugging line
-      console.log('where from:', this.wherefrom); // Debugging line
+      //console.log('ID de la société  :', this.idCompany); // Debugging line
+      //console.log('ID du contact hhhh:', this.idContact); // Debugging line
+      //console.log('where from:', this.wherefrom); // Debugging line
       
       }
     );
     this.activatedRoute.queryParams.subscribe((params) => {
       this.wherefrom = params['c'];
-      console.log('where fromMMMMMMMMMMMMMMMMMMMM:', this.wherefrom);
+      //console.log('where fromMMMMMMMMMMMMMMMMMMMM:', this.wherefrom);
     });
     if (this.idCompany) {
       this.mode='add';
@@ -233,8 +233,6 @@ isDesactiverModalOpen: boolean = false;
       
 
       this.loadProductionManagers();
-      // Debugging line
-      
     }
      this.activatedRoute.queryParams.subscribe(params => {
     if (params['modeS'] == 'besoin') {
@@ -260,11 +258,11 @@ wherefrom:any;
     
     this.compService.getCompById(this.idCompany).subscribe(
       (company: any) => {
-        console.log('contact id', this.idContact); // Debugging line
-        console.log('company contacts:', company.contacts);
+        //console.log('contact id', this.idContact); // Debugging line
+        //console.log('company contacts:', company.contacts);
         this.otherContacts = company.contacts.filter((contact: any) => contact.id != this.idContact&& contact.active == true);
          // Debugging line
-        console.log('Other contactsSSSSSSSS:', this.otherContacts); // Debugging line
+        //console.log('Other contactsSSSSSSSS:', this.otherContacts); // Debugging line
       }
       
 
@@ -283,7 +281,6 @@ wherefrom:any;
     }
   }  closeDesactiverModal() {
     this.isDesactiverModalOpen = false;
-    // Reset the form when closing the modal
     this.disactivationForm.reset();
   }
 
@@ -307,11 +304,11 @@ wherefrom:any;
         this.contactName = contact.firstname + ' ' + contact.lastname;
         this.contactStatus = contact.company.status;
         this.idCompany = contact.company.id;
-        console.log('le contact:', contact); 
-        console.log('Contact company:', contact.company); // Debugging line
+        //console.log('le contact:', contact); 
+        //console.log('Contact company:', contact.company); // Debugging line
         this.company = contact.company;
         this.contactBesoins = contact.besoins;
-        console.log('contact besoinssssssssssssssssssssssss:', this.contactBesoins);
+        //console.log('contact besoinssssssssssssssssssssssss:', this.contactBesoins);
       },
       (error: any) => {
         console.error('Error loading contact data:', error);
@@ -323,11 +320,11 @@ wherefrom:any;
    
     if (this.idContact) {
       // Mode édition
-      console.log('Updating contact with ID:', this.contact.value); // Debugging line
+      //console.log('Updating contact with ID:', this.contact.value); // Debugging line
       this.contactservice.updateContact(this.idContact, this.contact.value).subscribe(
         
         (response: any) => {
-          console.log('Contact updated successfully:', response);
+          //console.log('Contact updated successfully:', response);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contacte mis à jour avec succès' });
          if(this.wherefrom == 'company'){
                   this.router.navigate(['/addcomp/'+this.idCompany], { queryParams: { modeS: 'contacts' } });}
@@ -349,14 +346,14 @@ wherefrom:any;
         createdBy: this.user.id,
       });
 
-      console.log('Creating new contact:', this.contact.value);
-      console.log('Company ID:', this.idCompany); // Debugging line
+      //console.log('Creating new contact:', this.contact.value);
+      //console.log('Company ID:', this.idCompany); // Debugging line
       this.contact.patchValue({ company: this.company });
       // Mode création
       this.contactservice.createContact(this.contact.value).subscribe(
         (response: any) => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact créé avec succès' });
-          console.log('where EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE', this.wherefrom);
+          //console.log('where EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE', this.wherefrom);
            if(this.wherefrom == 'company'){
                   this.router.navigate(['/addcomp/'+this.idCompany], { queryParams: { modeS: 'contacts' } });}
                   else{this.location.back(); }
@@ -370,31 +367,29 @@ wherefrom:any;
   }  
   desactiver(){
     if(this.contactBesoins.length > 0){
-      // Get the selected contact from the form
       const selectedContact = this.disactivationForm.value.DisactivationContact;
       
-      console.log('Desactivating contact with ID:', this.idContact); 
-      console.log('Selected new contact for besoinsSSSSSSSSSSSSS:', selectedContact);
+      //console.log('Desactivating contact with ID:', this.idContact); 
+      //console.log('Selected new contact for besoinsSSSSSSSSSSSSS:', selectedContact);
       
-      // Update each besoin with the new contact
       this.contactBesoins.forEach((besoin: any) => {
-        console.log("besoin naciennnnnnnnnn", besoin);
-        console.log("contact",selectedContact)
+        //console.log("besoin naciennnnnnnnnn", besoin);
+        //console.log("contact",selectedContact)
         besoin.contact = selectedContact;
-        console.log('besoin nouvellllLLLLLLLL',besoin)
+        //console.log('besoin nouvellllLLLLLLLL',besoin)
        
         this.besoinservice.updateBesoin(besoin.id, besoin).subscribe(
           (response: any) => {
-            console.log('Besoin mis à jour avec succès:', response);
+            //console.log('Besoin mis à jour avec succès:', response);
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'besoin mis à jour avec succès' });
             
             // Deactivate the contact after updating besoins
             this.contact.patchValue({ active: false });
-            console.log('Contact form value for update:', this.contact.value);
+            //console.log('Contact form value for update:', this.contact.value);
             
             this.contactservice.updateContact(this.idContact, this.contact.value).subscribe(
               (response: any) => {
-                console.log('Contact desactivé avec succès:', response);
+                //console.log('Contact desactivé avec succès:', response);
                 this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact désactivé avec succès' });
                 this.closeDesactiverModal();
                 this.ngOnInit(); // Reload the contact data
@@ -404,11 +399,10 @@ wherefrom:any;
         );
       });
     } else {
-      // If no besoins, just deactivate the contact
       this.contact.patchValue({ active: false });
       this.contactservice.updateContact(this.idContact, this.contact.value).subscribe(
         (response: any) => {
-          console.log('Contact desactivé avec succès:', response);
+          //console.log('Contact desactivé avec succès:', response);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact désactivé avec succès' });
         }
       );
@@ -416,31 +410,19 @@ wherefrom:any;
   }
   activerContact() {
     this.contact.patchValue({ active: true });
-    console.log('Activating contact with ID:', this.contact.value);
+    //console.log('Activating contact with ID:', this.contact.value);
     this.contactservice.updateContact(this.idContact, this.contact.value).subscribe(
       (response: any) => {
-        console.log('Contact activé avec succès:', response);
+        //console.log('Contact activé avec succès:', response);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'contact activé avec succès' });
        
-        this.ngOnInit(); // Reload the contact data
+        this.ngOnInit();
       })
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+    
   
   
   loadCountries() {
-    // Format countries for dropdown (example: use common name + flag)
     this.societesPaysList = countries.map((country) => ({
       value: country.name.common,
       name: country.name.common, 
@@ -453,8 +435,7 @@ wherefrom:any;
   loadActions(contact: any) {
     this.actionService.findActionsByContactId(contact).subscribe(
       (actions: any) => {
-        console.log(actions)
-        // Tri des actions par date de façon décroissante (la plus récente en premier)
+        //console.log(actions)
         this.contactActions = actions.sort(
           (a:any, b:any) => new Date(b.dateAction).getTime() - new Date(a.dateAction).getTime()
         );
@@ -478,9 +459,6 @@ wherefrom:any;
   selectModeS(tab: string): void {
     this.modeS = tab;
   
-    
-  
-    // Si besoin, ajouter ici des actions spécifiques au changement d'onglet
   }
   openActionAddModal(){
     this.loadTypeActions();
@@ -504,7 +482,7 @@ wherefrom:any;
   loadProductionManagers(){
     this.profileService.findUSerByRole("Manager De Production").subscribe(
       (users: any) => {
-        console.log('users managers de prod :', users);
+        //console.log('users managers de prod :', users);
         this.productionManagers = users;
       },
       (error: any) => {
@@ -548,8 +526,8 @@ wherefrom:any;
     }
     if (this.actionAddForm.valid) {
       const actionData = this.actionAddForm.value;
-      console.log('actionData:',actionData);
-      console.log('selectedFiles:',this.selectedFiles);
+      //console.log('actionData:',actionData);
+      //console.log('selectedFiles:',this.selectedFiles);
       this.actionService.createActionCrm(actionData, this.selectedFiles).subscribe(
         response => {
 
@@ -557,11 +535,10 @@ wherefrom:any;
           
           //this.Dashboard=false;
           this.isAddActionModalOpen = false; 
-          this.isModalOpen=true// Fermer la modal d'ajout d'action
-          this.ngOnInit(); // Navigate to the contact update page
-          this.modeS="actions" // Navigate back to the previous page
+          this.isModalOpen=true
+          this.ngOnInit(); 
+          this.modeS="actions" 
           //console.log('Action enregistrée avec succès', response);
-          // Réinitialiser le formulaire et la sélection des fichiers si besoin
           this.actionAddForm.reset();
           this.selectedFiles = [];
 
@@ -643,7 +620,7 @@ wherefrom:any;
         return;
       }
     }
-    console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
+    //console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
 
     const updatedData = this.DetailsActionForm.value;
     updatedData.besoinId = this.selectedAction.besoinId;
@@ -651,15 +628,15 @@ wherefrom:any;
     updatedData.dateAction = new Date(this.selectedAction.dateAction).toISOString();
     updatedData.manager=this.productionManagers.find(manager => manager.id == this.DetailsActionForm.value.manager)
 
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh"+updatedData?.manager)
+    //console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh"+updatedData?.manager)
 
     this.actionService.modifyActionCrm(updatedData, this.selectedAction.id, this.selectedFiles).subscribe(
       (response: any) => {
         //console.log(`Action ${updatedData.id} mise à jour`);
         this.message = 'Action modifiée avec succès';
         this.isActionDetailsModalOpen = false;
-        this.ngOnInit(); // Recharge les actions après la modification
-        this.modeS="actions" // Navigate back to the previous page
+        this.ngOnInit(); 
+        this.modeS="actions" 
         //this.Dashboard=false;
         //this.Dashboard=true;
         
@@ -680,14 +657,14 @@ wherefrom:any;
       contactId: action.contactId,
       manager: action.manager ? action.manager.id : null
     });
-    console.log('hahahhahahahahahahhahahaha',this.DetailsActionForm.value);
+    //console.log('hahahhahahahahahahhahahaha',this.DetailsActionForm.value);
     (error: any) => {
     console.error('Erreur lors du chargement de l\'action:', error);
   }
 
 }
 retourner() {
-  console.log('return toOOOOOOOOOOOOOOOOO', this.wherefrom); // Debugging line
+  //console.log('return toOOOOOOOOOOOOOOOOO', this.wherefrom); 
   if (this.wherefrom == "company") {
     this.router.navigate(['/addcomp/' + this.idCompany], { queryParams: { modeS: 'contacts' } });
   }else{
@@ -695,8 +672,7 @@ retourner() {
   }
 
   
-  
-  // Navigate back to the previous page
+ 
 
 }
  gotobesoinUpdate(besoin: any) {

@@ -34,12 +34,8 @@ import dayjs from 'dayjs';
   selector: 'app-company',
   standalone: true,
   imports: [CommonModule, DragDropModule, HttpClientModule, RouterModule, FormsModule, ReactiveFormsModule, MatTableModule,
-    CommonModule, MatIconModule,
-    MatButton, MatCheckbox,
-    MatTooltip,RouterModule,
-    MatFormFieldModule, MatIcon,
-    MatInputModule,
-    ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatLabel, MatButtonModule],
+    CommonModule, MatIconModule,RouterModule,MatFormFieldModule, MatIcon,MatInputModule,
+    ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatButtonModule],
    
    
   templateUrl: './company.component.html',
@@ -176,7 +172,7 @@ switchMode($event: MatButtonToggleChange) {
         (response: any) => {
           column.companies = response;
           
-           // Debugging line
+           
           },
         (error: any) => {
           console.error(`Erreur lors du chargement des besoins pour le statut ${column.status}:`, error);
@@ -186,7 +182,7 @@ switchMode($event: MatButtonToggleChange) {
     this.companyService.getComps().subscribe(
       (response: any) => {
         this.nbCompanies = response.length;
-        console.log('Nombre total de sociétés:', this.nbCompanies); // Debugging line
+        //console.log('Nombre total de sociétés:', this.nbCompanies); 
       },
       (error: any) => {
         console.error('Erreur lors de la récupération des sociétés:', error);
@@ -232,12 +228,12 @@ switchMode($event: MatButtonToggleChange) {
       
       
   
-      console.log('societe déplacé11111111:', movedItem);
-      console.log('Nouveau statut:', newStatus);
+      //console.log('societe déplacé11111111:', movedItem);
+      //console.log('Nouveau statut:', newStatus);
 
       this.companyService.updateCompanystatus(movedItem.id,this.companyForm.value).subscribe(
         (response: any) => {
-          console.log(`societe ${movedItem.id} mis à jour avec le statuttttttttttttttttttttttttttttttttttttt ${newStatus}`);
+          //console.log(`societe ${movedItem.id} mis à jour avec le statuttttttttttttttttttttttttttttttttttttt ${newStatus}`);
           
           this.ngOnInit();
         },
@@ -294,7 +290,7 @@ switchMode($event: MatButtonToggleChange) {
           (response: any) => {
               this.liste = response;
               this.dataSource = this.liste;
-              console.log('Liste des sociétés:', this.liste);
+              //console.log('Liste des sociétés:', this.liste);
           },
           (error: any) => { console.error('Erreur lors de la récupération des sociétés:', error); }
       );  
@@ -346,17 +342,17 @@ switchMode($event: MatButtonToggleChange) {
         return this.imageServ.getFile(company.pictureName);*/
     }
     editCompany(company: any) {
-        this.router.navigate(['/addcomp', company.id]); // ou company._id selon votre modèle
+        this.router.navigate(['/addcomp', company.id]);
       }
       
       deleteCompany(company: any) {
         
         if (confirm('Voulez-vous vraiment supprimer cette société ?')) {
-            console.log('Suppression de la société:', company.id);
+            //console.log('Suppression de la société:', company.id);
           this.companyService.deleteComp(company.id).subscribe(
             (response: any) => {
               this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société supprimée avec succès' });
-              this.listPaginate(); // Rafraîchir la liste
+              this.listPaginate();
             },
             (error: any) => {
               this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la suppression' });
@@ -376,7 +372,7 @@ switchMode($event: MatButtonToggleChange) {
       filterCompanies(): void {
           const { company,  dateExact, startDate, endDate } = this.filterForm.value;
           let filtered = this.liste;
-          console.log('filtered:', this.filterForm.value);
+          //console.log('filtered:', this.filterForm.value);
 
           if(this.selectedFilterMethod !="" && company=="" && dateExact=="" && startDate=="" && endDate=="") {
           this.ngOnInit()
@@ -385,11 +381,11 @@ switchMode($event: MatButtonToggleChange) {
           if(this.selectedFilterMethod === 'company' && company && company.trim() !== '') {
         
             const searchLower = company.trim().toLowerCase();
-            console.log('searchLower:',searchLower);
+            //console.log('searchLower:',searchLower);
             filtered = filtered.filter(company => {
               if (company.name) {
-                console.log('besoin.contact.company.name:',company.name);
-                console.log('searchLower:',searchLower);
+                //console.log('besoin.contact.company.name:',company.name);
+                //console.log('searchLower:',searchLower);
                 const companyName = (company.name || '').toLowerCase();
                 return companyName.includes(searchLower);
               }

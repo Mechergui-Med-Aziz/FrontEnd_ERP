@@ -52,7 +52,7 @@ dayjs.extend(isSameOrBefore);
       
       MatFormFieldModule, MatIcon,
       MatInputModule,
-      ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatLabel, MatButtonModule, MatIconModule,
+      ToastModule, PaginatorModule, TableModule, ButtonModule, CheckboxModule, TooltipModule, MatButtonToggleModule, MatButtonModule, MatIconModule,
       MatButtonModule,
       MatAutocompleteModule,
       MatInputModule,
@@ -135,14 +135,14 @@ export class ContactComponent implements OnInit {
   }
   
 openAddModal() {
-  console.log('openAddModal');
+  //console.log('openAddModal');
   this.companyname = null;
   this.isModalOpen = true;
   this.serv.getComps().subscribe(
     (response: any) => {
         this.companies = response;
         
-        console.log('Liste des sociétés:', this.companies);
+        //console.log('Liste des sociétés:', this.companies);
     },
     (error: any) => { console.error('Erreur lors de la récupération des sociétés:', error); }
 );  }
@@ -157,7 +157,7 @@ companyname :any;
 create() {
   
   const company = this.companies.find(c => c.name === this.companyname);
- console.log('Selected company:', company);
+ //console.log('Selected company:', company);
   this.router.navigate([`addcontact/${company.id}`]);
   this.closeAddModal();
 }
@@ -165,21 +165,20 @@ create() {
 
 loadContacts() {
   this.columns.forEach(column => {
-    console.log('Statut:', column.statut); // Debugging line
+    //console.log('Statut:', column.statut);
     this.serv.findCompanyByStatus(column.statut).subscribe(
       (response: any) => {
         response.forEach ((company: any) => {
 this.nbContacts += company.contacts.length;
 let contactss:any[] = [];
 company.contacts.forEach((contact: any) => {
-  contact.company = company; // Associer la société au contact
+  contact.company = company;
   
   contactss.push(contact);
-  // Debugging line
  
 })
 column.contacts=contactss;
-console.log('ContactTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT:', column.contacts); 
+//console.log('ContactTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT:', column.contacts); 
         });
         
         
@@ -252,7 +251,7 @@ listPaginate() {
       (response: any) => {
           this.liste = response;
           this.dataSource = this.liste;
-          console.log('Liste des contactAAAAAAAAAAAAAAAAAAA:', this.liste);
+          //console.log('Liste des contactAAAAAAAAAAAAAAAAAAA:', this.liste);
       },
       (error: any) => { console.error('Erreur lors de la récupération des sociétés:', error); }
   );  
@@ -310,12 +309,12 @@ editContact(contact: any) {
   deleteContact(contact: any) {
     
     if (confirm('Voulez-vous vraiment supprimer cette société ?')) {
-        console.log('Suppression du contact:', contact.id);
+        //console.log('Suppression du contact:', contact.id);
       this.contactsService.deleteContact(contact.id).subscribe(
         (response: any) => {
-          console.log('Contact supprimé avec succès:', response);
+          //console.log('Contact supprimé avec succès:', response);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société supprimée avec succès' });
-          this.listPaginate(); // Rafraîchir la liste
+          this.listPaginate();
         },
         (error: any) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la suppression' });
@@ -332,8 +331,8 @@ editContact(contact: any) {
     
     const { contact ,company,  dateExact, startDate, endDate } = this.filterForm.value;
     let filtered = this.liste;
-    console.log('filterContacts called DDDDDDDDDDEDED  ' ,this.liste);
-    console.log('filtered:', this.filterForm.value);
+    //console.log('filterContacts called DDDDDDDDDDEDED  ' ,this.liste);
+    //console.log('filtered:', this.filterForm.value);
 
     if(this.selectedFilterMethod !="" && company=="" && contact=="" && dateExact=="" && startDate=="" && endDate=="") {
       this.ngOnInit()
@@ -342,11 +341,11 @@ editContact(contact: any) {
     if(this.selectedFilterMethod === 'company' && company && company.trim() !== '') {
   
       const searchLower = company.trim().toLowerCase();
-      console.log('searchLower:',searchLower);
+      //console.log('searchLower:',searchLower);
       filtered = filtered.filter(contact => {
         if (contact.company.name) {
-          console.log('besoin.contact.company.nameEEEEEEEEEEE:',contact.company.name);
-          console.log('searchLower:',searchLower);
+          //console.log('besoin.contact.company.nameEEEEEEEEEEE:',contact.company.name);
+          //console.log('searchLower:',searchLower);
           const companyName = (contact.company.name || '').toLowerCase();
           return companyName.includes(searchLower);
         }
@@ -356,11 +355,11 @@ editContact(contact: any) {
     if(this.selectedFilterMethod === 'contact' && contact && contact.trim() !== '') {
   
       const searchLower = contact.trim().toLowerCase();
-      console.log('searchLower:',searchLower);
+      //console.log('searchLower:',searchLower);
       filtered = filtered.filter(contact => {
         if (contact.firstnamename+contact.lastname) {
-          console.log('contact.name:',contact.firstname);
-          console.log('searchLower:',searchLower);
+          //console.log('contact.name:',contact.firstname);
+          //console.log('searchLower:',searchLower);
           const contactName = (contact.firstname+contact.lastname || '').toLowerCase();
           return contactName.includes(searchLower);
         }
@@ -419,8 +418,6 @@ editContact(contact: any) {
   }
   
   onDragMoved(event: any): void {
-    // Cette méthode gère les mises à jour de l'interface utilisateur pendant l'opération de glisser-déposer
-    // Elle peut être utilisée pour faire défiler le conteneur lors du glissement près des bords
   }
   
 }

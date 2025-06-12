@@ -129,36 +129,86 @@
           <form [formGroup]="userAddForm">
 
             <div class="mb-4">
-              <label for="prenom">Prenom</label>
-              <input id="prenom" type="text" formControlName="firstname" class="w-full p-2 mt-1 border rounded"  />
+              <label for="prenom">Prenom *</label>
+              <input id="prenom" type="text" formControlName="firstname" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+
+                'border-red-500': userAddForm.get('firstname')?.invalid && userAddForm.get('firstname')?.touched,
+                'border-gray-300': !(userAddForm.get('firstname')?.invalid && userAddForm.get('firstname')?.touched)
+
+              }"(blur)="userAddForm.get('firstname')?.markAsTouched()" />
+
+              <div *ngIf="userAddForm.get('firstname')?.invalid && userAddForm.get('firstname')?.touched" class="text-xs text-red-600 mt-1">
+                <span *ngIf="userAddForm.get('firstname')?.errors?.['required']">Le prenom est obligatoire</span>
+              </div>
             </div>
             <div class="mb-4">
-              <label for="nom">Nom</label>
-              <input id="nom" formControlName="lastname" class="w-full p-2 mt-1 border rounded" />
+              <label for="nom">Nom *</label>
+              <input id="nom" formControlName="lastname" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+                
+                'border-red-500': userAddForm.get('lastname')?.invalid && userAddForm.get('lastname')?.touched,
+                'border-gray-300': !(userAddForm.get('lastname')?.invalid && userAddForm.get('lastname')?.touched)
+
+              }"(blur)="userAddForm.get('lastname')?.markAsTouched()"/>
+              <div *ngIf="userAddForm.get('lastname')?.invalid && userAddForm.get('lastname')?.touched" class="text-xs text-red-600 mt-1">
+                <span *ngIf="userAddForm.get('lastname')?.errors?.['required']">Le nom est obligatoire</span>
+              </div>
             </div>
 
             <div class="mb-4">
-                <label for="username">username</label>
-                <input id="nom" formControlName="username" class="w-full p-2 mt-1 border rounded" />
+                <label for="username">username *</label>
+                <input id="nom" formControlName="username" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+                
+                  'border-red-500': userAddForm.get('username')?.invalid && userAddForm.get('username')?.touched,
+                  'border-gray-300': !(userAddForm.get('username')?.invalid && userAddForm.get('username')?.touched)
+  
+                }"(blur)="userAddForm.get('username')?.markAsTouched()" />
+
+                <div *ngIf="userAddForm.get('username')?.invalid && userAddForm.get('username')?.touched" class="text-xs text-red-600 mt-1">
+                  <span *ngIf="userAddForm.get('username')?.errors?.['required']">Le nom d'utilisateur est obligatoire</span>
+                </div>
               </div>
 
             <div class="mb-4">
-                <label for="email">Email</label>
-                <input id="email" formControlName="email" class="w-full p-2 mt-1 border rounded" />
+                <label for="email">Email *</label>
+                <input id="email" formControlName="email" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+                
+                  'border-red-500': userAddForm.get('email')?.invalid && userAddForm.get('email')?.touched,
+                  'border-gray-300': !(userAddForm.get('email')?.invalid && userAddForm.get('email')?.touched)
+  
+                }"(blur)="userAddForm.get('email')?.markAsTouched()" />
+                <div *ngIf="userAddForm.get('email')?.invalid && userAddForm.get('email')?.touched" class="text-xs text-red-600 mt-1">
+                  <span *ngIf="userAddForm.get('email')?.errors?.['required']">L'adresse E-mail est obligatoire</span>
+                </div>
               </div>
             <div class="mb-4">
-              <label for="phone">Telephone</label>
-              <input id="phone" formControlName="phone" class="w-full p-2 mt-1 border rounded"  />
+              <label for="phone">Telephone *</label>
+              <input id="phone" formControlName="phone" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+                
+                'border-red-500': userAddForm.get('phone')?.invalid && userAddForm.get('phone')?.touched,
+                'border-gray-300': !(userAddForm.get('phone')?.invalid && userAddForm.get('phone')?.touched)
+
+              }"(blur)="userAddForm.get('phone')?.markAsTouched()"  />
+
+              <div *ngIf="userAddForm.get('phone')?.invalid && userAddForm.get('phone')?.touched" class="text-xs text-red-600 mt-1">
+                <span *ngIf="userAddForm.get('phone')?.errors?.['required']">Le numéro de téléphone est obligatoire</span>
+              </div>
             </div>
 
             <div class="mb-4">
-              <label for="role">Role</label>
-              <select id="role" formControlName="role" class="w-full p-2 mt-1 border rounded" >
+              <label for="role">Rôle *</label>
+              <select id="role" formControlName="role" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+                'border-red-500': userAddForm.get('role')?.invalid && userAddForm.get('role')?.touched,
+                'border-gray-300': !(userAddForm.get('role')?.invalid && userAddForm.get('role')?.touched) }"
+              (blur)="onRoleBlur()">
                 <option value="Administrateur"> Administrateur </option>
                 <option value="Directeur Associé"> Directeur Associé </option>
                 <option value="Commercial"> Commercial </option>
                 <option value="Manager De Production">Manager De Production</option>
                 </select>
+
+                <div *ngIf="userAddForm.get('role')?.invalid && userAddForm.get('role')?.touched" class="text-xs text-red-600 mt-1">
+                  <span *ngIf="userAddForm.get('role')?.errors?.['required']">La sélection d'un role pour l'utilisateur est obligatoire</span>
+                </div>
             </div>
         
             <div class="flex justify-end gap-4 mt-4">

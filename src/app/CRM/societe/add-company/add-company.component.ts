@@ -144,8 +144,6 @@ export class AddCompanyComponent implements OnInit, AfterViewInit {
   companyBesoins: any[] = [];
   mode: any ;
   c="company";
-   // Mode par défaut (ajout)
-  // Liste des contacts de la société
   constructor(
     private fb: FormBuilder,
     private AuthService: AuthService,
@@ -176,7 +174,7 @@ export class AddCompanyComponent implements OnInit, AfterViewInit {
       agency: ['', [Validators.required]],
       phone: ['', [
       Validators.required,
-      Validators.pattern('^[0-9]{8}$') // Exactly 8 digits
+      Validators.pattern('^[0-9]{8}$') 
       ]],
       address: ['', [Validators.required]],
       postalCode: ['', []],
@@ -229,19 +227,19 @@ export class AddCompanyComponent implements OnInit, AfterViewInit {
   isActionCrmDetailsModalOpen: boolean = false;
    DetailsActionForm: FormGroup;
   DetailsActionCrmForm: FormGroup;
-  // Modifiez votre composant AddCompanyComponent pour gérer l'édition
+  
 user: any ;
 isAddActionModalOpen = false;
  actionAddForm: FormGroup;
 userRole:any;
-modeAction: string = ''; // Mode par défaut pour l'ajout d'action
+modeAction: string = ''; 
 userId: any;
 
 ngOnInit(): void {
   this.BesoinActions= [];
   this.companyActions = [];
   this.companyBesoins = []
-  console.log("companyBesoins",this.companyBesoins)
+  //console.log("companyBesoins",this.companyBesoins)
 
   this.profileService.findUserById(Number(localStorage.getItem('id'))).subscribe(
     (user: any) => {
@@ -253,16 +251,16 @@ ngOnInit(): void {
   this.loadCountries();
   this.loadProductionManagers();
   
-  // Récupérer l'ID de l'URL si on est en mode édition
+  
   this.activatedRoute.params.subscribe(params => {
     if (params['id']) {
      
       this.idCompany = params['id'];
-      console.log("idCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYUUUUUUUUUUUUUUUUU",this.idCompany);
+      //console.log("idCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYUUUUUUUUUUUUUUUUU",this.idCompany);
       
       this.loadCompanyData(this.idCompany);
-      console.log("HHHHHHHEEEERRREEEEEE", this.companyBesoins);
-      console.log("COMPANY DATAAAAAAAAAAAAAAAAAAAAAAAAAA",this.companyForm.value);
+      //console.log("HHHHHHHEEEERRREEEEEE", this.companyBesoins);
+      //console.log("COMPANY DATAAAAAAAAAAAAAAAAAAAAAAAAAA",this.companyForm.value);
     }
   });
   if (this.idCompany) {
@@ -279,7 +277,7 @@ ngOnInit(): void {
 }
 
 ngAfterViewInit(): void {
-  // Refresh the data if modeS was updated
+  
   if (this.modeS == 'besoins') {
       this.ngOnInit();}
   
@@ -292,9 +290,9 @@ ngAfterViewInit(): void {
   }
    openDetailsActionModal(action: any,mode: string) {
     this.modeAction = mode;
-    console.log("action details  GGGGGGGGGGGGGGGGGGGGGGGGGG: ",action);
-    // Remplir le formulaire avec les détails de l'action
-    console.log("manager HHHHHHHHHHHHHHHHHHHHHHH",this.productionManagers);
+    //console.log("action details  GGGGGGGGGGGGGGGGGGGGGGGGGG: ",action);
+    
+    //console.log("manager HHHHHHHHHHHHHHHHHHHHHHH",this.productionManagers);
 
     this.selectedAction = action;
     if(this.modeAction === 'besoin') {
@@ -319,14 +317,14 @@ ngAfterViewInit(): void {
     this.isDeleteModalOpen = false;
   }
   deleteAction(id: number) {
-    console.log("idddddddddddddddddddddddddddddddddd",id)
+    //console.log("idddddddddddddddddddddddddddddddddd",id)
     if(this.modeAction === 'besoin') {
     this.actionService.deleteAction(id).subscribe(
       (response: any) => {
-        console.log('Réponse du backend :', response);
+        //console.log('Réponse du backend :', response);
         this.isDeleteModalOpen = false;
         this.deletedAction = null;
-        this.ngOnInit(); // Recharger les données de la société après la suppression
+        this.ngOnInit(); 
         
       },
       (error: any) => {
@@ -335,10 +333,10 @@ ngAfterViewInit(): void {
     );}else{
       this.actionCrmService.deleteAction(id).subscribe(
         (response: any) => {
-          console.log('Réponse du backend :', response);
+          //console.log('Réponse du backend :', response);
           this.isDeleteModalOpen = false;
           this.deletedAction = null;
-          this.ngOnInit(); // Recharger les données de la société après la suppression
+          this.ngOnInit(); 
     },
       (error: any) => {
         console.error('Erreur lors de la suppression de l\'action :', error);
@@ -357,14 +355,14 @@ ngAfterViewInit(): void {
       besoinId: action.besoinId,
       manager: action.manager ? action.manager.id : null
     });
-    console.log(this.DetailsActionForm.value.manager);
+    //console.log(this.DetailsActionForm.value.manager);
     (error: any) => {
     console.error('Erreur lors du chargement de l\'action:', error);
   }
 
 }
 fillActionCrmDetailsForm(action: any) {
-  console.log("action details  KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK: ",action);
+  //console.log("action details  KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK: ",action);
     this.DetailsActionCrmForm.patchValue({
       id: action.id,
       description: action.description,
@@ -374,7 +372,7 @@ fillActionCrmDetailsForm(action: any) {
       contactId: action.contactId,
       manager: action.manager ? action.manager.id : null
     });
-    console.log(this.DetailsActionForm.value.manager);
+    //console.log(this.DetailsActionForm.value.manager);
     (error: any) => {
     console.error('Erreur lors du chargement de l\'action:', error);
   }
@@ -382,7 +380,7 @@ fillActionCrmDetailsForm(action: any) {
 }
 
   EditAction() {
-    console.log("selected actionnnnnnnnnnnnnnnnnnnnnn",this.selectedAction)
+    //console.log("selected actionnnnnnnnnnnnnnnnnnnnnn",this.selectedAction)
     if(this.modeAction === 'besoin') {
 
     if(this.selectedFiles.length >10) {
@@ -396,7 +394,7 @@ fillActionCrmDetailsForm(action: any) {
         return;
       }
     }
-    console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
+    //console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
 
     const updatedData = this.DetailsActionForm.value;
     updatedData.besoinId = this.selectedAction.besoinId;
@@ -404,15 +402,15 @@ fillActionCrmDetailsForm(action: any) {
     updatedData.dateAction = new Date(this.selectedAction.dateAction).toISOString();
     updatedData.manager=this.productionManagers.find(manager => manager.id == this.DetailsActionForm.value.manager)
 
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh"+updatedData?.manager)
+    //console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh"+updatedData?.manager)
 
     this.actionService.modifyActionBesoin(updatedData, this.selectedAction.id, this.selectedFiles).subscribe(
       (response: any) => {
         //console.log(`Action ${updatedData.id} mise à jour`);
         this.message = 'Action modifiée avec succès';
         this.isActionDetailsModalOpen = false;
-        this.ngOnInit(); // Recharge les actions après la modification
-        this.modeS="actions" // Navigate back to the previous page
+        this.ngOnInit(); 
+        this.modeS="actions" 
         //this.Dashboard=false;
         //this.Dashboard=true;
         
@@ -432,7 +430,7 @@ fillActionCrmDetailsForm(action: any) {
         return;
       }
     }
-    console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
+    //console.log("eeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvv"+ this.DetailsActionForm.value.manager)
 
     const updatedData = this.DetailsActionCrmForm.value;
     
@@ -441,15 +439,15 @@ fillActionCrmDetailsForm(action: any) {
     updatedData.dateAction = new Date(this.selectedAction.dateAction).toISOString();
     updatedData.manager=this.productionManagers.find(manager => manager.id == this.DetailsActionCrmForm.value.manager);
 
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh111111111111"+updatedData)
+    //console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh111111111111"+updatedData)
 
     this.actionCrmService.modifyActionCrm(updatedData, this.selectedAction.id, this.selectedFiles).subscribe(
       (response: any) => {
         //console.log(`Action ${updatedData.id} mise à jour`);
         this.message = 'Action modifiée avec succès';
         this.isActionCrmDetailsModalOpen = false;
-        this.ngOnInit(); // Recharge les actions après la modification
-        this.modeS="actions" // Navigate back to the previous page
+        this.ngOnInit(); 
+        this.modeS="actions" 
         //this.Dashboard=false;
         //this.Dashboard=true;
         
@@ -464,8 +462,7 @@ fillActionCrmDetailsForm(action: any) {
   companyName: string = '';
   companyStatus: string = '';
   loadCompanyData(id: number) {
-    console.log("idCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYAAAA33",id)
-    // ✅ Réinitialisation propre des tableaux
+    //console.log("idCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYAAAA33",id)
     this.companyBesoins = [];
     this.BesoinActions = [];
     this.companyActions = [];
@@ -473,27 +470,26 @@ fillActionCrmDetailsForm(action: any) {
   
     this.compService.getCompById(id).subscribe(
       (company: any) => {
-        console.log("company dataAAAAAAAAAAAAAAAAAAAAAAAAAAA333",company)
+        //console.log("company dataAAAAAAAAAAAAAAAAAAAAAAAAAAA333",company)
         this.companyForm.patchValue(company);
         this.companyName = company.name;
         this.companyStatus = company.status;
         this.companycontacts = company.contacts || [];
   
-        // 🔁 Parcours de chaque contact
+
         this.companycontacts.forEach((element: any) => {
-          // 🔁 Parcours de chaque besoin du contact
+        
           element.besoins.forEach((besoin: any) => {
             
-            // Charger les actions liées au besoin
             this.actionService.findActionsByBssoinId(besoin.id).subscribe(
               (actions: any) => {
                 actions.forEach((action: any) => {
-                  // Charger user
+                  
                   this.profileService.findUserById(action.createdBy).subscribe(
                     (user: any) => action.createdBy = user
                   );
   
-                  // Charger détails besoin
+                 
                   this.besoinsService.findBesoinsById(action.besoinId).subscribe(
                     (besoinDetails: any) => {
                       action.besoinId = besoinDetails;
@@ -504,26 +500,23 @@ fillActionCrmDetailsForm(action: any) {
               }
             );
   
-            // Charger user du besoin
+            
             this.profileService.findUserById(besoin.createdBy).subscribe(
               (user: any) => besoin.createdBy = user
             );
   
-            // Ajouter le nom du contact au besoin
             besoin.contact = element;
   
-            // ✅ Vérification pour éviter les doublons
             if (!this.companyBesoins.some(b => b.id === besoin.id)) {
               this.companyBesoins.push(besoin);
             }
           });
   
-          // Charger user du contact
+
           this.profileService.findUserById(element.createdBy).subscribe(
             (user: any) => element.createdBy = user
           );
   
-          // Charger les actions liées au contact
           this.actionCrmService.findActionsByContactId(element.id).subscribe(
             (actions: any) => {
               actions.forEach((action: any) => {
@@ -551,11 +544,10 @@ fillActionCrmDetailsForm(action: any) {
 
 saveChanges() {
   if (this.idCompany) {
-    // Mode édition
     this.compService.updateCompany(this.idCompany, this.companyForm.value).subscribe(
       
       (response: any) => {
-        console.log('Company updated successfullyYYYYyYYYYYYYYYY11111222233333:', this.companyForm.value);
+        //console.log('Company updated successfullyYYYYyYYYYYYYYYY11111222233333:', this.companyForm.value);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société mise à jour avec succès' });
         this.router.navigate(['/company']);
       },
@@ -590,7 +582,6 @@ saveChanges() {
 }
 
   loadCountries() {
-    // Format countries for dropdown (example: use common name + flag)
     this.societesPaysList = countries.map((country) => ({
       value: country.name.common,
       name: country.name.common, 
@@ -598,7 +589,7 @@ saveChanges() {
     this.societesPaysList.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-modeS: string = 'informations'; // Onglet par défaut
+modeS: string = 'informations'; 
   selectModeS(tab: string): void {
 if(tab=='besoins' || tab=='actions'){
   this.ngOnInit()
@@ -647,7 +638,7 @@ if(tab=='besoins' || tab=='actions'){
   }
   
   });
-  console.log('Navigating to besoin update with params::::::::::::::::::', besoin);
+  //console.log('Navigating to besoin update with params::::::::::::::::::', besoin);
 }
   productionManagers : any[] = [];
   typeActions : any[] = []; 
@@ -695,7 +686,7 @@ typeActionsBesoin: any[] = [];
   loadProductionManagers(){
     this.profileService.findUSerByRole("Manager De Production").subscribe(
       (users: any) => {
-        console.log('users managers de prod :', users);
+        //console.log('users managers de prod :', users);
         this.productionManagers = users;
       },
       (error: any) => {
@@ -715,7 +706,7 @@ typeActionsBesoin: any[] = [];
   message = '';
 
   addActionBesoin( ): void {
-console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
+//console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
     if(this.selectedFiles.length >10) {
       this.message = 'Vous ne pouvez pas ajouter plus de 10 fichiers.';
       this.isModalOpen=true
@@ -744,19 +735,19 @@ console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
     }
     if (this.actionBesoinAddForm.valid) {
       const actionData = this.actionBesoinAddForm.value;
-      console.log('actionData:',actionData);
-      console.log('selectedFiles:',this.selectedFiles);
+      //console.log('actionData:',actionData);
+      //console.log('selectedFiles:',this.selectedFiles);
       this.actionService.createActionBesoin(actionData, this.selectedFiles).subscribe(
         response => {
 
           this.message = 'Action enregistrée avec succès';
           this.isModalOpen=true
           //this.Dashboard=false;
-          this.isAddActionBesoinModalOpen = false; // Fermer la modal d'ajout d'action
-          this.ngOnInit(); // Navigate to the contact update page
-          this.modeS="actions" // Navigate back to the previous page
+          this.isAddActionBesoinModalOpen = false; 
+          this.ngOnInit(); 
+          this.modeS="actions" 
           //console.log('Action enregistrée avec succès', response);
-          // Réinitialiser le formulaire et la sélection des fichiers si besoin
+          
           this.actionBesoinAddForm.reset();
           this.selectedFiles = [];
 
@@ -791,7 +782,7 @@ console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
         return;
       }
     }
-    console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
+    //console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
     if(this.user.role == 'Manager De Production'){
       this.actionAddForm.patchValue({
       
@@ -806,8 +797,8 @@ console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
     }
     if (this.actionAddForm.valid) {
       const actionData = this.actionAddForm.value;
-      console.log('actionData:',actionData);
-      console.log('selectedFiles:',this.selectedFiles);
+      //console.log('actionData:',actionData);
+      //console.log('selectedFiles:',this.selectedFiles);
       this.actionCrmService.createActionCrm(actionData, this.selectedFiles).subscribe(
         response => {
 
@@ -815,11 +806,11 @@ console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS user"+ this.user)
           
           //this.Dashboard=false;
           this.isAddActionModalOpen = false; 
-          this.isModalOpen=true// Fermer la modal d'ajout d'action
-          this.ngOnInit(); // Navigate to the contact update page
-          this.modeS="actions" // Navigate back to the previous page
+          this.isModalOpen=true
+          this.ngOnInit(); 
+          this.modeS="actions" 
           //console.log('Action enregistrée avec succès', response);
-          // Réinitialiser le formulaire et la sélection des fichiers si besoin
+          
           this.actionAddForm.reset();
           this.selectedFiles = [];
 

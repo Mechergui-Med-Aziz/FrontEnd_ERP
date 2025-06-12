@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 export class ResetPasswordComponent implements OnInit {
   resetPasswordForm: FormGroup;
   isModalOpen: boolean = false;
+  isErrorModalOpen: boolean = false;
   message!:string ;
   rep!:boolean;
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
@@ -30,20 +31,23 @@ export class ResetPasswordComponent implements OnInit {
         const formValues = this.resetPasswordForm.value;
         this.authService.resetPassword(formValues).subscribe(
             response => {
-                console.log('Réponse du backend :', response); // Vérification dans la console
+                //console.log('Réponse du backend :', response); 
                 if (response.success) { 
                   this.rep=response.success;
                     this.message=response.message;
+                    this.isModalOpen = true;
                     
                 } else {
                   this.message=response.message;
-                   // Message en cas d'échec
+                  this.isErrorModalOpen = true; 
+                   
                 }
-                this.isModalOpen = true;
+                
             },
             error => {
                 console.error('Erreur API:', error);
-                alert(error.error.message || 'Erreur lors de la réinitialisation du mot de passe. Veuillez réessayer.');
+                this.message= 'Erreur lors de la réinitialisation du mot de passe. Veuillez réessayer.';
+                this.isErrorModalOpen = true;
             }
         );
     }
@@ -52,6 +56,11 @@ closeModal() {
   this.isModalOpen = false;
   if(this.rep)
     this.router.navigate(['/login'], { replaceUrl: true });
+}
+
+closeErrorModal() {
+  this.isErrorModalOpen = false;
+  return
 }
 
 }

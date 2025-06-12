@@ -16,6 +16,7 @@ export class TypeActionsComponent implements OnInit {
   actionsCRM :{ id: number; name: string; belongTo:string }[] = [];
   actionsBesoins: { id: number; name: string; belongTo:string }[] = [];
   isModalOpen: boolean = false;
+  isErrorModalOpen: boolean = false;
   isModalOpen2: boolean = false;
   isDeleteModalOpen: boolean = false;
   isAddModalOpen: boolean = false;
@@ -68,7 +69,7 @@ export class TypeActionsComponent implements OnInit {
       (response: any) => {
         if (response.message) {
           this.message = "Action déjà existante !";
-          this.isModalOpen2 = true;
+          this.isErrorModalOpen = true;
         } else {
           this.updateTypeAction();
         }
@@ -82,12 +83,16 @@ export class TypeActionsComponent implements OnInit {
     
     this.type_action.modifyTypeAction(this.id, this.action).subscribe(
       (response: any) => {
-        if(response)
+        if(response){
           this.message="Modifications sauvegardées !";
-        else
+          this.isModalOpen2 = true;
+        }
+        else{
         this.message="Erreur lors de la sauvegarde des modifications !";
         //console.log('Réponse du backend :', response);
-        this.isModalOpen2 = true;
+        this.isErrorModalOpen = true;
+        }
+       
       },
       (error: any) => {
         console.error('Erreur lors de la modification de l\'action :', error);
@@ -100,7 +105,7 @@ export class TypeActionsComponent implements OnInit {
     (response: any) => {
       if (response.message) {
         this.message = "Action déjà existante !";
-        this.isModalOpen2 = true;
+        this.isErrorModalOpen = true;
       } else {
         this.addNewTypeAction();
       }
@@ -114,16 +119,17 @@ export class TypeActionsComponent implements OnInit {
       belongTo: this.AddTypeActionForm.get('typeActionbelongTo')?.value
     };
   
-    console.log(actionToAdd);  
+    //console.log(actionToAdd);  
   
     this.type_action.addTypeAction(actionToAdd).subscribe(
       (response: any) => {
         if (response) {
           this.message = "Action ajoutée !";
+          this.isModalOpen2 = true;
         } else {
           this.message = "Erreur lors de l'ajout de l'action !";
+          this.isErrorModalOpen = true;
         }
-        this.isModalOpen2 = true;
       },
       (error: any) => {
         console.error('Erreur lors de l\'ajout de l\'action :', error);
@@ -149,7 +155,7 @@ export class TypeActionsComponent implements OnInit {
   deleteTypeAction(id: number) {
     this.type_action.deleteById(id).subscribe(
       (response: any) => {
-        console.log('Réponse du backend :', response);
+        //console.log('Réponse du backend :', response);
         this.isDeleteModalOpen = false;
         this.ngOnInit();
       },
@@ -186,5 +192,10 @@ export class TypeActionsComponent implements OnInit {
     this.typeActionForm.reset();
     this.closeModal();
     this.ngOnInit();
+  }
+
+  closeErrorModal() {
+    this.isErrorModalOpen = false;
+    return
   }
 }

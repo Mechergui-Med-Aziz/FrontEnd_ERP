@@ -246,29 +246,80 @@
       <br>
       <div>
         <label for="title">Titre *</label>
-        <input id="title" type="text" formControlName="title" class="w-full p-2 mt-1 border rounded" />
-      </div>
-      <div>
-        <label for="description">Description *</label>
-        <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded"></textarea>
-      </div>
-      <div *ngIf="this.r !== 'contact'">
-          <label for="contact">Contact *</label>
-          <select id="contact" formControlName="contact" class="w-full p-2 mt-1 border rounded">
-              <option *ngFor="let contact of contacts" [ngValue]="contact.id">{{ contact.firstname }} {{ contact.lastname }} ({{contact.company.name}})</option>
-          </select>
+        <input
+          id="title" type="text" formControlName="title" class="w-full p-2 mt-1 border rounded transition-colors duration-300"
+          [ngClass]="{
+            'border-red-500': besoinAddForm.get('title')?.invalid && besoinAddForm.get('title')?.touched,
+            'border-gray-300': !(besoinAddForm.get('title')?.invalid && besoinAddForm.get('title')?.touched)
+          }"
+          (blur)="besoinAddForm.get('title')?.markAsTouched()"
+        />
+      
+        <div *ngIf="besoinAddForm.get('title')?.invalid && besoinAddForm.get('title')?.touched" class="text-xs text-red-600 mt-1">
+          <span *ngIf="besoinAddForm.get('title')?.errors?.['required']">Le titre est obligatoire</span>
         </div>
+      </div>
+      
+      <div class="mt-2">
+        <label for="description">Description *</label>
+        <textarea
+          id="description" formControlName="description" class="w-full p-2 mt-1 border rounded"
+          [ngClass]="{
+            'border-red-500': besoinAddForm.get('description')?.invalid && besoinAddForm.get('description')?.touched,
+            'border-gray-300': !(besoinAddForm.get('description')?.invalid && besoinAddForm.get('description')?.touched)
+          }"
+          (blur)="besoinAddForm.get('description')?.markAsTouched()"
+        ></textarea>
+      
+        <div *ngIf="besoinAddForm.get('description')?.invalid && besoinAddForm.get('description')?.touched" class="text-xs text-red-600 mt-1">
+          <span *ngIf="besoinAddForm.get('description')?.errors?.['required']">La description est obligatoire</span>
+        </div>
+      </div>
+      
+      <div class="mt-2" *ngIf="r !== 'contact'">
+        <label for="contact">Contact *</label>
+        <select
+          id="contact" formControlName="contact" class="w-full p-2 mt-1 border rounded transition-colors duration-300"
+          [ngClass]="{
+            'border-red-500': besoinAddForm.get('contact')?.invalid && besoinAddForm.get('contact')?.touched,
+            'border-gray-300': !(besoinAddForm.get('contact')?.invalid && besoinAddForm.get('contact')?.touched) }"
+          (blur)="onContactBlur()">
 
-        <div>
+          <option *ngFor="let contact of contacts" [value]="contact.id">
+            {{ contact.firstname }} {{ contact.lastname }} ({{ contact.company.name }})
+          </option>
+        </select>
+      
+        <div *ngIf="besoinAddForm.get('contact')?.invalid && besoinAddForm.get('contact')?.touched" class="text-xs text-red-600 mt-1">
+          <span *ngIf="besoinAddForm.get('contact')?.errors?.['required']">La sélection d'un contact est obligatoire</span>
+        </div>
+      </div>
+      
+
+        <div class="mt-2">
           <label for="priority">Priorité *</label>
-          <select id="priority" formControlName="priority" class="w-full p-2 mt-1 border rounded">
+          <select
+            id="priority"
+            formControlName="priority"
+            class="w-full p-2 mt-1 border rounded transition-colors duration-300"
+            [ngClass]="{
+              'border-red-500': besoinAddForm.get('priority')?.invalid && besoinAddForm.get('priority')?.touched,
+              'border-gray-300': !(besoinAddForm.get('priority')?.invalid && besoinAddForm.get('priority')?.touched)
+            }"
+            (blur)="onPriorityBlur()"
+          >
             <option value="TRÉS_HAUTE">TRÉS_HAUTE</option>
             <option value="HAUTE">HAUTE</option>
             <option value="MOYENNE">MOYENNE</option>
             <option value="BASSE">BASSE</option>
           </select>
-        </div>
-        <div [hidden]="user?.role !== 'Directeur Associé'">
+
+  <div *ngIf="besoinAddForm.get('priority')?.invalid && besoinAddForm.get('priority')?.touched" class="text-xs text-red-600 mt-1">
+    <span *ngIf="besoinAddForm.get('priority')?.errors?.['required']">La sélection d'une priorité est obligatoire</span>
+  </div>
+</div>
+
+        <div class="mt-2" [hidden]="user?.role !== 'Directeur Associé'">
           <label for="manager">Manager Responable </label>
           <select id="manager" formControlName="managerResponsable" class="w-full p-2 mt-1 border rounded"
             [class.pointer-events-none]="user?.role !== 'Directeur Associé'"
@@ -280,7 +331,7 @@
           </select>
         </div>
 
-        <div class="flex justify-end gap-4 mt-2">
+        <div class="flex justify-end gap-4 mt-4">
           <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeAddModal()">Annuler</button>
           <button type="button" data-cy="confirm-add-besoin"  class="bg-blue-500 text-white px-4 py-2 rounded" (click)="addBesoin()" [disabled]="besoinAddForm.invalid">Sauvegarder</button>
         </div>
@@ -318,6 +369,32 @@
   </div>
 </div>
 
+<div *ngIf="isErrorModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+  <div class="bg-white rounded-lg w-1/3 p-6 border-2 border-red-500 shadow-lg">
+
+    <div class="flex flex-col items-center">
+      <div class="text-red-500 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-.01-10a9 9 0 110 18 9 9 0 010-18z" />
+        </svg>
+      </div>
+
+      <h2 class="text-2xl font-bold text-red-600 mb-4">Erreur !</h2>
+
+      <p class="text-gray-700 text-center mb-6">
+        {{ message }}
+      </p>
+
+      <div class="flex justify-center">
+        <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg" (click)="closeErrorModal()">
+          Fermer
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
 
 
@@ -327,15 +404,34 @@
     <form [formGroup]="actionAddForm" (ngSubmit)="addAction()">
       <div>
         <label for="description">Description *</label>
-        <input type="text" id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description">
+        <textarea  id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" [ngClass]="{
+          'border-red-500': actionAddForm.get('description')?.invalid && actionAddForm.get('description')?.touched,
+          'border-gray-300': !(actionAddForm.get('description')?.invalid && actionAddForm.get('description')?.touched)
+        }"
+        (blur)="actionAddForm.get('description')?.markAsTouched()"></textarea>
+        <div *ngIf="actionAddForm.get('description')?.invalid && actionAddForm.get('description')?.touched" class="text-xs text-red-600 mt-1">
+          <span *ngIf="actionAddForm.get('description')?.errors?.['required']">La description est obligatoire</span>
+        </div>
       </div>
 
       <div class="mt-4">
         <label for="type">Type d'Action *</label>
-        <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
-            <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name}}</option>
+        <select
+          id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded transition-colors duration-300"
+          [ngClass]="{
+            'border-red-500': actionAddForm.get('typeAction')?.invalid && actionAddForm.get('typeAction')?.touched,
+            'border-gray-300': !(actionAddForm.get('typeAction')?.invalid && actionAddForm.get('typeAction')?.touched)}"
+          (blur)="onTypeActionBlur()">
+
+          <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name }}</option>
+
         </select>
+      
+        <div *ngIf="actionAddForm.get('typeAction')?.invalid && actionAddForm.get('typeAction')?.touched" class="text-xs text-red-600 mt-1">
+          <span *ngIf="actionAddForm.get('typeAction')?.errors?.['required']">La sélection d'un type d'action est obligatoire</span>
+        </div>
       </div>
+      
 
     
       <div class="mt-4">
@@ -646,9 +742,12 @@
             <label for="id">ID</label>
             <input id="id" formControlName="id" class="w-full p-2 mt-1 border rounded" />
           </div>
+
           <div class="mb-4">
             <label for="type">Type</label>
-            <input id="type" type="text" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [readOnly]="user.role=='Manager De Production'" />
+            <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" >
+              <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name }}</option>
+          </select>
           </div>
           <div class="mb-4">
             <label for="description">Description</label>

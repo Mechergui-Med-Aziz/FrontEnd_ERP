@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit{
         username: this.loginForm.value.username!,
         password: this.loginForm.value.password!
       }).subscribe(result => {
-        console.log(result);
+        //console.log(result);
         if (result.success) {
           this.appComponent.isLoading = true; // Activer le chargement global
           setTimeout(() => {
@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit{
     }
     
     goToResetPassword() {
-      console.log('Reset password');
+      //console.log('Reset password');
       this.router.navigate(['/reset-password']);
     }
     closeDenyModal(){

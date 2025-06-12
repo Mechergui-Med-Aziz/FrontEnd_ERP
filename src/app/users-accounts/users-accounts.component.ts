@@ -31,17 +31,17 @@ export class UsersAccountsComponent implements OnInit {
   ngOnInit(): void {
     this.ps.findAllUsers().subscribe((data:any)=>{
       this.usersAccounts = data.filter((user:any) => user.id !== Number(localStorage.getItem('id')));
-      console.log(this.usersAccounts);
+      //console.log(this.usersAccounts);
     })
   }
 
   userAddForm = this.fb.group({
-    username: [Validators.required],
-    firstname: [Validators.required],
-    lastname: [Validators.required],
-    email: [Validators.required],
-    phone: [Validators.required],
-    role: [Validators.required],
+    username: ['',Validators.required],
+    firstname: ['',Validators.required],
+    lastname: ['',Validators.required],
+    email: ['',Validators.required],
+    phone: ['',Validators.required],
+    role: ['',Validators.required],
     status: '',
     password:''
   });
@@ -56,7 +56,7 @@ export class UsersAccountsComponent implements OnInit {
     }
     userData.status = 'Activé'; 
     userData.password="123"
-    console.log(userData);
+    //console.log(userData);
     this.ps.addUserAccount(userData).subscribe((response:any)=>{
       if (response) {
         this.globalSuccessMessage="Utilisateur ajouté avec succès !";
@@ -174,5 +174,15 @@ checkAndDisplayModals() {
       this.globalSuccessMessage = '';
       this.userForm.reset();
       this.ngOnInit();
+    }
+
+    onRoleBlur() {
+      const roleControl = this.userAddForm.get('role');
+      if (roleControl) {
+        roleControl.markAsTouched();
+        if (!roleControl.value || roleControl.value === '') {
+          roleControl.setErrors({ required: true });
+        }
+      }
     }
 }

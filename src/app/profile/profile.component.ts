@@ -152,7 +152,7 @@ checkPasswords(password: string, confirmPassword: string): string {
       delete updatedData.password;
     }
 
-    console.log("Updated Data:", updatedData);
+    //console.log("Updated Data:", updatedData);
   
     this.ps.updateUser(this.user.id, updatedData).subscribe(
       (response: any) => {
@@ -175,7 +175,7 @@ checkPasswords(password: string, confirmPassword: string): string {
 
   closeModal() {
     this.isModalOpen = false;
-    console.log("User:", this.user);
+    //console.log("User:", this.user);
     if(this.user.role=="Administrateur"){
       this.router.navigate(['/users-accounts']);
     }else{

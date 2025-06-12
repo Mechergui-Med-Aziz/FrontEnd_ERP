@@ -43,6 +43,7 @@ export class BesoinsComponent implements OnInit{
 addCompanyComponent!: AddCompanyComponent;
   selectedBesoin!: any;
   isModalOpen: boolean = false;
+  isErrorModalOpen: boolean = false;
   isAddModalOpen: boolean = false;
   isHistoricModalOpen: boolean = false;
   isAddActionModalOpen: boolean = false;
@@ -155,8 +156,8 @@ this.activatedRoute.queryParams.subscribe(params => {
     this.besoinIdFromContact = params['besoinIdContact']
     this.compF = params['companyId'];
     this.contF =params['contactId'];
-    console.log('besoinFromCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY:', this.besoinIdFromCompany);
-    console.log('besoinFromCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY:', this.besoinIdFromContact);
+    //console.log('besoinFromCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY:', this.besoinIdFromCompany);
+    //console.log('besoinFromCompanyYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY:', this.besoinIdFromContact);
     });
     if (this.besoinIdFromCompany) {
       
@@ -164,12 +165,12 @@ this.activatedRoute.queryParams.subscribe(params => {
   (besoin: any) => {
     
     this.besoinFromCompany = besoin;
-    console.log('BesoinFromCompanyYYYYYYYYYYY11111111111:', this.besoinFromCompany);
+    //console.log('BesoinFromCompanyYYYYYYYYYYY11111111111:', this.besoinFromCompany);
       this.ps.findUserById(besoin.createdBy).subscribe(
         (user: any) => {
-          console.log('besoinn  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', besoin);
+          //console.log('besoinn  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', besoin);
           this.besoinFromCompany.createdBy = user;
-          console.log('Besoin avec utilisateurDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', this.besoinFromCompany);
+          //console.log('Besoin avec utilisateurDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', this.besoinFromCompany);
           this.openModal(this.besoinFromCompany);
         },
         (error: any) => {
@@ -188,12 +189,12 @@ this.activatedRoute.queryParams.subscribe(params => {
   (besoin: any) => {
     
     this.besoinFromContact = besoin;
-    console.log('BesoinFromContactttTTTTTTTTTYYYYYYYYYYY:', this.besoinFromContact);
+    //console.log('BesoinFromContactttTTTTTTTTTYYYYYYYYYYY:', this.besoinFromContact);
       this.ps.findUserById(besoin.createdBy).subscribe(
         (user: any) => {
-          console.log('besoinn  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', besoin);
+          //console.log('besoinn  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', besoin);
           this.besoinFromContact.createdBy = user;
-          console.log('Besoin avec utilisateurDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', this.besoinFromContact);
+          //console.log('Besoin avec utilisateurDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', this.besoinFromContact);
           this.openModal(this.besoinFromContact);
         },
         (error: any) => {
@@ -233,7 +234,7 @@ this.activatedRoute.queryParams.subscribe(params => {
       this.openAddModal()
     }
   
-
+this.loadTypeActions();
     
 
   }
@@ -290,7 +291,6 @@ this.activatedRoute.queryParams.subscribe(params => {
           const nbrBesoins = this.besoins.filter(
             (besoin: any) => besoin.managerResponsable?.id === manager.id && besoin.status !== 'PERDU' && besoin.status !== 'GAGNÉ' && besoin.status !== 'REPORTE'
           ).length;
-          console.log()
           this.fullManagerInformations.push({
             manager: manager,
             nbrBesoins: nbrBesoins
@@ -307,11 +307,11 @@ this.activatedRoute.queryParams.subscribe(params => {
   loadContacts() {
     this.contactsService.findAllContacts().subscribe(
       (contacts: any) => {
-        console.log('ContactsRRRRRRRRRRRRRRRRR:', contacts); // Debugging line
-        console.log('this.compRRRRRRRR:', this.comp); // Debugging line
+        //console.log('ContactsRRRRRRRRRRRRRRRRR:', contacts); // Debugging line
+        //console.log('this.compRRRRRRRR:', this.comp); // Debugging line
        if(this.comp){
         this.contacts=contacts.filter((contact: any) => contact.company.id == this.comp && contact.active == true);
-        console.log('Filtered contactsRRRRRRRR:', this.contacts); // Debugging line
+        //console.log('Filtered contactsRRRRRRRR:', this.contacts); // Debugging line
        }else{
         this.contacts = contacts.filter((contact:any)=>contact.active==true ) ;}
 
@@ -409,7 +409,7 @@ this.activatedRoute.queryParams.subscribe(params => {
 
 
     addBesoin() {
-      console.log('contttacctt ', this.cont);
+      //console.log('contttacctt ', this.cont);
     if(this.r=='contact'){
       this.besoinAddForm.patchValue({
         contact:this.cont,
@@ -418,7 +418,7 @@ this.activatedRoute.queryParams.subscribe(params => {
     }
 
     const formValue = this.besoinAddForm.value;
-    console.log('formValueEEEEEEEE:', formValue);
+    //console.log('formValueEEEEEEEE:', formValue);
       const contactId = formValue.contact;
       const contactObject = this.contacts.find(contact => contact.id == contactId);
     
@@ -567,7 +567,7 @@ this.activatedRoute.queryParams.subscribe(params => {
       this.ps.findUserById(besoin.createdBy.id).subscribe(
 
         (user: any) => {
-          console.log('User DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', user);
+          //console.log('User DDDDDDDDDDDDDDDDDDDDDDDDDDDDD:', user);
           this.userr = user;
         }
       );
@@ -604,11 +604,15 @@ this.activatedRoute.queryParams.subscribe(params => {
     }
 
     openModal(besoin: any) {
-      console.log('Besoin ouvertTTTTTTTTTTT:', besoin);
+      //console.log('Besoin ouvertTTTTTTTTTTT:', besoin);
       this.fillForm(besoin);
       this.Dashboard=true;
       this.getHistoricBesoin(besoin);
       this.selectTab("synthese");   
+    }
+    closeErrorModal() {
+      this.isErrorModalOpen = false;
+      return
     }
     closeModal() {
       this.isModalOpen = false;
@@ -641,14 +645,14 @@ this.activatedRoute.queryParams.subscribe(params => {
 
       if(this.selectedFiles.length >10) {
         this.message = 'Vous ne pouvez pas ajouter plus de 10 fichiers.';
-        this.isModalOpen=true
+        this.isErrorModalOpen=true
         return
       }
   
       for (const file of this.selectedFiles) {
         if (file.size > 10 * 1024 * 1024) {
           this.message = `Le fichier "${file.name}" dépasse la taille limite de 10 Mo.`;
-          this.isModalOpen = true;
+          this.isErrorModalOpen = true;
           return;
         }
       }
@@ -659,7 +663,7 @@ this.activatedRoute.queryParams.subscribe(params => {
       });
       if (this.actionAddForm.valid) {
         const actionData = this.actionAddForm.value;
-        console.log('actionData:',actionData);
+        //console.log('actionData:',actionData);
         //console.log('selectedFiles:',this.selectedFiles);
         actionData.manager=this.selectedBesoin.managerResponsable;
         this.actionService.createActionBesoin(actionData, this.selectedFiles).subscribe(
@@ -845,7 +849,7 @@ loadTypeActions() {
 filterBesoins(): void {
   const { company, contact, dateExact, startDate, endDate,managerResponsable } = this.filterForm.value;
   let filtered = this.allBesoins;
-  console.log('filtered:', this.filterForm.value);
+  //console.log('filtered:', this.filterForm.value);
 
   if(this.selectedFilterMethod=="nonAffectedbesoin"){
     filtered = filtered.filter(besoin => !besoin.managerResponsable);
@@ -853,11 +857,11 @@ filterBesoins(): void {
 
   if(this.selectedFilterMethod === 'managerResponsable' && managerResponsable && managerResponsable.trim() !== '') {
     const searchLower = managerResponsable.trim().toLowerCase();
-    console.log('searchLower:',searchLower);
+    //console.log('searchLower:',searchLower);
     filtered = filtered.filter(besoin => {
       if (besoin.managerResponsable) {
-        console.log('besoin.contact.company.name:',besoin.managerResponsable.firstname);
-        console.log('searchLower:',searchLower);
+        //console.log('besoin.contact.company.name:',besoin.managerResponsable.firstname);
+        //console.log('searchLower:',searchLower);
         const firstname = (besoin.managerResponsable.firstname || '').toLowerCase();
         const lastname = (besoin.managerResponsable.lastname || '').toLowerCase();
         return firstname.includes(searchLower) || lastname.includes(searchLower);
@@ -869,11 +873,11 @@ filterBesoins(): void {
 
   if(this.selectedFilterMethod === 'company' && company && company.trim() !== '') {
     const searchLower = company.trim().toLowerCase();
-    console.log('searchLower:',searchLower);
+    //console.log('searchLower:',searchLower);
     filtered = filtered.filter(besoin => {
       if (besoin.contact.company.name) {
-        console.log('besoin.contact.company.name:',besoin.contact.company.name);
-        console.log('searchLower:',searchLower);
+        //console.log('besoin.contact.company.name:',besoin.contact.company.name);
+        //console.log('searchLower:',searchLower);
         const companyName = (besoin.contact.company.name || '').toLowerCase();
         return companyName.includes(searchLower);
       }
@@ -1049,5 +1053,37 @@ filterBesoins(): void {
    
      this.sortAsc = !this.sortAsc;
    }
+
+     onContactBlur() {
+    const contactControl = this.besoinAddForm.get('contact');
+    if (contactControl) {
+      contactControl.markAsTouched();
+      // Force la validation si la valeur est vide
+      if (!contactControl.value || contactControl.value === '') {
+        contactControl.setErrors({ required: true });
+      }
+    }
+  }
+
+  onPriorityBlur() {
+    const priorityControl = this.besoinAddForm.get('priority');
+    if (priorityControl) {
+      priorityControl.markAsTouched();
+      if (!priorityControl.value || priorityControl.value.length === 0) {
+        priorityControl.setErrors({ required: true });
+      }
+    }
+  }
+  
+  onTypeActionBlur() {
+    const typeActionControl = this.besoinAddForm.get('typeAction');
+    if (typeActionControl) {
+      typeActionControl.markAsTouched();
+      if (!typeActionControl.value || typeActionControl.value === '') {
+        typeActionControl.setErrors({ required: true });
+      }
+    }
+  }
+  
    
  }
