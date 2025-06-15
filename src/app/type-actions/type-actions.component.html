@@ -97,21 +97,35 @@
 
         <div class="mb-4">
           <label for="typeActionName" class="block text-sm font-medium text-gray-700">Libellé *</label>
-          <input type="text" id="typeActionName" formControlName="typeActionName" name="typeActionName" class="mt-1 p-2 w-full border border-gray-300 rounded bg-white text-black" />
+          <input type="text" id="typeActionName" formControlName="typeActionName" name="typeActionName" class="mt-1 p-2 w-full border border-gray-300 rounded bg-white text-black" [ngClass]="{
+            'border-red-500': AddTypeActionForm.get('typeActionName')?.invalid && AddTypeActionForm.get('typeActionName')?.touched,
+            'border-gray-300': !(AddTypeActionForm.get('typeActionName')?.invalid && AddTypeActionForm.get('typeActionName')?.touched)
+          }" (blur)="AddTypeActionForm.get('typeActionName')?.markAsTouched()"/>
+          <div *ngIf="AddTypeActionForm.get('typeActionName')?.invalid && AddTypeActionForm.get('typeActionName')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="AddTypeActionForm.get('typeActionName')?.errors?.['required']">Le libellé est obligatoire</span>
+          </div>
         </div>
         <div class="mb-4">
             <label for="typeActionbelongTo" class="block text-sm font-medium text-gray-700">Appartient à *</label>
-            <select id="typeActionbelongTo" formControlName="typeActionbelongTo" name="typeActionbelongTo" class="mt-1 p-2 w-full border border-gray-300 rounded bg-white text-black">
+            <select id="typeActionbelongTo" formControlName="typeActionbelongTo" name="typeActionbelongTo" class="mt-1 p-2 w-full border border-gray-300 rounded bg-white text-black" [ngClass]="{
+              'border-red-500': AddTypeActionForm.get('typeActionbelongTo')?.invalid && AddTypeActionForm.get('typeActionbelongTo')?.touched,
+              'border-gray-300': !(AddTypeActionForm.get('typeActionbelongTo')?.invalid && AddTypeActionForm.get('typeActionbelongTo')?.touched)
+            }"
+            (blur)="onBelongToBlur()">
               <option value="CRM">CRM</option>
               <option value="Besoin">Besoin</option>
             </select>
+            <div *ngIf="AddTypeActionForm.get('typeActionbelongTo')?.invalid && AddTypeActionForm.get('typeActionbelongTo')?.touched" class="text-xs text-red-600 mt-1">
+              <span *ngIf="AddTypeActionForm.get('typeActionbelongTo')?.errors?.['required']">La sélection est obligatoire</span>
+            </div>
           </div>
           <div class="flex justify-end gap-4">
             <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeAddModal()">Annuler</button>
 
            
 
-            <button data-cy="confirm-add-type-action"  type="button" class="bg-blue-500 text-white px-4 py-2 rounded"(click)="addTypeAction()"  [disabled]="AddTypeActionForm.invalid">Ajouter</button>
+            <button data-cy="confirm-add-type-action"  type="button" class="bg-blue-500 text-white px-4 py-2 rounded"(click)="addTypeAction()"  [disabled]="AddTypeActionForm.invalid" [ngClass]="{
+              'cursor-not-allowed': AddTypeActionForm.invalid }">Ajouter</button>
 
           </div>
         </form>
@@ -132,7 +146,14 @@
 
         <div class="mb-4">
           <label for="name" class="block text-sm font-medium text-gray-700">Libellé</label>
-          <input type="text" id="name" formControlName="name" class="mt-1 p-2 w-full border border-gray-300 rounded bg-white text-black" />
+          <input type="text" id="name" formControlName="name" class="mt-1 p-2 w-full border border-gray-300 rounded bg-white text-black" [ngClass]="{
+            'border-red-500': typeActionForm.get('name')?.invalid && typeActionForm.get('name')?.touched,
+            'border-gray-300': !(typeActionForm.get('name')?.invalid && typeActionForm.get('name')?.touched)
+          }" (blur)="typeActionForm.get('name')?.markAsTouched()"/>
+          
+          <div *ngIf="typeActionForm.get('name')?.invalid && typeActionForm.get('name')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="typeActionForm.get('name')?.errors?.['required']">Le libellé est obligatoire</span>
+          </div>
         </div>
         <div class="mb-4">
             <label for="belongTo" class="block text-sm font-medium text-gray-700">Appartient à </label>
@@ -145,7 +166,9 @@
                   
         <div class="flex justify-end gap-4">
           <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeModal()">Annuler</button>
-          <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded"(click)="modifyTypeAction()"  [disabled]="typeActionForm.invalid">Sauvegarder</button>
+          <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded"(click)="modifyTypeAction()" [ngClass]="{
+            'cursor-not-allowed': typeActionForm.invalid
+          }"  [disabled]="typeActionForm.invalid">Enregistrer</button>
         </div>
       </form>
     </div>

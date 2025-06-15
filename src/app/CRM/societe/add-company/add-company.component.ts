@@ -821,4 +821,54 @@ typeActionsBesoin: any[] = [];
       );
     }
   }
+
+  onBesoinBlur() {
+    const besoinControl = this.actionBesoinAddForm.get('besoinId');
+    if (besoinControl) {
+      besoinControl.markAsTouched();
+      if (!besoinControl.value || besoinControl.value === '') {
+        besoinControl.setErrors({ required: true });
+      }
+    }
+  }
+
+  onTypeActionBlur() {
+    const typeActionControl = this.actionBesoinAddForm.get('typeAction');
+    if (typeActionControl) {
+      typeActionControl.markAsTouched();
+      if (!typeActionControl.value || typeActionControl.value === '') {
+        typeActionControl.setErrors({ required: true });
+      }
+    }
+  }
+
+  onManagerBlur() {
+    const managerControl = this.actionBesoinAddForm.get('manager');
+    if (managerControl) {
+      managerControl.markAsTouched();
+      if (!managerControl.value || managerControl.value === '') {
+        managerControl.setErrors({ required: true });
+      }
+    }
+  }
+
+  onContactBlur() {
+    const contactControl = this.actionAddForm.get('contactId');
+    if (contactControl) {
+      contactControl.markAsTouched();
+      if (!contactControl.value || contactControl.value === '') {
+        contactControl.setErrors({ required: true });
+      }
+    }
+  }
+
+  onManagerContactBlur() {
+    const managerControl = this.actionAddForm.get('manager');
+    if (managerControl) {
+      managerControl.markAsTouched();
+      if (!managerControl.value || managerControl.value === '') {
+        managerControl.setErrors({ required: true });
+      }
+    }
+  }
 }
