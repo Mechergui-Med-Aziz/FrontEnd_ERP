@@ -95,7 +95,7 @@
           <hr class="mt-4 border-gray-300" style="width: 125%; margin-left: -33px;" />
         </div>
         <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
-          <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full shadow transition duration-200" data-cy="open-add-besoin" (click)="openAddModal()" [disabled]="user?.role=='Manager De Production'">
+          <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full shadow transition duration-200" data-cy="open-add-besoin" (click)="openAddModal()" [hidden]="user?.role=='Manager De Production'">
             + Ajouter
           </button>
         </div>

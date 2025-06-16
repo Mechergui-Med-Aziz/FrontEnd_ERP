@@ -27,20 +27,20 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent }, 
     { path:'reset-password', component:ResetPasswordComponent},
     
-    {path:'company',component:CompanyComponent, canActivate: [AuthGuard]},
-    {path:'addcomp',component:AddCompanyComponent, canActivate:[companyGuard]},
-    {path:'type-actions',component:TypeActionsComponent ,canActivate:[typeActionsGuard]},
-    {path:'besoins',component:BesoinsComponent,canActivate:[besoinsGuard]},
-    {path:'besoins/:modeA',component:BesoinsComponent,canActivate:[besoinsGuard]},
+    {path:'company',component:CompanyComponent, canActivate: [AuthGuard,companyGuard]},
+    {path:'addcomp',component:AddCompanyComponent, canActivate:[AuthGuard,companyGuard]},
+    {path:'type-actions',component:TypeActionsComponent ,canActivate:[AuthGuard,typeActionsGuard]},
+    {path:'besoins',component:BesoinsComponent,canActivate:[AuthGuard,besoinsGuard]},
+    {path:'besoins/:modeA',component:BesoinsComponent,canActivate:[AuthGuard,besoinsGuard]},
     {path:'profile',component:ProfileComponent},
    
-    { path: 'addcomp/:id', component: AddCompanyComponent },
-    { path: 'contact', component: ContactComponent },
-    { path: 'addcontact', component: AddContactComponent },
-    { path: 'updatecontact/:idContact', component: AddContactComponent },
-    { path: 'addcontact/:idCompany', component: AddContactComponent ,canActivate:[contactGuard] },
-    {path:'users-accounts',component:UsersAccountsComponent,canActivate:[usersAccountsGuard]},
-    {path:'DirectorDashboard',component:DirectorDashboardComponent,canActivate:[dashboardGuard]},
+    { path: 'addcomp/:id', component: AddCompanyComponent,canActivate:[AuthGuard,companyGuard]},
+    { path: 'contact', component: ContactComponent ,canActivate:[AuthGuard,contactGuard]},
+    { path: 'addcontact', component: AddContactComponent,canActivate:[AuthGuard,contactGuard] },
+    { path: 'updatecontact/:idContact', component: AddContactComponent,canActivate:[AuthGuard,contactGuard] },
+    { path: 'addcontact/:idCompany', component: AddContactComponent ,canActivate:[AuthGuard,contactGuard] },
+    {path:'users-accounts',component:UsersAccountsComponent,canActivate:[AuthGuard,usersAccountsGuard]},
+    {path:'DirectorDashboard',component:DirectorDashboardComponent,canActivate:[AuthGuard,dashboardGuard]},
     
     
     ];

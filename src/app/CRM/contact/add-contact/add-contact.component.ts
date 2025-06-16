@@ -462,6 +462,7 @@ wherefrom:any;
   }
   openActionAddModal(){
     this.loadTypeActions();
+    this.actionAddForm.reset();
     
     this.isAddActionModalOpen = true;
   }
