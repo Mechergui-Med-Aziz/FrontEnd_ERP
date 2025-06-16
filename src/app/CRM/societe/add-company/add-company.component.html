@@ -86,35 +86,39 @@
       <div *ngIf="mode==='edit'" class="mt-4 sm:mt-0 pt-10">
        
 
-        <button *ngIf="modeS=='contacts'"  (click)="gotoContactAdd(this.idCompany)" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" >
-          Ajouter un contact
+        <button *ngIf="modeS=='contacts'" (click)="gotoContactAdd(this.idCompany)"
+  class="bg-green-600 text-white text-sm px-4 py-2 rounded-full shadow">
+  Ajouter un contact
+</button>
+
+<button *ngIf="modeS=='besoins'" (click)="gotobesoin()"
+  class="bg-green-600 text-white text-sm px-4 py-2 rounded-full shadow">
+  Ajouter un besoin
+</button>
+
+<button *ngIf="modeS!=='actions'" routerLink="/company"
+  class="bg-gray-600 text-white text-sm px-4 py-2 rounded-full shadow ml-2">
+  Retour
+</button>
+
+        <div *ngIf="modeS=='actions'" class="flex items-center gap-2">
+          <button
+          class="bg-green-600 text-white px-2.5 py-1.5 rounded-full shadow text-sm whitespace-nowrap"
+          (click)="openActionAddModal()">
+          Ajouter Action Contact
         </button>
         
-        <button *ngIf="modeS=='besoins'" class="bg-green-600 text-white px-6 py-3 rounded-full shadow" (click)="gotobesoin()" >
-          Ajouter Un besoin
+        <button [hidden]="userRole=='Manager De Production'"
+          class="bg-green-600 text-white px-2.5 py-1.5 rounded-full shadow text-sm whitespace-nowrap"
+          (click)="openActionBesoinAddModal()">
+          Ajouter Action Besoin
         </button>
-
-      
-        <button *ngIf="modeS!=='actions'" class="bg-gray-600 text-white px-6 py-3 rounded-full shadow ml-2" routerLink="/company">
+        
+        <button class="bg-gray-600 text-white px-2.5 py-1.5 rounded-full shadow text-sm whitespace-nowrap" 
+          routerLink="/company">
           Retour
         </button>
-        <div *ngIf="modeS=='actions'" class="flex items-center gap-2">
-  <button
-          class="bg-green-600 text-white px-3 py-3 rounded-full shadow text-sm whitespace-nowrap"
-          (click)="openActionAddModal()">
-    Ajouter Action Contact
-  </button>
-
-  <button [hidden]="userRole=='Manager De Production'"
-          class="bg-green-600 text-white px-3 py-3 rounded-full shadow text-sm whitespace-nowrap"
-          (click)="openActionBesoinAddModal()">
-    Ajouter Action Besoin
-  </button>
-
-  <button class="bg-gray-600 text-white px-3 py-3 rounded-full shadow text-sm whitespace-nowrap" 
-          routerLink="/company">
-    Retour
-  </button>
+        
 </div>
       </div>
     </div>  </header>
@@ -374,7 +378,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr  *ngFor="let contact of companycontacts" [ngClass]="{
+                    <tr style="cursor: pointer;" *ngFor="let contact of companycontacts" [ngClass]="{
                                 'inactive': contact.active==false,
                               }" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotoContact(contact.id)" >
                         <td class="px-4 py-6 font-semibold">{{ contact.firstname}} {{contact.lastname}}</td>
@@ -429,7 +433,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let action of companyActions" class="hover:bg-gray-50 text-gray-600 text-base"  [ngClass]="{
+                    <tr style="cursor: pointer;" *ngFor="let action of companyActions" class="hover:bg-gray-50 text-gray-600 text-base"  [ngClass]="{
                                 'inactive': action.contactId.active==false,
                               }" >                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>                      <td class="px-4 py-6">{{ action.contactId.firstname }} {{ action.contactId.lastname }}</td>
                       <td class="px-4 py-6">{{ action.createdBy.firstname }} {{ action.createdBy.lastname }}</td>
@@ -494,7 +498,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let action of BesoinActions" class="hover:bg-gray-50 text-gray-600 text-base">                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>                      <td class="px-4 py-6">{{ action.besoinId.title }}</td>
+                    <tr style="cursor: pointer;" *ngFor="let action of BesoinActions" class="hover:bg-gray-50 text-gray-600 text-base">
+                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
+                      <td class="px-4 py-6">{{ action.besoinId.title }}</td>
                       <td class="px-4 py-6">{{ action.createdBy.firstname }} {{ action.createdBy.lastname }}</td>
                       <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td>
                       <td class="px-4 py-6 w-[20%] min-w-[200px] max-w-[200px]">
@@ -562,7 +568,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let besoin of companyBesoins"  class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotobesoinUpdate(besoin.id)" >
+                    <tr style="cursor: pointer;" *ngFor="let besoin of companyBesoins"  class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotobesoinUpdate(besoin.id)" >
                       <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
                       <td class="px-4 py-6">{{ besoin.contact.firstname }} {{ besoin.contact.lastname }}</td>
                       <td class="px-4 py-6">{{ besoin.status }}</td>
@@ -601,18 +607,39 @@
       <form [formGroup]="actionBesoinAddForm" (ngSubmit)="addActionBesoin()">
         <div class="mb-4">
           <label for="description" class="block mb-1">Description :</label>
-          <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" rows="3"></textarea>
-        </div>        <div class="mb-4">
+          <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" rows="3" [ngClass]="{
+            'border-red-500': actionBesoinAddForm.get('description')?.invalid && actionBesoinAddForm.get('description')?.touched,
+            'border-gray-300': !(actionBesoinAddForm.get('description')?.invalid && actionBesoinAddForm.get('description')?.touched)
+          }" (blur)="actionBesoinAddForm.get('description')?.markAsTouched()"></textarea>
+          <div *ngIf="actionBesoinAddForm.get('description')?.invalid && actionBesoinAddForm.get('description')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="actionBesoinAddForm.get('description')?.errors?.['required']">La discription est obligatoire</span>
+          </div>
+
+        </div>        
+        <div class="mb-4">
           <label for="type" class="block mb-1">Besoin</label>
-          <select id="type" formControlName="besoinId" class="w-full p-2 mt-1 border rounded">
+          <select id="type" formControlName="besoinId" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+            'border-red-500': actionBesoinAddForm.get('besoinId')?.invalid && actionBesoinAddForm.get('besoinId')?.touched,
+            'border-gray-300': !(actionBesoinAddForm.get('besoinId')?.invalid && actionBesoinAddForm.get('besoinId')?.touched)}"
+          (blur)="onBesoinBlur()">
               <option *ngFor="let besoin of companyBesoins" [ngValue]="besoin.id">{{ besoin.title}} </option>
           </select>
+          <div *ngIf="actionBesoinAddForm.get('besoinId')?.invalid && actionBesoinAddForm.get('besoinId')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="actionBesoinAddForm.get('besoinId')?.errors?.['required']">La sélection d'un besoin est obligatoire</span>
+          </div>
         </div>
         <div class="mb-4">
           <label for="type" class="block mb-1">Type d'Action</label>
-          <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
+          <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+            'border-red-500': actionBesoinAddForm.get('typeAction')?.invalid && actionBesoinAddForm.get('typeAction')?.touched,
+            'border-gray-300': !(actionBesoinAddForm.get('typeAction')?.invalid && actionBesoinAddForm.get('typeAction')?.touched)}"
+          (blur)="onTypeActionBlur()">
               <option *ngFor="let type of typeActionsBesoin" [ngValue]="type.name">{{ type.name}}</option>
           </select>
+
+          <div *ngIf="actionBesoinAddForm.get('typeAction')?.invalid && actionBesoinAddForm.get('typeAction')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="actionBesoinAddForm.get('typeAction')?.errors?.['required']">La sélection d'un type d'action est obligatoire</span>
+          </div>
         </div>
   
         <div class="mb-4" [hidden]="this.userRole== 'Manager De Production'">
@@ -620,12 +647,19 @@
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded" 
             [class.pointer-events-none]="this.userRole == 'Manager De Production'"
             [class.bg-gray-200]="this.userRole== 'Manager De Production'"
-            >
+            [ngClass]="{
+              'border-red-500': actionBesoinAddForm.get('manager')?.invalid && actionBesoinAddForm.get('manager')?.touched,
+              'border-gray-300': !(actionBesoinAddForm.get('manager')?.invalid && actionBesoinAddForm.get('manager')?.touched)}"
+            (blur)="onManagerBlur()">
   
             <option *ngFor="let manager of productionManagers" [ngValue]="manager">
               {{ manager.firstname }} {{ manager.lastname }}
             </option>
           </select>
+
+          <div *ngIf="actionBesoinAddForm.get('manager')?.invalid && actionBesoinAddForm.get('manager')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="actionBesoinAddForm.get('manager')?.errors?.['required']">La sélection d'un manager est obligatoire</span>
+          </div>
         </div>
       
         <div class="mb-4">
@@ -635,7 +669,8 @@
             Max : 10 fichiers de 10Mo max
           </span>
         </div>        <div class="flex justify-end gap-4 mt-6">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors">Enregistrer</button>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors" [ngClass]="{
+              'cursor-not-allowed': actionBesoinAddForm.invalid }" [disabled]="actionBesoinAddForm.invalid">Enregistrer</button>
         <button type="button" (click)="closeActionBesoinAddModal()" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded shadow-md transition-colors">Annuler</button>
         </div>
       </form>
@@ -653,20 +688,39 @@
       <form [formGroup]="actionAddForm" (ngSubmit)="addAction()">
         <div class="mb-4">
           <label for="description" class="block mb-1">Description :</label>
-          <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" rows="3"></textarea>
-        </div>
+          <textarea id="description" formControlName="description" class="w-full p-2 mt-1 border rounded" placeholder="Saisir la description" rows="3"[ngClass]="{
+            'border-red-500': actionAddForm.get('description')?.invalid && actionAddForm.get('description')?.touched,
+            'border-gray-300': !(actionAddForm.get('description')?.invalid && actionAddForm.get('description')?.touched)
+          }" (blur)="actionAddForm.get('description')?.markAsTouched()"></textarea>
+          <div *ngIf="actionAddForm.get('description')?.invalid && actionAddForm.get('description')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="actionAddForm.get('description')?.errors?.['required']">La discription est obligatoire</span>
+          </div>
+      </div>
   
         <div class="mb-4">
           <label for="type" class="block mb-1">Contact</label>
-          <select id="type" formControlName="contactId" class="w-full p-2 mt-1 border rounded">
+          <select id="type" formControlName="contactId" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+            'border-red-500': actionAddForm.get('contactId')?.invalid && actionAddForm.get('contactId')?.touched,
+            'border-gray-300': !(actionAddForm.get('contactId')?.invalid && actionAddForm.get('contactId')?.touched)}"
+          (blur)="onContactBlur()">>
               <option *ngFor="let contact of companyActiveContacts" [ngValue]="contact.id">{{ contact.firstname}} {{ contact.lastname }}</option>
           </select>
+          <div *ngIf="actionAddForm.get('contactId')?.invalid && actionAddForm.get('contactId')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="actionAddForm.get('contactId')?.errors?.['required']">La sélection d'un contact est obligatoire</span>
+          </div>
         </div>
         <div class="mb-4">
           <label for="type" class="block mb-1">Type d'Action</label>
-          <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded">
+          <select id="type" formControlName="typeAction" class="w-full p-2 mt-1 border rounded" [ngClass]="{
+            'border-red-500': actionAddForm.get('typeAction')?.invalid && actionAddForm.get('typeAction')?.touched,
+            'border-gray-300': !(actionAddForm.get('typeAction')?.invalid && actionAddForm.get('typeAction')?.touched)}"
+          (blur)="onTypeActionBlur()">
               <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name}}</option>
           </select>
+
+          <div *ngIf="actionAddForm.get('typeAction')?.invalid && actionAddForm.get('typeAction')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="actionAddForm.get('typeAction')?.errors?.['required']">La sélection d'un type d'action est obligatoire</span>
+          </div>
         </div>
   
         <div class="mb-4" [hidden]="this.userRole== 'Manager De Production'">
@@ -674,12 +728,18 @@
           <select id="manager" formControlName="manager" class="w-full p-2 mt-1 border rounded" 
             [class.pointer-events-none]="this.userRole == 'Manager De Production'"
             [class.bg-gray-200]="this.userRole== 'Manager De Production'"
-            >
+            [ngClass]="{
+              'border-red-500': actionAddForm.get('manager')?.invalid && actionAddForm.get('manager')?.touched,
+              'border-gray-300': !(actionAddForm.get('manager')?.invalid && actionAddForm.get('manager')?.touched)}"
+            (blur)="onManagerContactBlur()">
   
             <option *ngFor="let manager of productionManagers" [ngValue]="manager">
               {{ manager.firstname }} {{ manager.lastname }}
             </option>
           </select>
+          <div *ngIf="actionAddForm.get('manager')?.invalid && actionAddForm.get('manager')?.touched" class="text-xs text-red-600 mt-1">
+            <span *ngIf="actionAddForm.get('manager')?.errors?.['required']">La sélection d'un manager est obligatoire</span>
+          </div>
         </div>
       
         <div class="mb-4">
@@ -691,7 +751,8 @@
         </div>
   
         <div class="flex justify-end gap-4 mt-6">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors">Enregistrer</button>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow-md transition-colors" [ngClass]="{
+              'cursor-not-allowed': actionAddForm.invalid }" [disabled]="actionAddForm.invalid">Enregistrer</button>
         <button type="button" (click)="closeActionAddModal()" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded shadow-md transition-colors">Annuler</button>
         </div>
       </form>
@@ -781,12 +842,12 @@
       </div>
       
     
-          <!-- Section affichant les fichiers existants sous forme de liens cliquables -->
-          <div class="mb-4">
+          
+          <div class="mb-4" [hidden]="selectedAction.attachments.length==0">
             <label class="block">Fichiers déjà joints :</label>
             <ul class="list-disc list-inside space-y-1">
               <li *ngFor="let file of selectedAction.attachments">
-                <!-- Ici, on concatène la base URL du serveur avec le chemin du fichier. Adaptez l’URL selon votre configuration -->
+                
                 <a [attr.download]="file.fileName" [href]="'http://localhost:8080/api/action-besoin/files/' + file.filePath.replace('uploads\\', '')" target="_blank" class="text-blue-500 hover:underline">
                     {{ file.fileName }}
                   </a>
@@ -797,7 +858,6 @@
             </span>
           </div>
     
-          <!-- Section pour joindre de nouveaux fichiers -->
           <div class="mb-4">
             <label for="files" class="block">Joindre de nouveaux fichiers :</label>
             <input type="file" id="files" (change)="onFileSelected($event)" multiple class="w-full p-2 mt-1 border rounded" [readOnly]="this.userRole=='Manager De Production'">
@@ -858,12 +918,12 @@
       
     
           <!-- Section affichant les fichiers existants sous forme de liens cliquables -->
-          <div class="mb-4" >
+          <div class="mb-4" [hidden]="selectedAction.attachments.length==0">
             <label class="block">Fichiers déjà joints :</label>
             <ul class="list-disc list-inside space-y-1">
               <li *ngFor="let file of selectedAction.attachments">
                 <!-- Ici, on concatène la base URL du serveur avec le chemin du fichier. Adaptez l’URL selon votre configuration -->
-                <a [attr.download]="file.fileName" [href]="'http://localhost:8080/api/action-crm/files/' + file.filePath.replace('uploads\\', '')" target="_blank" class="text-blue-500 hover:underline">
+                <a [attr.download]="file.fileName" [href]="'http://localhost:8080/api/action-crm/files/' + file.filePath.replace('uploads_crm\\', '')" target="_blank" class="text-blue-500 hover:underline">
                     {{ file.fileName }}
                   </a>
               </li>

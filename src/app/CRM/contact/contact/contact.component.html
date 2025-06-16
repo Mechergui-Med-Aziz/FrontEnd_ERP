@@ -2,15 +2,6 @@
 <!-- (Optionnel) Inclusion de Material Icons si besoin -->
 
 
-
-
-
-
-
-
-
-
-
   <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
@@ -243,7 +234,7 @@
                   
                 </select>
               </div>
-              <div class="flex justify-end gap-4">
+              <div class="flex justify-end gap-4 mt-4">
                 <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="closeAddModal()">Annuler</button>
                 <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded"  [disabled]="companyname==null" (click)="create()" data-cy="create-contact-button">Créer</button>
               </div>

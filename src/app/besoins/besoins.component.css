@@ -95,3 +95,240 @@ a:hover {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
+/* Styles pour la troncature du tableau */
+.table-cell-truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 0; /* Force la troncature même avec table-fixed */
+}
+
+/* Style spécifique pour les colonnes de description */
+.description-cell {
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Assurer que les boutons ne se cassent pas */
+.action-button {
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
+/* Style pour les tooltips au survol */
+[title]:hover {
+  cursor: help;
+}
+
+
+
+
+
+
+.table-container {
+  max-height: 70vh;
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.actions-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.table-header {
+  background-color: #f3f4f6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f9fafb; /* plus clair */
+border-bottom: 1px solid #e5e7eb;
+color: #1f2937; /* gris foncé */
+}
+
+.table-header th {
+  padding: 1.5rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #d1d5db;
+  background-color: #f9fafb; /* plus clair */
+border-bottom: 1px solid #e5e7eb;
+color: #1f2937; /* gris foncé */
+}
+
+.table-row {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.15s ease;
+}
+
+.table-row:hover {
+  background-color: #f9fafb;
+  background-color: #f3f4f6;
+transform: scale(1.005);
+transition: background-color 0.2s ease, transform 0.2s ease;
+
+}
+
+.table-row td {
+  padding: 1rem;
+  vertical-align: top;
+}
+
+/* Définition des largeurs de colonnes */
+.col-type {
+  width: 15%;
+}
+
+.col-description {
+  width: 20%;
+}
+
+.col-created-by {
+  width: 15%;
+}
+
+.col-manager {
+  width: 15%;
+}
+
+.col-files {
+  width: 18%;
+}
+
+.col-date {
+  width: 18%;
+}
+
+.col-actions {
+  width: 12%;
+}
+
+/* Style pour le contenu des cellules avec troncature */
+.cell-content {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+  display: block;
+}
+
+/* Style pour les fichiers */
+.files-container {
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.file-item {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.875rem;
+  margin-bottom: 2px;
+  cursor: help;
+}
+
+.no-files {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Style pour les boutons d'action */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.btn {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+}
+
+.btn-edit {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #2563eb;
+}
+
+.btn-delete {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+.btn-delete:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .table-container {
+    font-size: 0.875rem;
+  }
+  
+  .table-header th {
+    padding: 1rem 0.5rem;
+  }
+  
+  .table-row td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+/* Scrollbar personnalisée */
+.table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.files-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.files-container::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.files-container::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 2px;
+}
+

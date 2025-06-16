@@ -240,7 +240,7 @@ isDesactiverModalOpen: boolean = false;
     }
   });
 
-      
+  this.loadTypeActions();
   }
 wherefrom:any;
 
@@ -472,6 +472,7 @@ wherefrom:any;
   }
   openActionAddModal(){
     this.loadTypeActions();
+    this.actionAddForm.reset();
     
     this.isAddActionModalOpen = true;
   }
@@ -483,6 +484,7 @@ wherefrom:any;
     this.typeAction.findTypeActionsByBelongTo("CRM").subscribe(
       (typeActions: any) => {
         this.typeActions = typeActions;
+        console.log('Type actions:', this.typeActions);
       },
       (error: any) => {
         console.error('Erreur lors du chargement des typeActions:', error);
@@ -694,6 +696,26 @@ retourner() {
   
   });
   console.log('Navigating to besoin update with params::::::::::::::::::', besoin);
+}
+
+onTypeActionBlur() {
+  const typeActionControl = this.actionAddForm.get('typeAction');
+  if (typeActionControl) {
+    typeActionControl.markAsTouched();
+    if (!typeActionControl.value || typeActionControl.value === '') {
+      typeActionControl.setErrors({ required: true });
+    }
+  }
+}
+
+onManagerBlur() {
+  const managerControl = this.actionAddForm.get('manager');
+  if (managerControl) {
+    managerControl.markAsTouched();
+    if (!managerControl.value || managerControl.value === '') {
+      managerControl.setErrors({ required: true });
+    }
+  }
 }
 
 }

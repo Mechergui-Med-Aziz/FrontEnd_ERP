@@ -198,4 +198,14 @@ export class TypeActionsComponent implements OnInit {
     this.isErrorModalOpen = false;
     return
   }
+
+  onBelongToBlur() {
+    const belongToControl = this.AddTypeActionForm.get('typeActionbelongTo');
+    if (belongToControl) {
+      belongToControl.markAsTouched();
+      if (!belongToControl.value || belongToControl.value.length === 0) {
+        belongToControl.setErrors({ required: true });
+      }
+    }
+  }
 }
