@@ -284,6 +284,7 @@
             'border-red-500': besoinAddForm.get('contact')?.invalid && besoinAddForm.get('contact')?.touched,
             'border-gray-300': !(besoinAddForm.get('contact')?.invalid && besoinAddForm.get('contact')?.touched) }"
           (blur)="onContactBlur()">
+          <option value=""  selected>--Choisir un contact--</option>
 
           <option *ngFor="let contact of contacts" [value]="contact.id">
             {{ contact.firstname }} {{ contact.lastname }} ({{ contact.company.name }})
@@ -308,6 +309,7 @@
             }"
             (blur)="onPriorityBlur()"
           >
+            <option value=""  selected>--Choisir une priorité--</option>
             <option value="TRÉS_HAUTE">TRÉS_HAUTE</option>
             <option value="HAUTE">HAUTE</option>
             <option value="MOYENNE">MOYENNE</option>
@@ -325,6 +327,7 @@
             [class.pointer-events-none]="user?.role !== 'Directeur Associé'"
             [class.bg-gray-200]="user?.role !== 'Directeur Associé'">
   
+            <option value=""  selected>--Choisir un manager--</option>
             <option *ngFor="let manager of fullManagerInformations" [ngValue]="manager.manager.id">
               {{ manager.manager.firstname }} {{ manager.manager.lastname }} ({{manager.nbrBesoins}})
             </option>
@@ -424,6 +427,7 @@
             'border-red-500': actionAddForm.get('typeAction')?.invalid && actionAddForm.get('typeAction')?.touched,
             'border-gray-300': !(actionAddForm.get('typeAction')?.invalid && actionAddForm.get('typeAction')?.touched)}"
           (blur)="onTypeActionBlur()">
+          <option value=""  selected>--Choisir un type d'action--</option>
 
           <option *ngFor="let type of typeActions" [ngValue]="type.name">{{ type.name }}</option>
 
