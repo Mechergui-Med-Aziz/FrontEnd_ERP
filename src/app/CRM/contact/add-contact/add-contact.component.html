@@ -419,33 +419,39 @@
   
             <div class="flex-1 overflow-hidden border rounded-lg">
               <div class="overflow-y-auto max-h-[70vh]">
-                <table class="min-w-full table-auto text-left border-collapse">
-                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
-                    <tr>
-                      <th class="px-4 py-6">Type d'action</th>
-                      <th class="px-4 py-6">Description</th>
-                      <th class="px-4 py-6">Créé Par</th>
-                      <th class="px-4 py-6">Manager Responsable</th>
-                      <th class="px-4 py-6">Fichiers</th>
-                      <th class="px-4 py-6">Date Action</th>
-                      <th class="px-4 py-6">Actions</th>
+                <table class="min-w-full table-auto text-left border-collapse">                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>                      <th class="px-4 py-6 w-[12%]">Type d'action</th>
+                      <th class="px-4 py-6 w-[15%] min-w-[200px] max-w-[200px]">Description</th>
+                      <th class="px-4 py-6 w-[15%]">Créé Par</th>
+                      <th class="px-4 py-6 w-[15%]">Manager Responsable</th>
+                      <th class="px-4 py-6 w-[20%] min-w-[200px] max-w-[200px]">Fichiers</th>
+                      <th class="px-4 py-6 w-[15%]">Date Action</th>
+                      <th class="px-4 py-6 w-[8%]">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let action of contactActions" class="hover:bg-gray-50 text-gray-600 text-base">
-                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
-                      <td class="px-4 py-6">{{ action.description }}</td>
-                      <td class="px-4 py-6">{{ action.createdBy.firstname}} {{action.createdBy.lastname}}</td>
-                      <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td>
-                      <td class="px-4 py-6">
-                        <ul class="list-disc list-inside space-y-1" *ngIf="action.attachments.length!=0">
-                          <li *ngFor="let file of action.attachments">
-                            {{ file.fileName }}
-                          </li>
-                        </ul>
-                        <span *ngIf="action.attachments.length==0">--------</span>
+                    <tr *ngFor="let action of contactActions" class="hover:bg-gray-50 text-gray-600 text-base">                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
+                      <td class="px-4 py-6 w-[15%] min-w-[200px] max-w-[200px]">
+                        <div class="max-h-[120px] overflow-y-auto overflow-x-hidden">
+                          <span class="line-clamp-3" title="{{action.description}}">{{ action.description }}</span>
+                        </div>
                       </td>
-                      <td class="px-4 py-6">{{ action.dateAction | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                      <td class="px-4 py-6">{{ action.createdBy.firstname}} {{action.createdBy.lastname}}</td>
+                      <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td><td class="px-4 py-6 w-[20%] min-w-[200px] max-w-[200px]">
+                        <div class="max-h-[120px] overflow-y-auto overflow-x-hidden">
+                          <ul class="list-disc list-inside space-y-1" *ngIf="action.attachments.length!=0">
+                            <li *ngFor="let file of action.attachments" class="truncate" title="{{file.fileName}}">
+                              {{ file.fileName }}
+                            </li>
+                          </ul>
+                          <span *ngIf="action.attachments.length==0">--------</span>                        </div>
+                      </td>
+                      <td class="px-4 py-6 w-[12%] min-w-[100px] max-w-[120px]">
+                        <div class="flex flex-col">
+                          <span>{{ action.dateAction | date: 'dd/MM/yyyy' }}</span>
+                          <span class="text-xs text-gray-500">{{ action.dateAction | date: 'HH:mm' }}</span>
+                        </div>
+                      </td>
                       <td >
                         <div class="flex space-x-2">
                           <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action)">
@@ -483,26 +489,32 @@
             <div class="overflow-y-auto max-h-[70vh]">
               <table class="min-w-full table-auto text-left border-collapse">
                 <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
-                  <tr>
-                    <th class="px-4 py-6">Titre </th>
-                    <th class="px-4 py-6">Description</th>
-                    <th class="px-4 py-6">Status</th>
-                    <th class="px-4 py-6">Manager Responsable</th>
-                    <th class="px-4 py-6">Créé Par</th>
-                    <th class="px-4 py-6">Date de creation</th>
-                    <th class="px-4 py-6">Priorité</th>
+                  <tr>                    <th class="px-4 py-6 w-[12%]">Titre </th>
+                    <th class="px-4 py-6 w-[15%] min-w-[200px] max-w-[200px]">Description</th>
+                    <th class="px-4 py-6 w-[10%]">Status</th>
+                    <th class="px-4 py-6 w-[15%]">Manager Responsable</th>
+                    <th class="px-4 py-6 w-[15%]">Créé Par</th>
+                    <th class="px-4 py-6 w-[15%]">Date de creation</th>
+                    <th class="px-4 py-6 w-[8%]">Priorité</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let besoin of contactBesoins" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotobesoinUpdate(besoin.id)">
-                    <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
-                    <td class="px-4 py-6">{{ besoin.description }}</td>
+                  <tr *ngFor="let besoin of contactBesoins" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotobesoinUpdate(besoin.id)">                    <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
+                    <td class="px-4 py-6 w-[15%] min-w-[200px] max-w-[200px]">
+                      <div class="max-h-[120px] overflow-y-auto overflow-x-hidden">
+                        <span class="line-clamp-3" title="{{besoin.description}}">{{ besoin.description }}</span>
+                      </div>
+                    </td>
                     <td class="px-4 py-6">{{ besoin.status }}</td>
                     
-                    <td class="px-4 py-6">{{besoin?.managerResponsable?.firstname}} {{besoin?.managerResponsable?.lastname}}</td>
-                    <td class="px-4 py-6">{{ besoin.createdBy}}</td>
+                    <td class="px-4 py-6">{{besoin?.managerResponsable?.firstname}} {{besoin?.managerResponsable?.lastname}}</td>                    <td class="px-4 py-6">{{ besoin.createdBy}}</td>
                     
-                    <td class="px-4 py-6">{{ besoin.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                    <td class="px-4 py-6 w-[12%] min-w-[100px] max-w-[120px]">
+                      <div class="flex flex-col">
+                        <span>{{ besoin.creationDate | date: 'dd/MM/yyyy' }}</span>
+                        <span class="text-xs text-gray-500">{{ besoin.creationDate | date: 'HH:mm' }}</span>
+                      </div>
+                    </td>
                     <td>
                       <span 
                         [ngClass]="{

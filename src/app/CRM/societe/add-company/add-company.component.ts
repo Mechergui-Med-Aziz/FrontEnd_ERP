@@ -324,7 +324,7 @@ ngAfterViewInit(): void {
         //console.log('Réponse du backend :', response);
         this.isDeleteModalOpen = false;
         this.deletedAction = null;
-        this.ngOnInit(); 
+        this.loadCompanyData(this.idCompany);
         
       },
       (error: any) => {
@@ -336,7 +336,7 @@ ngAfterViewInit(): void {
           //console.log('Réponse du backend :', response);
           this.isDeleteModalOpen = false;
           this.deletedAction = null;
-          this.ngOnInit(); 
+          this.loadCompanyData(this.idCompany);
     },
       (error: any) => {
         console.error('Erreur lors de la suppression de l\'action :', error);

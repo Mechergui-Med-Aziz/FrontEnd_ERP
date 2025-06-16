@@ -409,8 +409,10 @@ this.loadTypeActions();
 
 
     addBesoin() {
+      console.log('manager responsale eEEEEEEEEEE:', this.fullManagerInformations);
       //console.log('contttacctt ', this.cont);
     if(this.r=='contact'){
+      
       this.besoinAddForm.patchValue({
         contact:this.cont,
 
@@ -590,6 +592,7 @@ this.loadTypeActions();
 
     openAddModal() {
       this.besoinAddForm.reset();
+     
       this.isAddModalOpen = true;
     }
     closeAddModal() {
