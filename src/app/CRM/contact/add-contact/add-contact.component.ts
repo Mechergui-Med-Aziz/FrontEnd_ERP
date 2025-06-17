@@ -258,9 +258,21 @@ wherefrom:any;
     
     this.compService.getCompById(this.idCompany).subscribe(
       (company: any) => {
+         console.log('Other contactsSSSSSSSSSSSS:', company.contacts); // Debugging line
         //console.log('contact id', this.idContact); // Debugging line
         //console.log('company contacts:', company.contacts);
-        this.otherContacts = company.contacts.filter((contact: any) => contact.id != this.idContact&& contact.active == true);
+        this.otherContacts = company.contacts.filter((contact: any) => contact.id != this.idContact && contact.active == true);
+        console.log('Other contactsSSSSSSSSSSSS 222:', this.otherContacts.length);
+        if(this.otherContacts.length==0){
+    this.globalErrorMessage = 'Aucun autre contact actif disponible pour la désactivation.Veuillez créer un nouveau contact avant de désactiver celui-ci.';
+    
+    
+    this.closeDesactiverModal();
+    this.isErrorModalOpen = true;
+    return;
+  }else {
+      this.desactiver();
+    }
          // Debugging line
         //console.log('Other contactsSSSSSSSS:', this.otherContacts); // Debugging line
       }
@@ -268,18 +280,16 @@ wherefrom:any;
 
     );
   this.isDesactiverModalOpen = true;
-  if(this.otherContacts.length==0){
-    this.globalErrorMessage = 'Aucun autre contact actif disponible pour la désactivation.Veuillez créer un nouveau contact avant de désactiver celui-ci.';
-    
-    
-    this.closeDesactiverModal();
-    this.isErrorModalOpen = true;
-    return;
-  }
- }else{
+ console.log('Other contactsSSSSSSSSSSSS 33:', this.otherContacts.length);
+  
+ }else {
       this.desactiver();
     }
-  }  closeDesactiverModal() {
+  } 
+  
+  
+  
+  closeDesactiverModal() {
     this.isDesactiverModalOpen = false;
     this.disactivationForm.reset();
   }

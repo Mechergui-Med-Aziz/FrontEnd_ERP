@@ -140,7 +140,7 @@
                             </div>
                           </div>
                           <div class="flex flex-col">
-                            <p class="text-sm text-gray-500">{{ contact.creationDate | date: 'yyyy-MM-dd hh:mm:ss' }}</p>
+                            <p class="text-sm text-gray-500">{{ contact.creationDate | date: 'dd/MM/yy HH:mm' }}</p>
 
                             <p class="text-sm text-gray-500 font-semibold">{{ contact.company.name }}</p>
                           </div>
@@ -165,7 +165,7 @@
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[15%]">Nom du contact</th>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[12%]">Fonction</th>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[15%]">Etat</th>
-                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[18%]">Date de Creation</th>
+                          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[18%]">Société</th>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[12%]">Téléphone</th>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">Type</th>
                           <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 w-[10%]">email</th>
@@ -174,7 +174,7 @@
                       </thead>
                       <tbody class="text-sm text-gray-700">
                         <tr *ngFor="let contact of liste" class="hover:bg-gray-50">
-                          <td class="px-4 py-3 font-semibold">{{ contact.firstname }} {{ contact.lastname }}</td>
+                          <td class="px-4 py-3 font-semibold ">{{ contact.firstname }} {{ contact.lastname }}</td>
                           <td class="px-4 py-3">{{ contact.function }}</td>
                           <td *ngIf="contact.active==true" class="px-4 py-3">
                             <span class="inline-flex items-center">
@@ -198,7 +198,7 @@
                               <span class="ml-1" style="color:red">Désactivé!!</span>
                             </span>
                           </td>
-                          <td class="px-4 py-3">{{ contact.creationDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                          <td class="px-4 py-3">{{ contact.company.name }}</td>
                           <td class="px-4 py-3">{{ contact.phone }}</td>
                           <td class="px-4 py-3">{{ contact.type }}</td>
                           <td class="px-4 py-3">{{ contact.email }}</td>
