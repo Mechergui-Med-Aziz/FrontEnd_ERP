@@ -131,63 +131,79 @@
                   
         
                     <div body>
-                        <div class="grid grid-cols-6 gap-1 px-2 mt-2 ">
-                            
-                                <div class="">
-                                    <div class="font-bold text-sm text-gray-500">Civilité *</div>
-                                    <mat-select [class.pointer-events-none]="contact.value.active==false"
-                                                [class.bg-gray-200]="contact.value.active==false" formControlName="civility" formControlName="civility" class="form-control" data-cy="civility-dropdown" >
-                                      <mat-option *ngFor="
-                                              let s of civilities
-                                          " [value]="s.value" class="text-sm font-medium">
-                                          <span class="status-label">
-  
-                                              {{ s.name }}
-                                          </span>
-                                      </mat-option>
-                                  </mat-select>
-                                   
-                                </div>
-                          
-                            <div class="col-span-2">
-                                <div class="font-bold text-sm text-gray-500">Nom *</div>
-                                <div class="input-container">
-                                    <input [readonly]="contact.value.active==false" type="text" class="form-control" placeholder="" formControlName="lastname"  />
-                                </div>
-                            </div>
-                            <div class="col-span-3">
-                                <div class="font-bold text-sm text-gray-500">Prénom *</div>
-                                <div class="input-container">
-                                    <input [readonly]="contact.value.active==false" type="text" class="form-control" placeholder="" formControlName="firstname"  />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-1 px-2  w-full">
-                            <div class="">
-                                <div class="font-bold text-sm text-gray-500">Fonction</div>
-                                <div class="input-container">
-                                    <input [readonly]="contact.value.active==false" type="text" class="form-control" placeholder="" formControlName="function" />
-                                </div>
-                            </div>
-                            <div class="">
+                        <div class="grid grid-cols-3 gap-1 px-2  w-full ">
+                             <div class="">
                                 <div class="flex flex-col">
-                                    <div class="font-bold text-sm text-gray-500">Service *</div>
-                                   
+                                    <div class="font-bold text-sm text-gray-500">Civilité *</div>
+                                    
                                         <mat-select [class.pointer-events-none]="contact.value.active==false"
-                                        [class.bg-gray-200]="contact.value.active==false" formControlName="service" formControlName="service" class="form-control" data-cy="service-dropdown" >
-                                            <mat-option *ngFor="
-                                                    let s of services
-                                                " [value]="s.value" class="text-sm font-medium">
+                                        [class.bg-gray-200]="contact.value.active==false" class="form-control" formControlName="civility" data-cy="service-dropdown" >
+                                            <mat-option *ngFor="let s of civilities" [value]="s.value" class="text-sm font-medium">
                                                 <span class="status-label">
-        
-                                                    {{ s.name }}
+                                                    {{  s.name }}
                                                 </span>
                                             </mat-option>
                                         </mat-select>
                                    
                                 </div>
                             </div>
+                            <div class="">
+                                <div class="flex flex-col">
+                                    <div class="font-bold text-sm text-gray-500">Nom *</div>
+                                  
+                                    <input [readonly]="contact.value.active==false" type="text" class="form-control"  formControlName="lastname"  />
+                                </div>
+                            </div>
+                                
+                          
+                            <div class="">
+                                <div class="flex flex-col">
+                                    <div class="font-bold text-sm text-gray-500">Prénom *</div>
+                                  
+                                    <input [readonly]="contact.value.active==false" type="text" class="form-control"  formControlName="firstname"  />
+                                </div>
+                            </div>
+
+
+
                             
+                        </div>
+                        <div class="grid grid-cols-2 gap-1 px-2  w-full">
+                            
+                            
+                            
+
+
+                          
+                             <div class="">
+                                <div class="flex flex-col">
+                                    <div class="font-bold text-sm text-gray-500">Fonction</div>
+                                  
+                                    <input [readonly]="contact.value.active==false" type="text" class="form-control"  formControlName="function"  />
+                                </div>
+                            </div>
+
+                            
+
+                          <div class="">
+                                <div class="flex flex-col">
+                                    <div class="font-bold text-sm text-gray-500">Service *</div>
+                                    
+                                        <mat-select [class.pointer-events-none]="contact.value.active==false"
+                                        [class.bg-gray-200]="contact.value.active==false" class="form-control" formControlName="service" data-cy="service-dropdown" >
+                                            <mat-option *ngFor="let s of services" [value]="s.value" class="text-sm font-medium">
+                                                <span class="status-label">
+                                                    {{  s.name }}
+                                                </span>
+                                            </mat-option>
+                                        </mat-select>
+                                   
+                                </div>
+                            </div>
+        
+                           
+
+
         
                             <div class="">
                                 <div class="flex flex-col">
@@ -407,63 +423,61 @@
             </div>
         </form>
     </div>
-  </main>  <!-- liste des action -->
-  <main class="pt-[160px] pl-[6%] pb-[100px] overflow-y-auto h-full w-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
+  </main>  <!-- liste des action -->  <main class="pt-[160px] pl-[6%] pb-[100px] overflow-y-auto h-full w-full px-8 mt-8 flex justify-center" *ngIf="modeS === 'actions'">
     <div class="w-full max-w-7xl">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="w-full flex flex-col gap-8">
           <div class="bg-white p-8 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
-              Liste Des Actions
-            </h2>
-  
-            <div class="flex-1 overflow-hidden border rounded-lg">
+            <div class="flex">
+              <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+                Liste Des Actions Contact
+              </h2>
+            </div>            <div class="flex-1 overflow-hidden border rounded-lg">
               <div class="overflow-y-auto max-h-[70vh]">
-                <table class="min-w-full table-auto text-left border-collapse">                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
-                    <tr>                      <th class="px-4 py-6 w-[12%]">Type d'action</th>
-                      <th class="px-4 py-6 w-[15%] min-w-[200px] max-w-[200px]">Description</th>
+                <table class="min-w-full table-auto text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
+                    <tr>
+                      <th class="px-4 py-6 w-[15%]">Type d'action</th>
+                      <th class="px-4 py-6 w-[15%]">Contact</th>
                       <th class="px-4 py-6 w-[15%]">Créé Par</th>
                       <th class="px-4 py-6 w-[15%]">Manager Responsable</th>
                       <th class="px-4 py-6 w-[20%] min-w-[200px] max-w-[200px]">Fichiers</th>
-                      <th class="px-4 py-6 w-[15%]">Date Action</th>
+                      <th class="px-4 py-6 w-[12%]">Date Action</th>
                       <th class="px-4 py-6 w-[8%]">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let action of contactActions" class="hover:bg-gray-50 text-gray-600 text-base">                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
-                      <td class="px-4 py-6 w-[15%] min-w-[200px] max-w-[200px]">
-                        <div class="max-h-[120px] overflow-y-auto overflow-x-hidden">
-                          <span class="line-clamp-3" title="{{action.description}}">{{ action.description }}</span>
-                        </div>
-                      </td>
+                    <tr *ngFor="let action of contactActions" class="hover:bg-gray-50 text-gray-600 text-base">
+                      <td class="px-4 py-6 font-semibold">{{ action.typeAction }}</td>
+                      <td class="px-4 py-6">{{ contact.value.firstname }} {{ contact.value.lastname }}</td>
                       <td class="px-4 py-6">{{ action.createdBy.firstname}} {{action.createdBy.lastname}}</td>
-                      <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td><td class="px-4 py-6 w-[20%] min-w-[200px] max-w-[200px]">
+                      <td class="px-4 py-6">{{action?.manager?.firstname}} {{action?.manager?.lastname}}</td>
+                      <td class="px-4 py-6 w-[20%] min-w-[200px] max-w-[200px]">
                         <div class="max-h-[120px] overflow-y-auto overflow-x-hidden">
                           <ul class="list-disc list-inside space-y-1" *ngIf="action.attachments.length!=0">
                             <li *ngFor="let file of action.attachments" class="truncate" title="{{file.fileName}}">
                               {{ file.fileName }}
                             </li>
-                          </ul>
-                          <span *ngIf="action.attachments.length==0">--------</span>                        </div>
+                          </ul> 
+                          <span *ngIf="action.attachments.length==0">--------</span>
+                        </div>
                       </td>
                       <td class="px-4 py-6 w-[12%] min-w-[100px] max-w-[120px]">
                         <div class="flex flex-col">
-                          <span>{{ action.dateAction | date: 'dd/MM/yyyy' }}</span>
+                          <span>{{ action.dateAction | date: 'dd/MM/yy' }}</span>
                           <span class="text-xs text-gray-500">{{ action.dateAction | date: 'HH:mm' }}</span>
                         </div>
                       </td>
-                      <td >
+                      <td>
                         <div class="flex space-x-2">
                           <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded" (click)="openDetailsActionModal(action)">
                             Modifier
                           </button>
-                          <button [hidden]="contact.value.active==false" type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" (click)="openDeleteModal(action)">
+                          <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" [hidden]="contact.value.active==false" (click)="openDeleteModal(action)">
                             Supprimer
                           </button>
                         </div>
                       </td>
-                      
-                      
                     </tr>
                   </tbody>
                 </table>
@@ -489,27 +503,25 @@
             <div class="overflow-y-auto max-h-[70vh]">
               <table class="min-w-full table-auto text-left border-collapse">
                 <thead class="sticky top-0 bg-gray-100 text-gray-700 text-base uppercase tracking-wider z-10">
-                  <tr>                    <th class="px-4 py-6 w-[12%]">Titre </th>
-                    <th class="px-4 py-6 w-[15%] min-w-[200px] max-w-[200px]">Description</th>
-                    <th class="px-4 py-6 w-[10%]">Status</th>
-                    <th class="px-4 py-6 w-[15%]">Manager Responsable</th>
-                    <th class="px-4 py-6 w-[15%]">Créé Par</th>
-                    <th class="px-4 py-6 w-[15%]">Date de creation</th>
-                    <th class="px-4 py-6 w-[8%]">Priorité</th>
+                  <tr>
+                    <th class="px-4 py-6">Titre </th>
+                    <th class="px-4 py-6">Status</th>
+                    <th class="px-4 py-6">Manager Responsable</th>
+                    <th class="px-4 py-6">Créé Par</th>
+                    <th class="px-4 py-6 w-[12%]">Date de creation</th>
+                    <th class="px-4 py-6">Priorité</th>
                   </tr>
                 </thead>
                 <tbody>
-
                   <tr style="cursor: pointer;" *ngFor="let besoin of contactBesoins" class="hover:bg-gray-50 text-gray-600 text-base" (click)="gotobesoinUpdate(besoin.id)">
                     <td class="px-4 py-6 font-semibold">{{ besoin.title }}</td>
                     <td class="px-4 py-6">{{ besoin.description }}</td>
                     <td class="px-4 py-6">{{ besoin.status }}</td>
-                    
-                    <td class="px-4 py-6">{{besoin?.managerResponsable?.firstname}} {{besoin?.managerResponsable?.lastname}}</td>                    <td class="px-4 py-6">{{ besoin.createdBy}}</td>
-                    
+                    <td class="px-4 py-6">{{besoin?.managerResponsable?.firstname}} {{besoin?.managerResponsable?.lastname}}</td>
+                    <td class="px-4 py-6">{{ besoin.createdBy?.firstname}} {{ besoin.createdBy?.lastname}}</td>
                     <td class="px-4 py-6 w-[12%] min-w-[100px] max-w-[120px]">
                       <div class="flex flex-col">
-                        <span>{{ besoin.creationDate | date: 'dd/MM/yyyy' }}</span>
+                        <span>{{ besoin.creationDate | date: 'dd/MM/yy' }}</span>
                         <span class="text-xs text-gray-500">{{ besoin.creationDate | date: 'HH:mm' }}</span>
                       </div>
                     </td>
@@ -524,8 +536,6 @@
                         {{ besoin.priority !== 'RIEN' ? besoin.priority : '-' }}
                       </span>
                     </td>
-                    
-                    
                   </tr>
                 </tbody>
               </table>

@@ -274,8 +274,15 @@ ngOnInit(): void {
       this.modeS = 'contacts';
     }
   });
-}
+  this.compService.getComps().subscribe(
+      (companies: any[]) => {
+        this.companyExistants = companies;
+        //console.log('Contacts existants:', this.contactsExistants); // Debugging line
+      }
 
+    )
+}
+companyExistants: any[] = [];
 ngAfterViewInit(): void {
   
   if (this.modeS == 'besoins') {
@@ -548,12 +555,12 @@ saveChanges() {
       
       (response: any) => {
         //console.log('Company updated successfullyYYYYyYYYYYYYYYY11111222233333:', this.companyForm.value);
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société mise à jour avec succès' });
+        
         this.router.navigate(['/company']);
       },
       (error: any) => {
         console.error('Error updating company:', error);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la mise à jour' });
+       
       }
     );
    
@@ -562,6 +569,11 @@ saveChanges() {
    
     } 
     else {
+       this.companyExistants = this.companyExistants.filter(company => company.email == this.companyForm.value.email );
+   if(this.companyExistants.length > 0){
+    this.globalErrorMessage = 'Une Société avec le même email existe déjà.';
+    this.isErrorModalOpen = true;
+   }else{
       
     // Mode création
     let creationdate = new Date().toISOString();
@@ -570,17 +582,22 @@ saveChanges() {
       });
     this.compService.createComp(this.companyForm.value).subscribe(
       (response: any) => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Société créée avec succès' });
+        
         this.router.navigate(['/company']);
       },
       (error: any) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Échec de la création' });
+        
       }
     );
   }
-  
 }
-
+}
+closeErrorModal() {
+  this.isErrorModalOpen = false;
+  this.globalErrorMessage = '';
+}
+globalErrorMessage: string = '';
+isErrorModalOpen: boolean = false;
   loadCountries() {
     this.societesPaysList = countries.map((country) => ({
       value: country.name.common,
