@@ -175,9 +175,9 @@
                   'border-red-500': userAddForm.get('email')?.invalid && userAddForm.get('email')?.touched,
                   'border-gray-300': !(userAddForm.get('email')?.invalid && userAddForm.get('email')?.touched)
   
-                }"(blur)="userAddForm.get('email')?.markAsTouched()" />
-                <div *ngIf="userAddForm.get('email')?.invalid && userAddForm.get('email')?.touched" class="text-xs text-red-600 mt-1">
+                }"(blur)="userAddForm.get('email')?.markAsTouched()" />                <div *ngIf="userAddForm.get('email')?.invalid && userAddForm.get('email')?.touched" class="text-xs text-red-600 mt-1">
                   <span *ngIf="userAddForm.get('email')?.errors?.['required']">L'adresse E-mail est obligatoire</span>
+                  <span *ngIf="userAddForm.get('email')?.errors?.['email']">Format d'email invalide</span>
                 </div>
               </div>
             <div class="mb-4">
@@ -187,10 +187,9 @@
                 'border-red-500': userAddForm.get('phone')?.invalid && userAddForm.get('phone')?.touched,
                 'border-gray-300': !(userAddForm.get('phone')?.invalid && userAddForm.get('phone')?.touched)
 
-              }"(blur)="userAddForm.get('phone')?.markAsTouched()"  />
-
-              <div *ngIf="userAddForm.get('phone')?.invalid && userAddForm.get('phone')?.touched" class="text-xs text-red-600 mt-1">
+              }"(blur)="userAddForm.get('phone')?.markAsTouched()"  />              <div *ngIf="userAddForm.get('phone')?.invalid && userAddForm.get('phone')?.touched" class="text-xs text-red-600 mt-1">
                 <span *ngIf="userAddForm.get('phone')?.errors?.['required']">Le numéro de téléphone est obligatoire</span>
+                <span *ngIf="userAddForm.get('phone')?.errors?.['pattern']">Format de téléphone invalide (8 chiffres)</span>
               </div>
             </div>
 

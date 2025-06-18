@@ -34,13 +34,12 @@ export class UsersAccountsComponent implements OnInit {
       //console.log(this.usersAccounts);
     })
   }
-
   userAddForm = this.fb.group({
     username: ['',Validators.required],
     firstname: ['',Validators.required],
     lastname: ['',Validators.required],
-    email: ['',Validators.required],
-    phone: ['',Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
     role: ['',Validators.required],
     status: '',
     password:''
